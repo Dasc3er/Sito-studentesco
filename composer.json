@@ -1,0 +1,12 @@
+{
+    "require": {
+        "thomaspark/bootswatch": "*",
+        "ircmaxell/password-compat": "^1.0",
+        "slim/slim": "^2.0",
+        "catfan/Medoo": "^1.0",
+        "phpmailer/phpmailer": "^5.2",
+        "datatables/datatables": "^1.10",
+        "tinymce/tinymce": "^4.3",
+        "fortawesome/font-awesome": "^4.5"
+    }
+}
