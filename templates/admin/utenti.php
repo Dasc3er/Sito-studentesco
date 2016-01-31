@@ -1,6 +1,6 @@
 <?php
 $datatable = true;
-if (isset($reset) && !isAdmin($options["database"], $id)) {
+if (isAdminUserAutenticate() && isset($reset) && !isAdmin($options["database"], $id)) {
     $password = random(5);
     $name = $options["database"]->get("persone", "nome", array ("id" => $reset));
     $username = mb_strimwidth(preg_replace(" ", "", strtolower($name)), 0, 7) . substr(strtolower($name), strlen($name) - $cont);
@@ -36,8 +36,10 @@ else {
                                 <th>Cognome e nome</th>
                                 <th>Classe</th>
                                 <th>Scuola</th>
-                                <th>Numero di accessi</th>
-                                <th>Credenziali</th>
+                                <th>Numero di accessi</th>';
+    if (isAdminUserAutenticate()) echo '
+                                <th>Credenziali</th>';
+    echo '
                                 <th>Profilo</th>
                             </tr>
                         </thead>
@@ -63,19 +65,21 @@ else {
                                 <td>' . $classe . '</td>
                                 <td>' . $scuola . '</td>
                                 <td>' . $cont . '</td>';
-            if (ricerca($admins, $result["id"]) == -1) {
-                if ($result["stato"] != 0) echo '
+            if (isAdminUserAutenticate()) {
+                if (ricerca($admins, $result["id"]) == -1) {
+                    if ($result["stato"] != 0) echo '
                                 <td id="cred">
                                     <span class="hidden" id="value">' . $result["id"] . '</span>
                                     <a class="btn btn-danger" id="reset">Reset credenziali</a>
                                 </td>';
-                else echo '
+                    else echo '
                                 <td>Username: ' .
-                         $result["username"] . ' - Password: ' . strtolower($result["password"]) . '</td>';
-            }
-            else
-                echo '
+                             $result["username"] . ' - Password: ' . strtolower($result["password"]) . '</td>';
+                }
+                else
+                    echo '
                                 <td>Amministratore!!!</td>';
+            }
             echo '
                                 <td><a class="btn btn-success" href="' .
                      $options["root"] . 'profilo/' . $result["id"] . '">Profilo</a></td>
