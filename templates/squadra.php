@@ -1,29 +1,18 @@
 <?php
 if (isset($gioca) && creatore($options["database"], $gioca)) {
-    $spazio = $options["database"]->count("giocatori", array(
-        "squadra" => $gioca
-    )) < $options["database"]->get("max", "max", array(
-        "torneo" => ntorneo($options["database"], $options["user"])
-    ));
+    $spazio = $options["database"]->count("giocatori", array ("squadra" => $gioca)) < $options["database"]->get("max", "max", 
+            array ("torneo" => ntorneo($options["database"], $options["user"])));
     if (isset($add) && squadra($options["database"], $add) == null && $add != $options["user"] && $spazio) {
-        $options["database"]->insert("giocatori", array(
-            "persona" => $add,
-            "squadra" => $gioca
-        ));
+        $options["database"]->insert("giocatori", 
+                array ("persona" => $add, "squadra" => $gioca));
     }
     if (isset($remove) && squadra($options["database"], $remove) == gioca && $remove != $options["user"]) {
-        $options["database"]->delete("giocatori", array(
-            "AND" => array(
-                "persona" => $remove,
-                "squadra" => $gioca
-            )
-        ));
+        $options["database"]->delete("giocatori", 
+                array ("AND" => array ("persona" => $remove, "squadra" => $gioca)));
     }
     $torneo = "";
     $title = "";
-    $results = $options["database"]->select("squadre", "*", array(
-        "id" => $gioca
-    ));
+    $results = $options["database"]->select("squadre", "*", array ("id" => $gioca));
     if ($results != null) {
         foreach ($results as $result) {
             $torneo = $result["torneo"];
@@ -37,7 +26,8 @@ if (isset($gioca) && creatore($options["database"], $gioca)) {
             <div class="jumbotron green">
                 <div class="container text-center">
                     <h1><i class="fa fa-users "></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'squadra/' . $gioca . '" class="btn btn-info">Torna indietro</a>
+                    <a href="' .
+             $options["root"] . 'squadra/' . $gioca . '" class="btn btn-info">Torna indietro</a>
                 </div>
             </div>
             <div class="jumbotron">
@@ -51,14 +41,11 @@ if (isset($gioca) && creatore($options["database"], $gioca)) {
                             </tr>
                         </thead>
                         <tbody>';
-    $datas = $options["database"]->select("iscrizioni", "*", array(
-        "corso" => $torneo
-    ));
+    $datas = $options["database"]->select("iscrizioni", "*", array ("corso" => $torneo));
     if ($datas != null) {
         foreach ($datas as $data) {
-            $results = $options["database"]->select("persone", "*", array(
-                "id" => $data["persona"]
-            ));
+            $results = $options["database"]->select("persone", "*", 
+                    array ("id" => $data["persona"]));
             if ($results != null) {
                 foreach ($results as $result) {
                     if (squadra($options["database"], $result["id"]) == $gioca) {
@@ -90,14 +77,11 @@ if (isset($gioca) && creatore($options["database"], $gioca)) {
                             </tr>
                         </thead>
                         <tbody>';
-    $datas = $options["database"]->select("iscrizioni", "*", array(
-        "corso" => $torneo
-    ));
+    $datas = $options["database"]->select("iscrizioni", "*", array ("corso" => $torneo));
     if ($datas != null) {
         foreach ($datas as $data) {
-            $results = $options["database"]->select("persone", "*", array(
-                "id" => $data["persona"]
-            ));
+            $results = $options["database"]->select("persone", "*", 
+                    array ("id" => $data["persona"]));
             if ($results != null) {
                 foreach ($results as $result) {
                     if (squadra($options["database"], $result["id"]) == null) {
@@ -105,7 +89,8 @@ if (isset($gioca) && creatore($options["database"], $gioca)) {
                             <tr>
                                 <td>' . $result["nome"] . '</td>
                                 <td>';
-                        if ($spazio) echo '<a class="btn btn-info" href="' . $options["root"] . 'aggiungi/' . $gioca . '/' . $result["id"] . '">Aggiungi</a>';
+                        if ($spazio) echo '<a class="btn btn-info" href="' . $options["root"] . 'aggiungi/' . $gioca . '/' .
+                                 $result["id"] . '">Aggiungi</a>';
                         echo '</td>
                             </tr>';
                     }
@@ -120,12 +105,11 @@ if (isset($gioca) && creatore($options["database"], $gioca)) {
             </div>';
     require_once 'shared/footer.php';
 }
-else if ((isset($edit) && creatore($options["database"], $edit, $options["user"])) || (isset($new) && ! squadra($options["database"], $options["user"]))) {
+else if ((isset($edit) && creatore($options["database"], $edit, $options["user"])) ||
+         (isset($new) && !squadra($options["database"], $options["user"]))) {
     if (isset($edit)) {
         $pageTitle = "Modifica squadra";
-        $results = $options["database"]->select("squadre", "*", array(
-            "id" => $edit
-        ));
+        $results = $options["database"]->select("squadre", "*", array ("id" => $edit));
         if ($results == null) $error = true;
         else {
             foreach ($results as $result) {
@@ -142,25 +126,17 @@ else if ((isset($edit) && creatore($options["database"], $edit, $options["user"]
     $editor = true;
     require_once 'shared/header.php';
     if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
-        $id = $options["database"]->insert("squadre", array(
-            "nome" => $_POST["name"],
-            "torneo" => ntorneo($options["database"], $options["user"]),
-            "by" => $options["user"]
-        ));
-        $options["database"]->insert("giocatori", array(
-            "squadra" => $id,
-            "persona" => $options["user"]
-        ));
+        $id = $options["database"]->insert("squadre", 
+                array ("nome" => $_POST["name"], "torneo" => ntorneo($options["database"], $options["user"]), 
+                    "by" => $options["user"]));
+        $options["database"]->insert("giocatori", 
+                array ("squadra" => $id, "persona" => $options["user"]));
         salva();
     }
     else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-        $options["database"]->update("squadre", array(
-            "nome" => $_POST["name"],
-            "torneo" => ntorneo($options["database"], $options["user"]),
-            "by" => $options["user"]
-        ), array(
-            "id" => $edit
-        ));
+        $options["database"]->update("squadre", 
+                array ("nome" => $_POST["name"], "torneo" => ntorneo($options["database"], $options["user"]), 
+                    "by" => $options["user"]), array ("id" => $edit));
         salva();
     }
     echo '
@@ -200,17 +176,11 @@ else if ((isset($edit) && creatore($options["database"], $edit, $options["user"]
 }
 else {
     if (isset($delete) && $delete == "yes" && creatore($options["database"], $id)) {
-        $options["database"]->delete("squadre", array(
-            "id" => $id
-        ));
-        $options["database"]->delete("giocatori", array(
-            "squadra" => $id
-        ));
+        $options["database"]->delete("squadre", array ("id" => $id));
+        $options["database"]->delete("giocatori", array ("squadra" => $id));
     }
-    if (! isset($id)) $id = squadra($options["database"], $options["user"]);
-    $datas = $options["database"]->select("squadre", "*", array(
-        "id" => $id
-    ));
+    if (!isset($id)) $id = squadra($options["database"], $options["user"]);
+    $datas = $options["database"]->select("squadre", "*", array ("id" => $id));
     if ($datas != null) {
         foreach ($datas as $data) {
             $pageTitle = $data["nome"];
@@ -221,11 +191,13 @@ else {
                 <div class="container text-center">
                     <p><strong>Eliminare la squadra?</strong></p>
                     <div class="col-xs-12 col-md-6 text-center">
-                        <a href="' . $options["root"] . 'delete/yes/' . $id . '" class="btn btn-danger">Elimina squadra</a>
+                        <a href="' .
+                     $options["root"] . 'delete/yes/' . $id . '" class="btn btn-danger">Elimina squadra</a>
                     </div>
                     <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                     <div class="col-xs-12 col-md-6 text-center">
-                        <a href="' . $options["root"] . 'squadra/' . $id . '" class="btn btn-primary">Annulla</a>
+                        <a href="' .
+                     $options["root"] . 'squadra/' . $id . '" class="btn btn-primary">Annulla</a>
                     </div>
                 </div>
             </div>';
@@ -233,29 +205,23 @@ else {
             <div class="jumbotron">
                 <div class="container">
                     <h1>' . $data["nome"] . '</h1>';
-            $cont = $options["database"]->count("giocatori", array(
-                "squadra" => $id
-            ));
-            $max = $options["database"]->get("max", "max", array(
-                "torneo" => $data["torneo"]
-            ));
+            $cont = $options["database"]->count("giocatori", array ("squadra" => $id));
+            $max = $options["database"]->get("max", "max", array ("torneo" => $data["torneo"]));
             echo '
                     <div class="level">
-                        <p class="level-title">Iscritti<span class="pull-right">' . $cont . '/' . $max . '</span></p>
+                        <p class="level-title">Iscritti<span class="pull-right">' . $cont .
+                     '/' . $max .
+                     '</span></p>
                         <div class="progress">
-                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="' . $cont * 100 / $max . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $cont * 100 / $max . '%"></div>
+                            <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="' .
+                     $cont * 100 / $max . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $cont * 100 / $max . '%"></div>
                         </div>
                     </div>';
-            $studenti = $options["database"]->select("studenti", "*", array(
-                "id" => $options["database"]->max("studenti", "id"),
-                "ORDER" => "persona"
-            ));
-            $classi = $options["database"]->select("classi", "*", array(
-                "ORDER" => "id"
-            ));
-            $results = $options["database"]->select("giocatori", "*", array(
-                "squadra" => $data["id"]
-            ));
+            $studenti = $options["database"]->select("studenti", "*", 
+                    array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
+            $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
+            $results = $options["database"]->select("giocatori", "*", 
+                    array ("squadra" => $data["id"]));
             echo '
                     <table class="table table-hover scroll">
                         <thead>
@@ -267,9 +233,8 @@ else {
                         <tbody>';
             if ($results != null) {
                 foreach ($results as $result) {
-                    $people = $options["database"]->select("persone", "*", array(
-                        "id" => $result["persona"]
-                    ));
+                    $people = $options["database"]->select("persone", "*", 
+                            array ("id" => $result["persona"]));
                     if ($people != null) {
                         foreach ($people as $person) {
                             echo '
@@ -277,9 +242,9 @@ else {
                                 <td>' . $person["nome"] . '</td>';
                             $classe = "";
                             $studente = ricerca($studenti, $person["id"], "persona");
-                            if ($studente != - 1) {
+                            if ($studente != -1) {
                                 $class = ricerca($classi, $studenti[$studente]["classe"]);
-                                if ($class != - 1) $classe = $classi[$class]["nome"];
+                                if ($class != -1) $classe = $classi[$class]["nome"];
                             }
                             echo '
                                 <td>' . $classe . '</td>
@@ -293,9 +258,14 @@ else {
                     </table>';
             if (creatore($options["database"], $data["id"], $options["user"])) echo '
                     <p class="clear">
-                        <a href="' . $options["root"] . 'edit/' . $data["id"] . '" class="btn btn-success btn-block btn-lg">Modifica nome della squadra</a>
-                        <a href="' . $options["root"] . 'giocatori/' . $data["id"] . '" class="btn btn-info btn-block btn-lg">Modifica giocatori</a>
-                        <a href="' . $options["root"] . 'delete/' . $data["id"] . '" class="btn btn-danger btn-block btn-lg">Elimina squadra</a>
+                        <a href="' .
+                     $options["root"] . 'edit/' . $data["id"] .
+                     '" class="btn btn-success btn-block btn-lg">Modifica nome della squadra</a>
+                        <a href="' .
+                     $options["root"] . 'giocatori/' . $data["id"] .
+                     '" class="btn btn-info btn-block btn-lg">Modifica giocatori</a>
+                        <a href="' .
+                     $options["root"] . 'delete/' . $data["id"] . '" class="btn btn-danger btn-block btn-lg">Elimina squadra</a>
                     </p>';
             echo '
                 </div>

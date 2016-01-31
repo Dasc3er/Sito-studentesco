@@ -8,29 +8,20 @@ if (isset($recupero)) {
         $username = encode($_POST['username']);
         $email = encode($_POST['email']);
         $number = rand(2, 1000000000);
-        if ($options["database"]->count("persone", array(
-            "AND" => array(
-                "username" => $username,
-                "email" => $email,
-                "stato" => 1
-            )
-        )) != 0) {
-            $options["database"]->update("persone", array(
-                "stato" => $number
-            ), array(
-                "AND" => array(
-                    "username" => $username,
-                    "email" => $email
-                )
-            ));
-            send(decode($email), $options["sito"], "Recupero credenziali", "<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell'autogestione.</p>
+        if ($options["database"]->count("persone", 
+                array (
+                    "AND" => array ("username" => $username, "email" => $email, "stato" => 1))) != 0) {
+            $options["database"]->update("persone", array ("stato" => $number), 
+                    array (
+                        "AND" => array ("username" => $username, "email" => $email)));
+            send(decode($email), $options["sito"], "Recupero credenziali", 
+                    "<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell'autogestione.</p>
                     <p>Clicca sul link seguente o copialo nella barra del browser per completare l'operazione.</p>
-                    <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" . $number . "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", $options["database"]->get("persone", "nome", array(
-                "AND" => array(
-                    "username" => $username,
-                    "email" => $email
-                )
-            )));
+                    <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" .
+                             $number . "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", 
+                            $options["database"]->get("persone", "nome", 
+                                    array (
+                                        "AND" => array ("username" => $username, "email" => $email))));
             salva();
         }
     }
@@ -75,21 +66,14 @@ if (isset($recupero)) {
             </div>';
 }
 else {
-    if (! isset($_SESSION["try"])) $_SESSION["try"] = - 1;
+    if (!isset($_SESSION["try"])) $_SESSION["try"] = -1;
     $errore = false;
-    if (isset($_POST['user']) && isset($_POST['password']) && (! isset($_SESSION["time"]) || $_SESSION["time"] < strtotime("now"))) {
+    if (isset($_POST['user']) && isset($_POST['password']) && (!isset($_SESSION["time"]) || $_SESSION["time"] < strtotime("now"))) {
         $username = $_POST['user'];
         $password = $_POST['password'];
-        $results = $options["database"]->select("persone", array(
-            "username",
-            "password",
-            "stato"
-        ), array(
-            "username" => array(
-                $username,
-                encode($username)
-            )
-        ));
+        $results = $options["database"]->select("persone", 
+                array ("username", "password", "stato"), 
+                array ("username" => array ($username, encode($username))));
         foreach ($results as $result) {
             if ($result["stato"] == 0 && strtolower($password) == strtolower($result["password"])) $_SESSION['username'] = $result["username"];
             else if ($result["stato"] == 1 && password_verify($password, $result["password"])) $_SESSION['username'] = $result["username"];
@@ -100,22 +84,18 @@ else {
         if (isset($_SESSION['username']) && $_SESSION['username'] != "") {
             $_SESSION['loggedin'] = "loggedin";
             $id = id($options["database"]);
-            if ($options["database"]->count("admins", array(
-                "id" => $id
-            )) != 0) {
+            if ($options["database"]->count("admins", array ("id" => $id)) != 0) {
                 $_SESSION['loggedAsAdmin'] = "true";
             }
-            $_SESSION['mode'] = $options["database"]->get("opzioni", "mode", array(
-                "id" => $id
-            ));
-            $_SESSION['style'] = $options["database"]->get("opzioni", "style", array(
-                "id" => $id
-            ));
-            $options["database"]->query("INSERT INTO accessi (id, tipo_browser, indirizzo, data) VALUES ('" . $id . "', '" . getenv('HTTP_USER_AGENT') . "', '" . getenv('REMOTE_ADDR') . "', '" . date("Y-m-d H:i:s") . "')");
+            $_SESSION['mode'] = $options["database"]->get("opzioni", "mode", array ("id" => $id));
+            $_SESSION['style'] = $options["database"]->get("opzioni", "style", array ("id" => $id));
+            $options["database"]->query(
+                    "INSERT INTO accessi (id, tipo_browser, indirizzo, data) VALUES ('" . $id . "', '" . getenv('HTTP_USER_AGENT') .
+                             "', '" . getenv('REMOTE_ADDR') . "', '" . date("Y-m-d H:i:s") . "')");
         }
         else {
             $errore = true;
-            if (intval($_SESSION["try"]) == - 1) $_SESSION["try"] = 1;
+            if (intval($_SESSION["try"]) == -1) $_SESSION["try"] = 1;
             else $_SESSION["try"] = intval($_SESSION["try"]) + 1;
         }
     }
@@ -127,7 +107,8 @@ else {
             <div class="jumbotron yellow">
                 <div class="container">
                     <h2>Attenzione!</h2>
-                    <p>Adesso devi attendere ' . floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
+                    <p>Adesso devi attendere ' .
+                 floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
                     <p>Fai pi&ugrave; attenzione la prossima volta!</p>
                 </div>
             </div>
@@ -141,7 +122,8 @@ else {
             <div class="jumbotron blue">
                 <div class="container">
                     <h2>Buona fortuna!</h2>
-                    <p>Hai ' . (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
+                    <p>Hai ' .
+             (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
                     <p>Fai attenzione!!!</p>
                 </div>
             </div>';
@@ -174,7 +156,8 @@ else {
     if (intval($_SESSION["try"]) % 3 == 0) echo ' hidden';
     echo '" type="submit" id="button">Accedi</button>
                         <p><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span>Password dimenticata?</p>
-                        <p><a href="' . $options["root"] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
+                        <p><a href="' .
+             $options["root"] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
                     </div>
                 </div>
             </form>';

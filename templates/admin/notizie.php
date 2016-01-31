@@ -4,9 +4,7 @@ $done = false;
 if (isset($edit) || isset($new)) {
     if (isset($edit)) {
         $pageTitle = "Modifica notizia";
-        $results = $options["database"]->select("news", "*", array(
-            "id" => $edit
-        ));
+        $results = $options["database"]->select("news", "*", array ("id" => $edit));
         if ($results == null) $error = true;
         else {
             foreach ($results as $result) {
@@ -20,29 +18,20 @@ if (isset($edit) || isset($new)) {
         $name = "";
         $contenuto = "";
     }
-    if (! $error) {
+    if (!$error) {
         $editor = true;
         require_once 'templates/shared/header.php';
         if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
-            $options["database"]->insert("news", array(
-                "titolo" => strip_tags($_POST["name"]),
-                "contenuto" => sanitize($_POST["contenuto"]),
-                "creatore" => $options["user"],
-                "stato" => 1,
-                "#data" => "CURDATE()"
-            ));
+            $options["database"]->insert("news", 
+                    array ("titolo" => strip_tags($_POST["name"]), "contenuto" => sanitize($_POST["contenuto"]), 
+                        "creatore" => $options["user"], "stato" => 1, "#data" => "CURDATE()"));
             salva();
         }
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-            $options["database"]->update("news", array(
-                "titolo" => strip_tags($_POST["name"]),
-                "contenuto" => sanitize($_POST["contenuto"]),
-                "creatore" => $options["user"],
-                "stato" => 1,
-                "#data" => "CURDATE()"
-            ), array(
-                "id" => $edit
-            ));
+            $options["database"]->update("news", 
+                    array ("titolo" => strip_tags($_POST["name"]), "contenuto" => sanitize($_POST["contenuto"]), 
+                        "creatore" => $options["user"], "stato" => 1, "#data" => "CURDATE()"), 
+                    array ("id" => $edit));
             salva();
         }
         echo '
@@ -75,7 +64,8 @@ if (isset($edit) || isset($new)) {
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' . $options["root"] . 'notizie" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' .
+                 $options["root"] . 'notizie" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -88,9 +78,7 @@ if (isset($edit) || isset($new)) {
 }
 else {
     if (isset($delete) && $delete == "yes") {
-        $options["database"]->delete("news", array(
-            "id" => $id
-        ));
+        $options["database"]->delete("news", array ("id" => $id));
     }
     $datatable = true;
     $pageTitle = "Notizie";
@@ -100,7 +88,8 @@ else {
                 <div class="container text-center">
                     <p><strong>Eliminare il notizia?</strong></p>
                     <div class="col-xs-6 text-center">
-                        <a href="' . $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina notizia</a>
+                        <a href="' .
+             $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina notizia</a>
                     </div>
                     <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                     <div class="col-xs-6 text-center">

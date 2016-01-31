@@ -1,56 +1,29 @@
 <?php
 $tempo = tempoproposte($options["database"]);
 if (isset($cambia) && $tempo && stessauto($options["database"], $options["autogestione"], $cambia)) {
-    $options["database"]->update("corsi", array(
-        "da" => $options["user"]
-    ), array(
-        "id" => $cambia
-    ));
+    $options["database"]->update("corsi", array ("da" => $options["user"]), array ("id" => $cambia));
+    echo 1;
 }
 if (isset($stato) && $tempo && stessauto($options["database"], $options["autogestione"], $stato)) {
-    if ($options["database"]->count("corsi", array(
-        "AND" => array(
-            "id" => $stato,
-            "stato" => 0
-        )
-    )) != 0) {
-        $options["database"]->update("iscrizioni", array(
-            "stato" => 1
-        ), array(
-            "corso" => $stato
-        ));
-        $options["database"]->update("corsi", array(
-            "stato" => 1,
-            "da" => $options["user"]
-        ), array(
-            "id" => $stato
-        ));
+    if ($options["database"]->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
+        $options["database"]->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
+        $options["database"]->update("corsi", array ("stato" => 1, "da" => $options["user"]), array ("id" => $stato));
+        echo 1;
     }
-    else if ($options["database"]->count("corsi", array(
-        "AND" => array(
-            "id" => $stato,
-            "stato" => 1
-        )
-    )) != 0) $options["database"]->update("corsi", array(
-        "stato" => 0,
-        "da" => $options["user"]
-    ), array(
-        "id" => $stato
-    ));
+    else if ($options["database"]->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 1))) != 0) {
+        $options["database"]->update("corsi", array ("stato" => 0, "da" => $options["user"]), array ("id" => $stato));
+        echo 0;
+    }
 }
 if (isset($new) && $tempo && proposta($options["database"], $options["autogestione"], $options["user"])) {
     $pageTitle = "Nuova proposta";
     $editor = true;
     require_once 'shared/header.php';
     if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-        $options["database"]->insert("corsi", array(
-            "autogestione" => $options["autogestione"],
-            "nome" => strip_tags($_POST["name"]),
-            "descrizione" => $_POST['txtEditor'],
-            "creatore" => $options["user"],
-            "stato" => 1,
-            "scuola" => scuola($options["database"], $options["user"])
-        ));
+        $options["database"]->insert("corsi", 
+                array ("autogestione" => $options["autogestione"], "nome" => strip_tags($_POST["name"]), 
+                    "descrizione" => $_POST['txtEditor'], "creatore" => $options["user"], "stato" => 1, 
+                    "scuola" => scuola($options["database"], $options["user"])));
         salva();
         finito("proposta");
     }
@@ -92,50 +65,29 @@ if (isset($new) && $tempo && proposta($options["database"], $options["autogestio
 else if (isset($new)) {
     require_once 'shared/404.php';
 }
-else if (isset($id) && ! like($options["database"], $id, $options["user"])) $options["database"]->insert("like", array(
-    "persona" => $options["user"],
-    "corso" => $id
-));
-else if (isset($id) && like($options["database"], $id, $options["user"])) $options["database"]->delete("like", array(
-    "AND" => array(
-        "persona" => $options["user"],
-        "corso" => $id
-    )
-));
+else if (isset($id) && !like($options["database"], $id, $options["user"]) && scuolagiusta($options["database"], $id, $user)) {
+    $options["database"]->insert("like", array ("persona" => $options["user"], "corso" => $id));
+    echo 1;
+}
+else if (isset($id) && like($options["database"], $id, $options["user"])) {
+    $options["database"]->delete("like", array ("AND" => array ("persona" => $options["user"], "corso" => $id)));
+    echo 0;
+}
 else {
     $pageTitle = "Proposte";
     $datatable = true;
     $readmore = true;
     require_once 'shared/header.php';
     $scuola = scuola($options["database"], $options["user"]);
-    $utenti = $options["database"]->select("persone", array(
-        "id",
-        "nome"
-    ), array(
-        "ORDER" => "id"
-    ));
-    if (isAdminUserAutenticate()) $results = $options["database"]->select("corsi", "*", array(
-        "AND" => array(
-            "autogestione" => $options["autogestione"],
-            "quando" => null
-        )
-    ));
-    else $results = $options["database"]->select("corsi", "*", array(
-        "AND" => array(
-            "quando" => null,
-            "scuola" => $scuola,
-            "stato" => 0
-        )
-    ));
-    $utenti = $options["database"]->select("persone", array(
-        "id",
-        "nome"
-    ), array(
-        "ORDER" => "id"
-    ));
+    $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
+    if (isAdminUserAutenticate()) $results = $options["database"]->select("corsi", "*", 
+            array ("AND" => array ("autogestione" => $options["autogestione"], "quando" => null)));
+    else $results = $options["database"]->select("corsi", "*", 
+            array ("AND" => array ("quando" => null, "scuola" => $scuola, "stato" => 0)));
+    $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
     $like = $options["database"]->select("like", "*");
     $numero = pieni($like);
-    $interessato = io($like, $options["user"], - 1);
+    $interessato = io($like, $options["user"], -1);
     echo '
             <div class="jumbotron">
                 <div class="container text-center">
@@ -160,7 +112,8 @@ else {
         foreach ($results as $key => $result) {
             if ($result["stato"] == 0) {
                 $cont = 0;
-                if ($result["id"] - $numero[0] >= 0 && $numero[1] - $result["id"] >= 0 && $numero[2][$result["id"] - $numero[0]] != "") $cont = $numero[2][$result["id"] - $numero[0]];
+                if ($result["id"] - $numero[0] >= 0 && $numero[1] - $result["id"] >= 0 &&
+                         $numero[2][$result["id"] - $numero[0]] != "") $cont = $numero[2][$result["id"] - $numero[0]];
                 echo '
                                 <tr>
                                     <td>
@@ -172,24 +125,27 @@ else {
                                             <p id="descrizione">' . $result["descrizione"] . '</p>';
                 if (isAdminUserAutenticate()) {
                     $utente = ricerca($utenti, $result["creatore"]);
-                    if ($utente != - 1) echo '
+                    if ($utente != -1) echo '
                                             <p><strong>Creato da ' . $utenti[$utente]["nome"] . '</strong></p>';
                 }
                 if ($tempo) {
                     echo '
-                                            <ul class="links">
+                                            <ul class="links">';
+                    if ($scuola == $result["scuola"]) {
+                        echo '
                                                 <li><a ';
-                    if (modo()) echo 'id="like"';
-                    else echo 'href="' . $options["root"] . 'citazioni/' . $result["id"] . '"';
-                    echo ' class="btn ';
-                    if (! inside($interessato, $result["id"])) {
-                        echo 'btn-success"><span id="text"><i class="fa fa-thumbs-o-up"></i></span>';
+                        if (modo()) echo 'id="like"';
+                        else echo 'href="' . $options["root"] . 'citazioni/' . $result["id"] . '"';
+                        echo ' class="btn ';
+                        if (!inside($interessato, $result["id"])) {
+                            echo 'btn-success"><span id="text"><i class="fa fa-thumbs-o-up"></i></span>';
+                        }
+                        else {
+                            
+                            echo 'btn-danger"><span id="text"><i class="fa fa-thumbs-up"></i></span>';
+                        }
+                        echo '<span id="cont">' . $cont . '</span></a></li>';
                     }
-                    else {
-                        
-                        echo 'btn-danger"><span id="text"><i class="fa fa-thumbs-up"></i></span>';
-                    }
-                    echo '<span id="cont">' . $cont . '</span></a></li>';
                     if (isAdminUserAutenticate()) {
                         echo '
                                                 <li><a ';
@@ -258,7 +214,8 @@ else {
                                             <span class="hidden" id="value">' . $result["id"] . '</span>
                                             <p id="descrizione">' . $result["descrizione"] . '</p>';
                     if (isAdminUserAutenticate()) echo '
-                                            <p><strong>Creato da ' . $utenti[ricerca($utenti, $result["creatore"])]["nome"] . '</strong></p>';
+                                            <p><strong>Creato da ' . $utenti[ricerca($utenti, $result["creatore"])]["nome"] .
+                             '</strong></p>';
                     if ($tempo) {
                         echo '
                                             <ul class="links">
@@ -308,8 +265,9 @@ else {
                                             <p id="descrizione">' . $result["descrizione"] . '</p>';
                     if (isAdminUserAutenticate()) echo '
                                             <p><strong>Creato da ';
-                    if (ricerca($utenti, $result["creatore"]) != - 1) echo $utenti[ricerca($utenti, $result["creatore"])]["nome"];
-                    if (ricerca($utenti, $result["da"]) != - 1) echo '<span id="dis">, disabilitato da ' . $utenti[ricerca($utenti, $result["da"])]["nome"] . '</span>';
+                    if (ricerca($utenti, $result["creatore"]) != -1) echo $utenti[ricerca($utenti, $result["creatore"])]["nome"];
+                    if (ricerca($utenti, $result["da"]) != -1) echo '<span id="dis">, disabilitato da ' .
+                             $utenti[ricerca($utenti, $result["da"])]["nome"] . '</span>';
                     echo '</strong></p>';
                     if ($tempo) {
                         echo '

@@ -41,7 +41,7 @@ if (isset($readmore) && $readmore) echo '
 if (isset($datatable) && $datatable) echo '
         <script src="' . $options["root"] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
         <script src="' . $options["root"] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
-        <script async src="' . $options["path"] . 'js/min.js" type="text/javascript"></script>';
+        <script async src="' . $options["path"] . 'js/minified.js" type="text/javascript"></script>';
 if (isset($complexify) && $complexify) echo '
         <script src="' . $options["path"] . 'js/jquery.complexify.min.js" type="text/javascript"></script>
         <script>

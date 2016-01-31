@@ -16,15 +16,9 @@ if (isset($info)) {
         if (isset($_POST['news']) && $_POST['news'] == "yes") $news = 1;
         $_SESSION["mode"] = $mode;
         $_SESSION["style"] = $_POST['stile'];
-        $options["database"]->update("opzioni", array(
-            "newsletter" => $newsletter,
-            "style" => $_POST['stile'],
-            "mode" => $mode,
-            "rap" => $rap,
-            "news" => $news
-        ), array(
-            "id" => $options["user"]
-        ));
+        $options["database"]->update("opzioni", 
+                array ("newsletter" => $newsletter, "style" => $_POST['stile'], "mode" => $mode, "rap" => $rap, "news" => $news), 
+                array ("id" => $options["user"]));
         salva();
     }
     $newsletter = 0;
@@ -32,9 +26,7 @@ if (isset($info)) {
     $rap = 0;
     $news = 0;
     $stile = 0;
-    $results = $options["database"]->select("opzioni", "*", array(
-        "id" => $options["user"]
-    ));
+    $results = $options["database"]->select("opzioni", "*", array ("id" => $options["user"]));
     if ($results != null) {
         foreach ($results as $result) {
             $newsletter = $result["newsletter"];
@@ -57,25 +49,25 @@ if (isset($info)) {
                         <div class="form-group">
                             <label for="mode" class="col-xs-12 col-sm-7 control-label">Utilizzo la versione moderna del sito*</label>
                             <div class="col-xs-12 col-sm-5"><input class="form-control" id="mode" type="checkbox" name="mode" value="yes"';
-    if ((! isset($_POST["mode"]) && $mode == 1) || (isset($_POST["mode"]) && $_POST["mode"] == 1)) echo ' checked';
+    if ((!isset($_POST["mode"]) && $mode == 1) || (isset($_POST["mode"]) && $_POST["mode"] == 1)) echo ' checked';
     echo '></div>
                         </div>
                         <div class="form-group">
                             <label for="rap" class="col-xs-12 col-sm-7 control-label">Desidero ricevere un\'email per le notizie aggiunte dai Rappresentanti d\'Istituto</label>
                             <div class="col-xs-12 col-sm-5"><input class="form-control" id="rap" type="checkbox" name="rap" value="yes"';
-    if ((! isset($_POST["rap"]) && $rap == 1) || (isset($_POST["rap"]) && $_POST["rap"] == 1)) echo ' checked';
+    if ((!isset($_POST["rap"]) && $rap == 1) || (isset($_POST["rap"]) && $_POST["rap"] == 1)) echo ' checked';
     echo '></div>
                         </div>
                         <div class="form-group">
                             <label for="newsletter" class="col-xs-12 col-sm-7 control-label">Desidero ricevere un\'email di conferma al momento del blocco delle registrazioni per i corsi</label>
                             <div class="col-xs-12 col-sm-5"><input class="form-control" id="newsletter" type="checkbox" name="newsletter" value="yes"';
-    if ((! isset($_POST["newsletter"]) && $newsletter == 1) || (isset($_POST["newsletter"]) && $_POST["newsletter"] == 1)) echo ' checked';
+    if ((!isset($_POST["newsletter"]) && $newsletter == 1) || (isset($_POST["newsletter"]) && $_POST["newsletter"] == 1)) echo ' checked';
     echo '></div>
                         </div>
                         <div class="form-group">
                             <label for="news" class="col-xs-12 col-sm-7 control-label">Desidero ricevere un\'email per gli articoli pi&ugrave; importanti del giornalino scolastico (prossimo sviluppo)</label>
                             <div class="col-xs-12 col-sm-5"><input class="form-control" id="news" type="checkbox" name="news" value="yes"';
-    if ((! isset($_POST["news"]) && $news == 1) || (isset($_POST["news"]) && $_POST["news"] == 1)) echo ' checked';
+    if ((!isset($_POST["news"]) && $news == 1) || (isset($_POST["news"]) && $_POST["news"] == 1)) echo ' checked';
     echo '></div>
                         </div>
                         <div class="form-group">
@@ -88,7 +80,10 @@ if (isset($info)) {
     $array = glob("vendor/thomaspark/bootswatch/*", GLOB_ONLYDIR);
     if ($array != null) {
         foreach ($array as $result) {
-            if (basename($result) != "2" && basename($result) != "tests" && basename($result) != "api" && basename($result) != "assets" && basename($result) != "bower_components" && basename($result) != "custom" && basename($result) != "help" && basename($result) != "global" && basename($result) != "fonts" && basename($result) != "default") {
+            if (basename($result) != "2" && basename($result) != "tests" && basename($result) != "api" &&
+                     basename($result) != "assets" && basename($result) != "bower_components" && basename($result) != "custom" &&
+                     basename($result) != "help" && basename($result) != "global" && basename($result) != "fonts" &&
+                     basename($result) != "default") {
                 echo '<option value="' . basename($result) . '"';
                 if ($stile == basename($result)) echo ' selected';
                 echo '>' . ucfirst(basename($result)) . '</option>';
@@ -116,12 +111,9 @@ else if (isset($email)) {
         $email = encode($_POST['email']);
         if (isEmailFree($options["database"], $email, $options["user"])) {
             $number = rand(1, 1000000000);
-            $options["database"]->update("persone", array(
-                "email" => $email,
-                "verificata" => $number
-            ), array(
-                "id" => $options["user"]
-            ));
+            $options["database"]->update("persone", 
+                    array ("email" => $email, "verificata" => $number), 
+                    array ("id" => $options["user"]));
             salva();
         }
         else
@@ -138,9 +130,8 @@ else if (isset($email)) {
                 <div class="container text-center">
                     <h1><i class="fa fa-envelope"></i> Modifica email</h1>
                     <p>L\'email verr&agrave; utilizzata esclusivamente per news importanti, e non sar&agrave; resa disponibile a nessuno! Siete in buone mani... <span class="text-blue">Parola di Scout!</span> (qualcuno tra gli iscritti ne far&agrave; pur parte)</p>
-                    <p>Il tuo indirizzo email attuale &egrave; ' . decode($options["database"]->get("persone", "email", array(
-        "id" => $options["user"]
-    ))) . '</p>
+                    <p>Il tuo indirizzo email attuale &egrave; ' . decode(
+            $options["database"]->get("persone", "email", array ("id" => $options["user"]))) . '</p>
                 </div>
             </div>
             <div class="jumbotron">
@@ -173,43 +164,28 @@ else {
         $username = encode(strip_tags($_POST['username']));
         if ($options["first"]) $email = encode($_POST['email']);
         $password = $_POST['Password'];
-        if (isset($rand)) $options["user"] = $options["database"]->get("persone", "id", array(
-            "stato" => $rand
-        ));
+        if (isset($rand)) $options["user"] = $options["database"]->get("persone", "id", 
+                array ("stato" => $rand));
         $userFree = isUserFree($options["database"], $username, $options["user"]);
         if ($options["first"]) $emailFree = isEmailFree($options["database"], $email, $options["user"]);
         if ($password != $_POST['RipPassword']) $msg = "Le password devono corrispondere!!!";
-        else if ($userFree && (! $options["first"] || $emailFree)) {
+        else if ($userFree && (!$options["first"] || $emailFree)) {
             $control = hashpassword($password);
             if (isset($rand)) {
-                $options["database"]->update("persone", array(
-                    "username" => $username,
-                    "password" => $control,
-                    "stato" => 1
-                ), array(
-                    "stato" => $rand
-                ));
+                $options["database"]->update("persone", 
+                        array ("username" => $username, "password" => $control, "stato" => 1), 
+                        array ("stato" => $rand));
             }
             else if (isset($options["first"]) && $options["first"]) {
                 $number = rand(2, 1000000000);
-                $options["database"]->update("persone", array(
-                    "username" => $username,
-                    "email" => $email,
-                    "verificata" => $number,
-                    "password" => $control,
-                    "stato" => 1
-                ), array(
-                    "id" => $options["user"]
-                ));
+                $options["database"]->update("persone", 
+                        array ("username" => $username, "email" => $email, "verificata" => $number, "password" => $control, 
+                            "stato" => 1), array ("id" => $options["user"]));
             }
             else
-                $options["database"]->update("persone", array(
-                    "username" => $username,
-                    "password" => $control,
-                    "stato" => 1
-                ), array(
-                    "id" => $options["user"]
-                ));
+                $options["database"]->update("persone", 
+                        array ("username" => $username, "password" => $control, "stato" => 1), 
+                        array ("id" => $options["user"]));
             $_SESSION["username"] = $username;
             salva();
         }

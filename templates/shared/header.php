@@ -6,17 +6,38 @@ echo '<!DOCTYPE html>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>' . $pageTitle . ' - ' . $options["sito"] . '</title>
-        <link href="' . $options["path"] . 'images/favicon.png" rel="shortcut icon">
+        <link href="' . $options["path"] .
+         'images/favicon.png" rel="shortcut icon">
         <meta name="description" content="Sito ufficiale relativo all\'autogestione e alle aule studio dell\'IIS Euganeo di Este"/>';
 stile($options["root"]);
 echo '
-        <link id="font" href="' . $options["root"] . 'vendor/fortawesome/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">';
+        <link id="font" href="' . $options["root"] .
+         'vendor/fortawesome/font-awesome/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">';
 if (isset($datatable) && $datatable) echo '
         <link href="' . $options["path"] . 'css/datatable.min.css" media="screen" rel="stylesheet" type="text/css">';
 if ($options["snow"]) echo '
         <link href="' . $options["path"] . 'css/snow.min.css" rel="stylesheet" type="text/css">';
 echo '
-        <link href="' . $options["path"] . 'css/style.min.css" rel="stylesheet" type="text/css">
+        <link href="' . $options["path"] .
+         'css/style.min.css" rel="stylesheet" type="text/css">';
+if ($options["cookie-policy"]) echo '
+        <link href="' . $options["path"] . 'css/cookies.min.css" rel="stylesheet" type="text/css">
+        <script type="text/javascript">
+            /*<![CDATA[*/
+            var _iub = _iub || [];
+            _iub.csConfiguration = {
+                siteId: 489029, cookiePolicyId: 7787031, lang: \'it\', localConsentDomain: \'itiseuganeo.altervista.org\',
+                banner: { applyStyles: false, content: "Informativa sui cookies<br>Questo sito o gli strumenti terzi da questo utilizzati si avvalgono di cookie necessari al funzionamento ed utili alle finalità illustrate nella cookie policy. Se vuoi saperne di più o negare il consenso a tutti o ad alcuni cookie, consulta la %{cookie_policy_link}.<br>Chiudendo questo banner, scorrendo questa pagina, cliccando su un link o proseguendo la navigazione in altra maniera, acconsenti all’uso dei cookie.", cookiePolicyLinkCaption: "cookie policy",
+          			backgroundColor: "green",
+                innerHtmlCloseBtn: "OK"}
+            };
+            (function (w, d) {
+                var loader = function () { var s = d.createElement("script"), tag = d.getElementsByTagName("script")[0]; s.src = "//cdn.iubenda.com/cookie_solution/iubenda_cs.js"; tag.parentNode.insertBefore(s, tag); };
+                if (w.addEventListener) { w.addEventListener("load", loader, false); } else if (w.attachEvent) { w.attachEvent("onload", loader); } else { w.onload = loader; }
+            })(window, document);
+            /*]]>*/
+        </script>';
+echo '
     </head>
     <body>';
 if ($options["snow"]) echo '
@@ -35,7 +56,7 @@ echo '
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">';
-if (isUserAutenticate() && ! $options["first"]) {
+if (isUserAutenticate() && !$options["first"]) {
     if ($options["autogestione"] != null) {
         echo '
                         <li';
@@ -44,12 +65,8 @@ if (isUserAutenticate() && ! $options["first"]) {
                         <li';
         if ($pageTitle == "Proposte" || $pageTitle == "Nuova proposta") echo ' class="active"';
         echo '><a href="' . $options["root"] . 'proposte">Proposte';
-        if (isAdminUserAutenticate()) echo ' <span class="badge">' . $options["database"]->count("corsi", array(
-            "AND" => array(
-                "da" => null,
-                "stato" => 1
-            )
-        )) . '</span>';
+        if (isAdminUserAutenticate()) echo ' <span class="badge">' . $options["database"]->count("corsi", 
+                array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
         echo '</a></li>';
     }
     else if (isAdminUserAutenticate()) {
@@ -72,12 +89,8 @@ if (isUserAutenticate() && ! $options["first"]) {
                         <li';
     if ($pageTitle == "Citazioni") echo ' class="active"';
     echo '><a href="' . $options["root"] . 'citazioni">Citazioni';
-    if (isAdminUserAutenticate()) echo ' <span class="badge" id="change">' . $options["database"]->count("citazioni", array(
-        "AND" => array(
-            "da" => null,
-            "stato" => 1
-        )
-    )) . '</span>';
+    if (isAdminUserAutenticate()) echo ' <span class="badge" id="change">' . $options["database"]->count("citazioni", 
+            array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
     echo '</a></li>';
 }
 else if (isUserAutenticate() && $options["first"]) {
@@ -126,7 +139,7 @@ else {
                         <li';
     if ($pageTitle == "Contattaci") echo ' class="active"';
     echo '><a href="' . $options["root"] . 'contattaci">Contattaci</a></li>';
-    if (! $options["debug"]) {
+    if (!$options["debug"]) {
         echo '
                         <li';
         if ($pageTitle == "Accedi") echo ' class="active"';
@@ -152,7 +165,7 @@ if (isUserAutenticate()) {
                 </div>
             </div>';
     }
-    else if (! verificata($options["database"], $options["user"])) echo '
+    else if (!verificata($options["database"], $options["user"])) echo '
             <div class="jumbotron orange">
                 <div class="container text-center">
                     <p><i class="fa fa-bell"></i> Email ancora non verificata... <a href="' . $options["root"] . 'check">Invia nuovamente il messaggio</a></p>

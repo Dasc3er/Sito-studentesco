@@ -4,9 +4,7 @@ $done = false;
 if (isset($edit) || isset($new)) {
     if (isset($edit)) {
         $pageTitle = "Modifica autogestione";
-        $results = $options["database"]->select("autogestioni", "*", array(
-            "id" => $edit
-        ));
+        $results = $options["database"]->select("autogestioni", "*", array ("id" => $edit));
         if ($results == null) $error = true;
         else {
             foreach ($results as $result) {
@@ -24,38 +22,29 @@ if (isset($edit) || isset($new)) {
         $ultima = "";
         $proposte = "";
     }
-    if (! $error) {
+    if (!$error) {
         $editor = true;
         require_once 'templates/shared/header.php';
         if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
-            $options["database"]->insert("autogestioni", array(
-                "nome" => strip_tags($_POST["name"]),
-                "data" => $_POST["data"],
-                "ultima" => $_POST["ultima"],
-                "proposte" => $_POST["proposte"],
-                "random" => 0,
-                "newsletter" => 0
-            ));
+            $options["database"]->insert("autogestioni", 
+                    array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"], 
+                        "proposte" => $_POST["proposte"], "random" => 0, "newsletter" => 0));
             salva();
         }
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-            $options["database"]->update("autogestioni", array(
-                "nome" => strip_tags($_POST["name"]),
-                "data" => $_POST["data"],
-                "ultima" => $_POST["ultima"],
-                "proposte" => $_POST["proposte"],
-                "random" => 0,
-                "newsletter" => 0
-            ), array(
-                "id" => $edit
-            ));
+            $options["database"]->update("autogestioni", 
+                    array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"], 
+                        "proposte" => $_POST["proposte"], "random" => 0, "newsletter" => 0), 
+                    array ("id" => $edit));
             salva();
         }
         echo '
             <div class="jumbotron green">
                 <div class="container text-center">
-                    <h1><i class="fa fa-plus"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'autogestioni" class="btn btn-success">Torna indietro</a>                </div>
+                    <h1><i class="fa fa-plus"></i> ' . $pageTitle .
+                 '</h1>
+                    <a href="' .
+                 $options["root"] . 'autogestioni" class="btn btn-success">Torna indietro</a>                </div>
             </div>
             <div class="jumbotron">
                 <div class="container">
@@ -73,7 +62,8 @@ if (isset($edit) || isset($new)) {
                         <div class="form-group">
                             <label for="data" class="col-sm-2 control-label">Data dell\'autogestione</label>
                             <div class="col-sm-10">
-                                <input class="form-control" name="data" id="data" type="date" min="' . date("Y-m-d") . '"';
+                                <input class="form-control" name="data" id="data" type="date" min="' .
+                 date("Y-m-d") . '"';
         if (isset($_POST['date'])) echo ' value="' . $_POST['date'] . '"';
         else echo ' value="' . $date . '"';
         echo ' required>
@@ -82,7 +72,8 @@ if (isset($edit) || isset($new)) {
                         <div class="form-group">
                             <label for="ultima" class="col-sm-2 control-label">Data ultima modifica possibile</label>
                             <div class="col-sm-10">
-                                <input class="form-control" name="ultima" id="ultima" type="date" min="' . date("Y-m-d") . '"';
+                                <input class="form-control" name="ultima" id="ultima" type="date" min="' .
+                 date("Y-m-d") . '"';
         if (isset($_POST['ultima'])) echo ' value="' . $_POST['ultima'] . '"';
         else echo ' value="' . $ultima . '"';
         echo ' required>
@@ -91,7 +82,8 @@ if (isset($edit) || isset($new)) {
                         <div class="form-group">
                             <label for="proposte" class="col-sm-2 control-label">Data ultima per votazione ed inserimento proposte</label>
                             <div class="col-sm-10">
-                                <input class="form-control" name="proposte" id="proposte" type="date" min="' . date("Y-m-d") . '"';
+                                <input class="form-control" name="proposte" id="proposte" type="date" min="' .
+                 date("Y-m-d") . '"';
         if (isset($_POST['proposte'])) echo ' value="' . $_POST['proposte'] . '"';
         else echo ' value="' . $proposte . '"';
         echo ' required>
@@ -102,7 +94,8 @@ if (isset($edit) || isset($new)) {
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' . $options["root"] . 'autogestioni" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' .
+                 $options["root"] . 'autogestioni" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -116,16 +109,11 @@ if (isset($edit) || isset($new)) {
 else if (isset($random)) {
     set_time_limit(60 * 50);
     echo "asas";
-    $corsi = $options["database"]->select("corsi", "*", array(
-        "AND" => array(
-            "autogestione" => $options["database"]->max("autogestioni", "id"),
-            "quando[!]" => null,
-            "quando[!]" => "1,2,3,4,5",
-            "stato" => 0
-        ),
-        "ORDER" => "id"
-    ));
-    $array = array();
+    $corsi = $options["database"]->select("corsi", "*", 
+            array (
+                "AND" => array ("autogestione" => $options["database"]->max("autogestioni", "id"), "quando[!]" => null, 
+                    "quando[!]" => "1,2,3,4,5", "stato" => 0), "ORDER" => "id"));
+    $array = array ();
     if ($corsi != null) {
         foreach ($corsi as $data) {
             $when = explode(",", $data["quando"]);
@@ -140,18 +128,14 @@ else if (isset($random)) {
     }
     sort($array);
     $d = 0;
-    $persone = array();
-    $studenti = $options["database"]->select("studenti", "*", array(
-        "id" => $options["database"]->max("studenti", "id"),
-        "ORDER" => "persona"
-    ));
-    $iscritti = $options["database"]->select("iscrizioni", "*", array(
-        "ORDER" => "corso"
-    ));
+    $persone = array ();
+    $studenti = $options["database"]->select("studenti", "*", 
+            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
+    $iscritti = $options["database"]->select("iscrizioni", "*", array ("ORDER" => "corso"));
     $results = $options["database"]->select("persone", "*");
     if ($results != null) {
         foreach ($results as $result) {
-            $nuovo = array();
+            $nuovo = array ();
             for ($i = 0; $i < count($array); $i ++)
                 $nuovo[$i] = $array[$i];
             for ($i = 0; $i < count($array); $i ++)
@@ -159,7 +143,7 @@ else if (isset($random)) {
             $iscrizioni = io($iscritti, $result["id"], 0);
             foreach ($iscrizioni as $iscrizione) {
                 $corso = ricerca($corsi, $iscrizione);
-                if ($corso != - 1) {
+                if ($corso != -1) {
                     $when = explode(",", $corsi[$corso]["quando"]);
                     for ($i = 0; $i < count($when); $i ++) {
                         for ($j = 0; $j < count($nuovo); $j ++) {
@@ -169,7 +153,7 @@ else if (isset($random)) {
                 }
             }
             sort($interno);
-            if (ricerca($studenti, $result["id"], "persona") != - 1 && isset($interno[0]) && $interno[0] != null) {
+            if (ricerca($studenti, $result["id"], "persona") != -1 && isset($interno[0]) && $interno[0] != null) {
                 $persone[$d ++] = $result;
             }
         }
@@ -188,7 +172,7 @@ else if (isset($random)) {
         foreach ($corsimod as $corso) {
             if ($persone != null) {
                 foreach ($persone as $key => $result) {
-                    $nuovo = array();
+                    $nuovo = array ();
                     for ($i = 0; $i < count($array); $i ++)
                         $nuovo[$i] = $array[$i];
                     for ($i = 0; $i < count($array); $i ++)
@@ -196,7 +180,7 @@ else if (isset($random)) {
                     $iscrizioni = io($iscritti, $result["id"], 0);
                     foreach ($iscrizioni as $iscrizione) {
                         $corsor = ricerca($corsi, $iscrizione);
-                        if ($corsor != - 1) {
+                        if ($corsor != -1) {
                             $when = explode(",", $corsi[$corsor]["quando"]);
                             for ($i = 0; $i < count($when); $i ++) {
                                 for ($j = 0; $j < count($nuovo); $j ++) {
@@ -207,58 +191,42 @@ else if (isset($random)) {
                     }
                     sort($interno);
                     // print_r($interno);
-                    if (! isset($interno[0]) || $interno[0] == null) {
+                    if (!isset($interno[0]) || $interno[0] == null) {
                         unset($persone[$key]);
                         echo "asasassas";
                     }
                 }
             }
             $i = 0;
-            while (! pieno($options["database"], $corso["id"]) && $i < count($persone)) {
-                if (isset($persone[$i]) && ! occupato($options["database"], $corso["id"], $persone[$i]["id"]) && scuolagiusta($options["database"], $corso["id"], $persone[$i]["id"])) {
+            while (!pieno($options["database"], $corso["id"]) && $i < count($persone)) {
+                if (isset($persone[$i]) && !occupato($options["database"], $corso["id"], $persone[$i]["id"]) &&
+                         scuolagiusta($options["database"], $corso["id"], $persone[$i]["id"])) {
                     // echo $persone[$i]["nome"] . " " . $corso["id"] . "<br>";
-                    $options["database"]->update("persone", array(
-                        "random" => 1
-                    ), array(
-                        "id" => $persone[$i]["id"]
-                    ));
-                    $options["database"]->insert("iscrizioni", array(
-                        "persona" => $persone[$i]["id"],
-                        "corso" => $corso["id"],
-                        "stato" => 0
-                    ));
+                    $options["database"]->update("persone", array ("random" => 1), 
+                            array ("id" => $persone[$i]["id"]));
+                    $options["database"]->insert("iscrizioni", 
+                            array ("persona" => $persone[$i]["id"], "corso" => $corso["id"], "stato" => 0));
                 }
                 $i ++;
             }
         }
     }
-    $options["database"]->update("autogestioni", array(
-        "random" => 1
-    ), array(
-        "id" => $options["database"]->max("autogestioni", "id")
-    ));
+    $options["database"]->update("autogestioni", array ("random" => 1), 
+            array ("id" => $options["database"]->max("autogestioni", "id")));
 }
 else if (isset($newsletter)) {
     set_time_limit(60 * 50);
-    $corsi = $options["database"]->select("corsi", "*", array(
-        "AND" => array(
-            "autogestione" => $options["database"]->max("autogestioni", "id"),
-            "quando[!]" => null,
-            "stato" => 0
-        ),
-        "ORDER" => "id"
-    ));
-    $iscritti = $options["database"]->select("iscrizioni", "*", array(
-        "ORDER" => "corso"
-    ));
-    $studenti = $options["database"]->select("studenti", "*", array(
-        "id" => $options["database"]->max("studenti", "id"),
-        "ORDER" => "persona"
-    ));
+    $corsi = $options["database"]->select("corsi", "*", 
+            array (
+                "AND" => array ("autogestione" => $options["database"]->max("autogestioni", "id"), "quando[!]" => null, 
+                    "stato" => 0), "ORDER" => "id"));
+    $iscritti = $options["database"]->select("iscrizioni", "*", array ("ORDER" => "corso"));
+    $studenti = $options["database"]->select("studenti", "*", 
+            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
     $results = $options["database"]->select("persone", "*");
     if ($results != null) {
         foreach ($results as $result) {
-            if ($result["email"] != "" && $result["inviata"] == 0 && ricerca($studenti, $result["id"], "persona") != - 1) {
+            if ($result["email"] != "" && $result["inviata"] == 0 && ricerca($studenti, $result["id"], "persona") != -1) {
                 $msg = "<p>Volevamo informarti in relazione alle tue iscrizioni ai corsi dell'autogestione.</p>
 <p>Corsi in cui sei iscritti:</p>";
                 $iscrizioni = io($iscritti, $result["id"], 0);
@@ -266,33 +234,26 @@ else if (isset($newsletter)) {
                     // print_r($iscrizioni);
                     foreach ($iscrizioni as $iscrizione) {
                         $corso = ricerca($corsi, $iscrizione);
-                        if ($corso != - 1) {
-                            $msg .= "<p>" . orario($corsi[$corso]["quando"]) . ": " . $corsi[$corso]["nome"] . ", in " . $corsi[$corso]["aule"] . "</p>";
+                        if ($corso != -1) {
+                            $msg .= "<p>" . orario($corsi[$corso]["quando"]) . ": " . $corsi[$corso]["nome"] . ", in " .
+                                     $corsi[$corso]["aule"] . "</p>";
                             $when = explode(",", $corsi[$corso]["quando"]);
                         }
                     }
                     if ($result["random"] == 1) $msg .= "<p>Attenzione: alcune iscrizioni potrebbero essere cambiate, quindi ricontrollale!!!</p><br><p>&Egrave; possibile che almeno uno dei corsi sia stato assegnato a caso, poich&egrave; non ti eri iscritto personalmente.</p>";
-                    send(decode($result["email"]),$options["sito"], "Riepilogo corsi", $msg, $result["nome"]);
-                    $options["database"]->update("persone", array(
-                        "inviata" => 1
-                    ), array(
-                        "id" => $result["id"]
-                    ));
+                    send(decode($result["email"]), $options["sito"], "Riepilogo corsi", $msg, $result["nome"]);
+                    $options["database"]->update("persone", array ("inviata" => 1), 
+                            array ("id" => $result["id"]));
                 }
             }
         }
     }
-    $options["database"]->update("autogestioni", array(
-        "newsletter" => 1
-    ), array(
-        "id" => $options["database"]->max("autogestioni", "id")
-    ));
+    $options["database"]->update("autogestioni", array ("newsletter" => 1), 
+            array ("id" => $options["database"]->max("autogestioni", "id")));
 }
 else {
     if (isset($delete) && $delete == "yes") {
-        $options["database"]->delete("autogestioni", array(
-            "id" => $id
-        ));
+        $options["database"]->delete("autogestioni", array ("id" => $id));
     }
     $datatable = true;
     $pageTitle = "Autogestioni";
@@ -300,7 +261,8 @@ else {
     if (isset($id)) echo '
                 <p class="text-center text-red"><strong>Eliminare il autogestione?</strong></p>
                 <div class="col-xs-6 text-center">
-                    <a href="' . $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina autogestione</a>
+                    <a href="' .
+             $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina autogestione</a>
                 </div>
                 <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                 <div class="col-xs-6 text-center">
@@ -311,7 +273,8 @@ else {
             <div class="jumbotron indigo">
                 <div class="container text-center">
                     <h1><i class="fa fa-trophy"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'autogestione" class="btn btn-success">Nuova autogestione</a>
+                    <a href="' .
+             $options["root"] . 'autogestione" class="btn btn-success">Nuova autogestione</a>
                 </div>
             </div>
             <div class="jumbotron">
@@ -340,9 +303,11 @@ else {
                                 <td>' . $result["proposte"] . '</td>';
             if (strtotime($result["ultima"]) < strtotime("now")) {
                 if ($result["random"] == 0) echo '
-                                <td><a href="' . $options["root"] . 'random" class="btn btn-warning">Assegnazione casuale</a></td>';
+                                <td><a href="' .
+                         $options["root"] . 'random" class="btn btn-warning">Assegnazione casuale</a></td>';
                 else if ($result["newsletter"] == 0) echo '
-                                <td><a href="' . $options["root"] . 'newsletter" class="btn btn-warning">Email informativa per l\'iscrizione</a></td>';
+                                <td><a href="' .
+                         $options["root"] . 'newsletter" class="btn btn-warning">Email informativa per l\'iscrizione</a></td>';
                 else echo '
                                 <td>Opzioni non pi&ugrave; disponibili</td>';
             }

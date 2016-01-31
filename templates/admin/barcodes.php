@@ -10,6 +10,7 @@ if (isset($download)) {
     $width = 2; // barcode height in 1D ; not use in 2D
     $angle = 0; // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
     
+
     $code = '123456789012'; // barcode, of course ;)
     $type = 'ean13';
     
@@ -34,24 +35,18 @@ if (isset($download)) {
     $text = fopen("barcode.txt", "w+");
     fclose($text);
     file_put_contents("barcode.txt", "", LOCK_EX);
-    $eans = $options["database"]->select("ean", "*", array(
-        "ORDER" => "persona"
-    ));
-    $classi = $options["database"]->select("classi", "*", array(
-        "ORDER" => "id"
-    ));
-    $studenti = $options["database"]->select("studenti", "*", array(
-        "id" => $options["database"]->max("studenti", "id"),
-        "ORDER" => "persona"
-    ));
+    $eans = $options["database"]->select("ean", "*", array ("ORDER" => "persona"));
+    $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
+    $studenti = $options["database"]->select("studenti", "*", 
+            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
     $results = $options["database"]->select("persone", "*");
     if ($results != null) {
         foreach ($results as $result) {
             $studente = ricerca($studenti, $result["id"], "persona");
-            if ($studente != - 1) {
+            if ($studente != -1) {
                 $classe = "";
                 $class = ricerca($classi, $studenti[$studente]["classe"]);
-                if ($class != - 1) {
+                if ($class != -1) {
                     $classe = $classi[$class]["nome"];
                 }
                 $tot = explode(" ", $result["nome"]);
@@ -61,9 +56,8 @@ if (isset($download)) {
                     if ($i == 0) $nome .= ";";
                     else if ($i != count($tot) - 1) $nome .= " ";
                 }
-                $data = Barcode::gd($im, $black, $x, $y, $angle, $type, array(
-                    'code' => $eans[ricerca($eans, $result["id"], "persona")]["ean"]
-                ), $width, $height);
+                $data = Barcode::gd($im, $black, $x, $y, $angle, $type, 
+                        array ('code' => $eans[ricerca($eans, $result["id"], "persona")]["ean"]), $width, $height);
                 file_put_contents("barcode.txt", $data['hri'] . ";" . $nome . ";" . $classe . "\n", FILE_APPEND | LOCK_EX);
             }
         }
@@ -76,7 +70,6 @@ else {
     // USEFUL
     // -------------------------------------------------- //
     class eFPDF extends FPDF {
-
         function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle = 0) {
             $font_angle += 90 + $txt_angle;
             $txt_angle *= M_PI / 180;
@@ -87,7 +80,8 @@ else {
             $font_dx = cos($font_angle);
             $font_dy = sin($font_angle);
             
-            $s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET', $txt_dx, $txt_dy, $font_dx, $font_dy, $x * $this->k, ($this->h - $y) * $this->k, $this->_escape($txt));
+            $s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET', $txt_dx, $txt_dy, $font_dx, $font_dy, $x * $this->k, 
+                    ($this->h - $y) * $this->k, $this->_escape($txt));
             if ($this->ColorFlag) $s = 'q ' . $this->TextColor . ' ' . $s . ' Q';
             $this->_out($s);
         }
@@ -97,6 +91,7 @@ else {
     // PROPERTIES
     // -------------------------------------------------- //
     
+
     $fontSize = 10;
     $marge = 10; // between barcode and hri in pixel
     $x = 150; // barcode center
@@ -105,13 +100,16 @@ else {
     $width = 2; // barcode height in 1D ; not use in 2D
     $angle = 0; // rotation in degrees
     
+
     $type = 'ean13';
     $black = '000000'; // color in hexa
-                       
-    // -------------------------------------------------- //
-                       // ALLOCATE FPDF RESSOURCE
-                       // -------------------------------------------------- //
     
+
+    // -------------------------------------------------- //
+    // ALLOCATE FPDF RESSOURCE
+    // -------------------------------------------------- //
+    
+
     $pdf = new eFPDF('P', 'pt');
     $pdf->AddPage();
     
@@ -120,22 +118,11 @@ else {
     // -------------------------------------------------- //
     // BARCODE
     // -------------------------------------------------- //
-    $eans = $options["database"]->select("ean", "*", array(
-        "ORDER" => "persona"
-    ));
-    $persone = $options["database"]->select("persone", array(
-        "id",
-        "nome",
-        "username",
-        "password",
-        "stato"
-    ), array(
-        "ORDER" => "id"
-    ));
-    $studenti = $options["database"]->select("studenti", "*", array(
-        "id" => $options["database"]->max("studenti", "id"),
-        "ORDER" => "persona"
-    ));
+    $eans = $options["database"]->select("ean", "*", array ("ORDER" => "persona"));
+    $persone = $options["database"]->select("persone", 
+            array ("id", "nome", "username", "password", "stato"), array ("ORDER" => "id"));
+    $studenti = $options["database"]->select("studenti", "*", 
+            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
     $datas = $options["database"]->select("classi", "*");
     if ($datas != null) {
         foreach ($datas as $data) {
@@ -146,16 +133,15 @@ else {
             foreach ($studenti as $key => $studente) {
                 if ($studente["classe"] == $data["id"]) {
                     $persona = ricerca($persone, $studente["persona"]);
-                    if ($persona != - 1) {
+                    if ($persona != -1) {
                         $ean = ricerca($eans, $studente["persona"], "persona");
-                        if ($ean != - 1) {
+                        if ($ean != -1) {
                             $code = $eans[ricerca($eans, $studente["persona"], "persona")]["ean"]; // barcode, of course ;)
-                            $result = Barcode::fpdf($pdf, $black, $x, $y, $angle, $type, array(
-                                'code' => $code
-                            ), $width, $height);
+                            $result = Barcode::fpdf($pdf, $black, $x, $y, $angle, $type, 
+                                    array ('code' => $code), $width, $height);
                             
                             $len = $pdf->GetStringWidth($result['hri']);
-                            Barcode::rotate(- $len / 2, ($result['height'] / 2) + $fontSize + $marge, $angle, $xt, $yt);
+                            Barcode::rotate(-$len / 2, ($result['height'] / 2) + $fontSize + $marge, $angle, $xt, $yt);
                             $nome = $persone[$persona]["nome"];
                             $pdf->TextWithRotation($x + $xt - (strlen($nome) + (strlen($nome) / 2)), $y + $yt, $nome, $angle);
                             if ($pdf->h > $y + 100) $y += 100;
@@ -213,6 +199,7 @@ else {
     // HRI
     // -------------------------------------------------- //
     
+
     $pdf->Output();
 }
 ?>

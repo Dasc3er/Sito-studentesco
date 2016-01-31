@@ -21,14 +21,9 @@ echo '
                             </tr>
                         </thead>
                         <tbody>';
-$corsi = $options["database"]->select("corsi", "*", array(
-    "AND" => array(
-        "quando[!]" => null,
-        "stato" => 0
-    ),
-    "ORDER" => "id"
-));
-$array = array();
+$corsi = $options["database"]->select("corsi", "*", 
+        array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
+$array = array ();
 if ($corsi != null) {
     foreach ($corsi as $data) {
         $when = explode(",", $data["quando"]);
@@ -41,24 +36,15 @@ if ($corsi != null) {
         }
     }
 }
-$scuole = $options["database"]->select("scuole", "*", array(
-    "ORDER" => "id"
-));
-$classi = $options["database"]->select("classi", "*", array(
-    "ORDER" => "id"
-));
-$studenti = $options["database"]->select("studenti", "*", array(
-    "id" => $options["database"]->max("studenti", "id"),
-    "ORDER" => "persona"
-));
-$iscritti = $options["database"]->select("iscrizioni", "*", array(
-    "stato" => 0,
-    "ORDER" => "corso"
-));
+$scuole = $options["database"]->select("scuole", "*", array ("ORDER" => "id"));
+$classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
+$studenti = $options["database"]->select("studenti", "*", 
+        array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
+$iscritti = $options["database"]->select("iscrizioni", "*", array ("stato" => 0, "ORDER" => "corso"));
 $results = $options["database"]->select("persone", "*");
 if ($results != null) {
     foreach ($results as $result) {
-        $nuovo = array();
+        $nuovo = array ();
         for ($i = 0; $i < count($array); $i ++)
             $nuovo[$i] = $array[$i];
         for ($i = 0; $i < count($array); $i ++)
@@ -66,7 +52,7 @@ if ($results != null) {
         $iscrizioni = io($iscritti, $result["id"], 0);
         foreach ($iscrizioni as $iscrizione) {
             $corso = ricerca($corsi, $iscrizione);
-            if ($corso != - 1) {
+            if ($corso != -1) {
                 $when = explode(",", $corsi[$corso]["quando"]);
                 for ($i = 0; $i < count($when); $i ++) {
                     for ($j = 0; $j < count($nuovo); $j ++) {
@@ -76,16 +62,16 @@ if ($results != null) {
             }
         }
         sort($interno);
-        if (isset($interno[0]) && $interno[0] != null && ! (count($interno) == 1 && $interno[0] == "5")) {
+        if (isset($interno[0]) && $interno[0] != null && !(count($interno) == 1 && $interno[0] == "5")) {
             $studente = ricerca($studenti, $result["id"], "persona");
-            if ($studente != - 1) {
+            if ($studente != -1) {
                 echo '
                             <tr>
                                 <td>' . $result["nome"] . '</td>';
                 $classe = "";
                 $scuola = "";
                 $class = ricerca($classi, $studenti[$studente]["classe"]);
-                if ($class != - 1) {
+                if ($class != -1) {
                     $classe = $classi[$class]["nome"];
                     $scuola = $scuole[ricerca($scuole, $classi[$class]["scuola"])]["nome"];
                 }

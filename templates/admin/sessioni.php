@@ -3,9 +3,7 @@ if (isset($reset)) $options["database"]->query("TRUNCATE TABLE sessioni");
 $datatable = true;
 $pageTitle = "Visite al sito";
 require_once 'templates/shared/header.php';
-$results = $options["database"]->select("sessioni", "*", array(
-    "ORDER" => "data DESC"
-));
+$results = $options["database"]->select("sessioni", "*", array ("ORDER" => "data DESC"));
 echo '
         <div class="jumbotron indigo">
                 <div class="container text-center">
@@ -37,8 +35,11 @@ if ($results != null) {
 echo '
                         </tbody>
             	    </table>
-                    <p>Visite al sito: ' . $options["database"]->count("sessioni", "*") . '</p>
-                    <p><a href="' . $options["root"] . 'reset/sessioni" class="btn btn-danger">Azzera il registro delle sessioni</a></p>
+                    <p>Visite al sito: ' .
+         $options["database"]->count("sessioni", "*") .
+         '</p>
+                    <p><a href="' .
+         $options["root"] . 'reset/sessioni" class="btn btn-danger">Azzera il registro delle sessioni</a></p>
                 </div>
             </div>';
 require_once 'templates/shared/footer.php';

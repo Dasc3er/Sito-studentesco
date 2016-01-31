@@ -2,7 +2,7 @@
 if (isset($guida)) $pageTitle = "Guida rapida";
 else $pageTitle = "Home";
 require_once 'shared/header.php';
-if (isset($options["debug"])) echo '
+if ($options["debug"]) echo '
             <div class="jumbotron yellow">
                 <div class="container">
                     <h2>Attenzione: sito in manutenzione!</h2>
@@ -32,9 +32,13 @@ if (isset($guida)) {
                         <p><strong>Orario: <span id="orario">Primo turno</span> <span class="text-red"><- Orario</span></strong></p>
                         <p>Aule: Laboratorio di informatica calcolo 1 <span class="text-red"><- Aula del corso</span></p>
                         <div class="level">
-                            <strong class="level-title">Iscritti <span class="text-red"><- Numero di iscritti</span><span class="text-green pull-right"><span id="number">' . 7 . '</span>/<span id="max">24</span></span></strong>
+                            <strong class="level-title">Iscritti <span class="text-red"><- Numero di iscritti</span><span class="text-green pull-right"><span id="number">' .
+                 7 .
+                 '</span>/<span id="max">24</span></span></strong>
                             <div class="progress">
-                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="' . 7 * 100 / 24 . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . 7 * 100 / 24 . '%"></div>
+                                <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="' .
+                 7 * 100 / 24 . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . 7 * 100 / 24 .
+                 '%"></div>
                             </div>
                         </div>
                         <span class="text-red">Descrizione:</span>
@@ -130,10 +134,11 @@ if (isset($guida)) {
                     <h1>Ultime informazioni...</h1>
                     <p>Per semplificare il controllo di presenza ai tornei sar&agrave; fornito un codice a barre univoco da presentare.</p>
                     <p>La presenza sar&agrave; controllata da un collaboratore dei Rappresentanti d\'Istituto in tutti i corsi. In caso di assenza non giustificata saranno presi provvedimenti.</p>';
-        if (isUserAutenticate() && ! $options["first"]) echo '
+        if (isUserAutenticate() && !$options["first"]) echo '
                     <a href="' . $options["root"] . 'corsi" class="btn btn-success">Visualizza i corsi!</a>';
         else if (isUserAutenticate() && $options["first"]) echo '
-                    <a href="' . $options["root"] . 'modifica" class="btn btn-warning">Prima di poter iscriverti, devi cambiare le credenziali!!!</a>';
+                    <a href="' . $options["root"] .
+                 'modifica" class="btn btn-warning">Prima di poter iscriverti, devi cambiare le credenziali!!!</a>';
         echo '
                 </div>
             </div>';
@@ -145,8 +150,9 @@ else {
                 <div class="container text-center">
                     <h1><i class="fa fa-graduation-cap"></i> IIS Euganeo</h1>
                     <p>Benvenuti nel sito organizzativo delle assemblee d\'Istituto e dei corsi pomeridiani di recupero ad opera degli studenti stessi.</p>';
-    if (! isUserAutenticate()) echo '
-                    <a href="' . $options["root"] . 'login" class="btn btn-block btn-primary">Accedi ora</a>';
+    if (!isUserAutenticate()) echo '
+                    <a href="' . $options["root"] .
+             'login" class="btn btn-block btn-primary">Accedi ora</a>';
     else if (isUserAutenticate() && $options["first"]) echo '
                     <strong>Per motivi di sicurezza &egrave; necessario modificare password ed username; dopo questa rapida operazione ti sar&agrave; possibile proseguire normalmente.</strong>
                     <a href="' . $options["root"] . 'modifica" class="btn btn-block btn-primary">Modifica credenziali</a>';
@@ -159,10 +165,7 @@ else {
             <hr>
             <div class="container">
                 <h1 class="text-center"><i class="fa fa-newspaper-o fa-2x"></i> Notizie</h1>';
-    $news = $options["database"]->select("news", "*", array(
-        "ORDER" => "id DESC",
-        "LIMIT" => 5
-    ));
+    $news = $options["database"]->select("news", "*", array ("ORDER" => "id DESC", "LIMIT" => 5));
     if ($news != null) {
         $cont = 0;
         echo '
@@ -204,17 +207,8 @@ else {
     echo '
             <hr>';
     if (isUserAutenticate()) {
-        $results = $options["database"]->select("citazioni", "*", array(
-            "stato" => "0",
-            "LIMIT" => 4,
-            "ORDER" => "id DESC"
-        ));
-        $profs = $options["database"]->select("profs", array(
-            "id",
-            "nome"
-        ), array(
-            "ORDER" => "id"
-        ));
+        $results = $options["database"]->select("citazioni", "*", array ("stato" => "0", "LIMIT" => 4, "ORDER" => "id DESC"));
+        $profs = $options["database"]->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
         echo '
             <div class="jumbotron">
                 <div class="container">
@@ -228,7 +222,7 @@ else {
                                 <p>' . stripcslashes($result["descrizione"]) . '</p>
                                 <footer>';
                 $prof = ricerca($profs, $result["prof"]);
-                if ($prof != - 1) echo $profs[$prof]["nome"];
+                if ($prof != -1) echo $profs[$prof]["nome"];
                 echo '</footer>
                             </blockquote>
                         </div>';
@@ -240,7 +234,7 @@ else {
                 </div>
             </div>
             <hr>';
-        if (! $options["first"] && $options["autogestione"] != null) {
+        if (!$options["first"] && $options["autogestione"] != null) {
             echo '
             <div class="container">
                 <div class="col-xs-12 col-sm-6">
@@ -277,9 +271,9 @@ else {
                         <div class="panel-heading"><i class="fa fa-wrench fa-2x"></i></div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="' . $options["root"] . 'credenziali" target="_blank">Credenziali <span class="badge">' . $options["database"]->count("persone", array(
-                "stato" => 0
-            )) . '</span></a></li>
+                                <li><a href="' . $options["root"] .
+                     'credenziali" target="_blank">Credenziali <span class="badge">' . $options["database"]->count("persone", 
+                            array ("stato" => 0)) . '</span></a></li>
                                 <li><a href="' . $options["root"] . 'liberi">Studenti liberi</a></li>
                                 <li><a href="' . $options["root"] . 'notizie">Notizie</a></li>
                                 <li><a href="' . $options["root"] . 'autogestioni">Autogestioni</a></li>
@@ -307,7 +301,7 @@ else {
     }
     echo '
             </div>
-            <div class="jumbotron yellow">
+            <div class="jumbotron green">
                 <div class="container text-center">
                     <h2><i class="fa fa-code"></i> Framework</h2>
                     <ul class="links">
@@ -319,9 +313,10 @@ else {
                         <li>Plugin JQuery <a href="https://github.com/jedfoster/Readmore.js">Readmore.js</a>.</li>
                         <li>Plugin JQuery <a href="https://github.com/peachananr/let_it_snow">Let it Snow</a>.</li>
                         <li>Plugin JQuery <a href="https://github.com/danpalmer/jquery.complexify.js">Complexify</a>.</li>
-                        <li>Libreria PHP <a href="https://github.com/ircmaxell/password_compat.">password_compat</a></li>
+                        <li>Libreria PHP <a href="https://github.com/ircmaxell/password_compat">password_compat</a></li>
                         <li>Framework PHP <a href="http://medoo.in/">Medoo</a>.</li>
                         <li>Framework CSS e JS <a href="http://www.tinymce.com/">TinyMCE</a>.</li>
+                        <li>Libreria PHP <a href="http://www.fpdf.org/">FPDF</a></li>
                     </ul>
                 </div>
             </div>

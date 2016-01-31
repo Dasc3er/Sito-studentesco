@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/parameters.php';
-require __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/vendor/setasign/fpdf/fpdf.php';
+require_once __DIR__ . '/vendor/ircmaxell/password-compat/lib/password.php';
 
 // Impostazioni
 // Accesso di default al database
@@ -14,16 +16,9 @@ require __DIR__ . '/vendor/autoload.php';
 
 // Accesso alla tabella del progetto
 require_once __DIR__ . '/templates/shared/default.php';
-$options = array(
-    "path" => $indirizzo . "/templates/",
-    "root" => $indirizzo . "/",
-    "snow" => false,
-    "email" => "email@gmail.com",
-    "sito" => "Sito studentesco",
-    "time" => false,
-    "database" => database($username, $password, $tipo, $tabella),
-    "debug" => false
-);
+$options = array ("path" => $indirizzo . "/templates/", "root" => $indirizzo . "/", "snow" => false, "email" => "email@gmail.com", 
+    "sito" => "Sito studentesco", "time" => false, "database" => database($username, $password, $tipo, $tabella), "debug" => false, 
+    "cookie-policy" => true);
 if (isUserAutenticate()) {
     $options["user"] = id($options["database"]);
     $options["first"] = first($options["database"], $options["user"]);
@@ -94,9 +89,11 @@ unset($password);
  * }
  */
 
-if (! isset($_SESSION['counter'])) {
+if (!isset($_SESSION['counter'])) {
     $datenow = date("Y-m-d H:i:s");
-    $options["database"]->query("INSERT INTO sessioni (tipo_browser, indirizzo, data) VALUES ('" . getenv('HTTP_USER_AGENT') . "', '" . getenv('REMOTE_ADDR') . "', '$datenow')");
+    $options["database"]->query(
+            "INSERT INTO sessioni (tipo_browser, indirizzo, data) VALUES ('" . getenv('HTTP_USER_AGENT') . "', '" .
+                     getenv('REMOTE_ADDR') . "', '$datenow')");
     $_SESSION['counter'] = "ok";
 }
 ?>

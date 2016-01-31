@@ -3,12 +3,8 @@ if (isset($_POST['txtEditor'])) {
     $msg = "";
     $msg .= "Informazioni tecniche: " . getenv('HTTP_USER_AGENT') . "<br><br>";
     if (isUserAutenticate()) {
-        $persone = $options["database"]->select("persone", array(
-            "nome",
-            "email"
-        ), array(
-            "id" => $options["user"]
-        ));
+        $persone = $options["database"]->select("persone", array ("nome", "email"), 
+                array ("id" => $options["user"]));
         if ($persone != null) {
             foreach ($persone as $persona)
                 $msg .= "Messaggio da parte di " . $persona["nome"] . " (entrato)<br>Email: " . decode($persona["email"]) . "<br>";
@@ -40,7 +36,7 @@ else {
             <hr>
             <div class="container">
                 <form action="" method="post" class="form-horizontal" role="form">';
-    if (! isUserAutenticate() || $options["first"]) {
+    if (!isUserAutenticate() || $options["first"]) {
         echo '
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Nome e cognome</label>

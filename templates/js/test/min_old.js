@@ -508,10 +508,10 @@ $(document).ready(function() {
         var button = $(this);
         button.html('<i class="fa fa-circle-o-notch fa-spin"></i>');
         $.ajax({
-            method: "GET",
-            url: indirizzo + "/utenti/reset/"+button.parent().find("#value").text(),
+            method: "POST",
+            url: indirizzo + "/templates/ajax/reset.php",
             data: {
-                ajax:true
+                id: button.parent().find("#value").text()
             }
         }).done(function(msg) {
             button.parent().html(msg);
@@ -525,10 +525,11 @@ $(document).ready(function() {
         button.removeClass("btn-danger");
         button.addClass("btn-info");
         $.ajax({
-            method: "GET",
-            url: indirizzo + "presente/"+button.parent().find("#persona").text()+"/"+$("#value").text(),
+            method: "POST",
+            url: indirizzo + "/templates/ajax/presente.php",
             data: {
-                ajax:true
+                id: button.parent().find("#persona").text(),
+                corso: $("#value").text()
             }
         }).done(function(msg) {
             if (msg == 1) {
@@ -551,15 +552,12 @@ $(document).ready(function() {
         var parent = $(this).parent().parent().parent();
         button.find("#text").html('<i class="fa fa-circle-o-notch fa-spin"></i>');
         button.removeClass("btn-success").removeClass("btn-danger").addClass("btn-info disabled");
-        var link = indirizzo + "/";
-        if($("#page").text().toLowerCase() == "proposte") link += "proposte";
-        else if($("#page").text().toLowerCase() == "citazioni") link += "citazioni";
-        link += "/"+parent.find("#value").text();
         $.ajax({
-            method: "GET",
-            url: link,
+            method: "POST",
+            url: indirizzo + "/templates/ajax/like.php",
             data: {
-                ajax:true
+                id: parent.find("#value").text(),
+                page: $("#page").text()
             }
         }).done(function(msg) {
             if (msg == 1) {
@@ -603,19 +601,14 @@ $(document).ready(function() {
         var parent = $(this).parent().parent().parent().parent().parent();
         var orario = parent.find("#orario").text().toLowerCase();
         button.removeClass("btn-success").removeClass("btn-danger").addClass("btn-info disabled").html('<i class="fa fa-circle-o-notch fa-spin"></i>');
-        var link = indirizzo + "/";
-        if($("#page").text().toLowerCase() == "corsi") link += "corsi";
-        else if($("#page").text().toLowerCase() == "aula") link += "aule";
-        link += "/"+parent.find("#value").text();
-        alert(link);
         $.ajax({
-            method: "GET",
-            url: link,
+            method: "POST",
+            url: indirizzo + "/templates/ajax/iscriviti.php",
             data: {
-                ajax:true
+                id: parent.find("#value").text(),
+                page: $("#page").text()
             }
         }).done(function(msg) {
-            alert(msg);
             var row;
             if (msg == 1) {
                 if (orario && $("#page").text().toLowerCase() == "corsi") {
@@ -685,17 +678,12 @@ $(document).ready(function() {
         var parent = $(this).parent().parent().parent().parent().parent();
         var orario = parent.find("#orario").text().toLowerCase();
         button.removeClass("btn-success").removeClass("btn-warning").addClass("btn-info disabled").html('<i class="fa fa-circle-o-notch fa-spin"></i>');
-        var link = indirizzo + "/";
-        if($("#page").text().toLowerCase() == "corsi") link += "stato";
-        else if($("#page").text().toLowerCase() == "proposte") link += "accettare";
-        else if($("#page").text().toLowerCase() == "aula") link += "accetta";
-        else if($("#page").text().toLowerCase() == "citazioni") link += "cit";
-        link += "/"+parent.find("#value").text();
         $.ajax({
-            method: "GET",
-            url: link,
+            method: "POST",
+            url: indirizzo + "/templates/ajax/stato.php",
             data: {
-                ajax:true
+                id: parent.find("#value").text(),
+                page: $("#page").text()
             }
         }).done(function(msg) {
             var row;
@@ -767,20 +755,7 @@ $(document).ready(function() {
 
     $(document).on('tap', '#cambia', function() {
         var button = $(this);
-        var parent = button.parent().parent().parent().parent().parent();
         button.html('<i class="fa fa-circle-o-notch fa-spin"></i>').addClass("disabled");
-        var link = indirizzo + "/";
-        if($("#page").text().toLowerCase() == "proposte") link += "blocca";
-        else if($("#page").text().toLowerCase() == "aula") link += "sospendi";
-        else if($("#page").text().toLowerCase() == "citazioni") link += "cambia";
-        link += "/"+parent.find("#value").text();
-        $.ajax({
-            method: "GET",
-            url: link,
-            data: {
-                ajax:true
-            }
-        })
         $.ajax({
             method: "POST",
             url: indirizzo + "/templates/ajax/cambia.php",
@@ -789,6 +764,7 @@ $(document).ready(function() {
                 page: $("#page").text()
             }
         }).done(function(msg) {
+            var parent = button.parent().parent().parent().parent().parent();
             var row = switch_row(parent, to, blocked);
             $(row).find("#cambia").parent().remove();
             $("#change").text(parseInt($("#change").text()) - 1);
