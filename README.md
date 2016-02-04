@@ -56,6 +56,9 @@ Importando il database di test (`database.sql`), verrà creato in automatico il 
  * Dieci corsi e dieci proposte per scuola
  * Una decina di citazioni, di professori creati casualmente
 
+Attenzione: importare il database cancellerà i contenuti del database già presente nel sever locale con lo stesso nome.
+Per un'altra versione fare richiesta.
+
 ## Sicurezza
 Non si assicura nessun tipo di protezione automatica.
 Le impostazioni di protezione dei dati archiviati devono essere garantite al momento dell'implementazione del sito, tramire l'adattamento dele seguenti funzioni:

@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $pageTitle = "Studenti liberi";
 $datatable = true;
 require_once 'templates/shared/header.php';
@@ -21,8 +22,7 @@ echo '
                             </tr>
                         </thead>
                         <tbody>';
-$corsi = $options["database"]->select("corsi", "*", 
-        array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
+$corsi = $options["database"]->select("corsi", "*", array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
 $array = array ();
 if ($corsi != null) {
     foreach ($corsi as $data) {

@@ -8,7 +8,7 @@ echo '
                 <p>Rappresentanti di Istituto che hanno promosso il progetto: Marco Barbin, Cristian Bussolin, Paolo Giacomin, Victor Matvei</p>
                 <ul class="links">
                     <li>Link utili:</li>
-                    <li><a href="https://github.com/Dasc3er/Sito-studentesco" target="_blank"><i class="fa fa-github"></i> GitHub</a></li>
+                    <li><a href="https://github.com/dasc3er/sito-studentesco" target="_blank"><i class="fa fa-github"></i> GitHub</a></li>
                 </ul>
             </div>
         </footer>
@@ -39,9 +39,12 @@ if (isset($readmore) && $readmore) echo '
             });
         </script>';
 if (isset($datatable) && $datatable) echo '
-        <script src="' . $options["root"] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
-        <script src="' . $options["root"] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
-        <script async src="' . $options["path"] . 'js/minified.js" type="text/javascript"></script>';
+        <script src="' .
+         $options["root"] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
+        <script src="' .
+         $options["root"] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
+        <script async src="' . $options["path"] .
+         'js/minified.js" type="text/javascript"></script>';
 if (isset($complexify) && $complexify) echo '
         <script src="' . $options["path"] . 'js/jquery.complexify.min.js" type="text/javascript"></script>
         <script>
@@ -82,7 +85,8 @@ if (isset($style) && $style) echo '
                     $(\'<link id="css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">\').prependTo("#font");
                 }
                 else {
-                    $(\'<link id="css" href="' . $options["root"] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
+                    $(\'<link id="css" href="' .
+         $options["root"] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
                 }
             });
         </script>';

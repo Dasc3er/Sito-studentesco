@@ -1,6 +1,7 @@
 <?php
-if (isset($cambia)) {
-    $options["database"]->update("citazioni", array ("da" => $options["user"]), array ("id" => $cambia));
+if (!isset($options)) require_once 'utility.php';
+if (isset($rifiuta)) {
+    $options["database"]->update("citazioni", array ("da" => $options["user"]), array ("id" => $rifiuta));
     salva();
     echo 1;
 }
@@ -247,7 +248,7 @@ else if (isset($citazione)) {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cit/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -318,11 +319,11 @@ else if (isset($citazione)) {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cit/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                                 <li><a ';
                         if (modo()) echo 'id="cambia"';
-                        else echo 'href="' . $options["root"] . 'cambia/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'rifiuta/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-info"><i class="fa fa-arrow-right"></i> Boccia</a></li>
                                             </ul>
                                         </section>
@@ -373,7 +374,7 @@ else if (isset($citazione)) {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cit/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                             </ul>
                                         </section>

@@ -1,10 +1,10 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 if (isset($_POST['txtEditor'])) {
     $msg = "";
     $msg .= "Informazioni tecniche: " . getenv('HTTP_USER_AGENT') . "<br><br>";
     if (isUserAutenticate()) {
-        $persone = $options["database"]->select("persone", array ("nome", "email"), 
-                array ("id" => $options["user"]));
+        $persone = $options["database"]->select("persone", array ("nome", "email"), array ("id" => $options["user"]));
         if ($persone != null) {
             foreach ($persone as $persona)
                 $msg .= "Messaggio da parte di " . $persona["nome"] . " (entrato)<br>Email: " . decode($persona["email"]) . "<br>";

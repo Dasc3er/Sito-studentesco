@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 /* ATTENZIONE: problema di omonimi per aggiornamento!!!!!!!!! */
 if (!empty($_FILES)) {
     if (file_exists("text.txt")) unlink("text.txt");
@@ -18,17 +19,14 @@ if (!empty($_FILES)) {
             if ($school == 1) {
                 if ($options["database"]->count("scuole", array ("nome" => trim($data))) == 0) $scuola = $options["database"]->insert(
                         "scuole", array ("nome" => trim($data)));
-                else $scuola = $options["database"]->get("scuole", "id", 
-                        array ("nome" => trim($data)));
+                else $scuola = $options["database"]->get("scuole", "id", array ("nome" => trim($data)));
                 $school = 0;
             }
             else {
                 $content = explode(";", $data);
                 if ($options["database"]->count("classi", 
-                        array (
-                            "AND" => array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))))) == 0) $classe = $options["database"]->insert(
-                        "classi", 
-                        array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))));
+                        array ("AND" => array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))))) == 0) $classe = $options["database"]->insert(
+                        "classi", array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))));
                 else $classe = $options["database"]->get("classi", "id", 
                         array ("nome" => preg_replace('/\s+/', ' ', trim($content[1]))));
                 $name = ucwords(strtolower(preg_replace('/\s+/', ' ', trim($content[0]))));
@@ -48,23 +46,21 @@ if (!empty($_FILES)) {
                     }
                     $username = mb_strimwidth(str_replace(" ", "", strtolower($name)), 0, 7) .
                              substr(strtolower($name), strlen($name) - $cont);
-                    while ($options["database"]->count("persone", 
-                            array ("username" => $username)) != 0)
+                    while ($options["database"]->count("persone", array ("username" => $username)) != 0)
                         $username .= rand(0, 999);
                     $id = $options["database"]->insert("persone", 
                             array ("nome" => $name, "username" => $username, "password" => $password, "email" => "", "stato" => 0));
                 }
                 else
-                    $id = $options["database"]->get("persone", "id", 
-                            array ("nome" => $name));
-                $options["database"]->insert("studenti", 
-                        array ("id" => $xp, "classe" => $classe, "persona" => $id));
+                    $id = $options["database"]->get("persone", "id", array ("nome" => $name));
+                $options["database"]->insert("studenti", array ("id" => $xp, "classe" => $classe, "persona" => $id));
             }
         }
         else {
             $school = 1;
         }
     }
+    if (file_exists("text.txt")) unlink("text.txt");
 }
 $pageTitle = "Aggiornamento utenti";
 require_once 'templates/shared/header.php';

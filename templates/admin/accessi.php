@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 if (isset($reset)) $options["database"]->query("TRUNCATE TABLE accessi");
 $datatable = true;
 $pageTitle = "Accessi effettuati";
@@ -44,11 +45,8 @@ if ($results != null) {
 echo '
                         </tbody>
             	    </table>
-                    <p>Accessi al sito: ' .
-         $options["database"]->count("accessi", "*") .
-         '</p>
-                    <p><a href="' .
-         $options["root"] . 'reset/accessi" class="btn btn-danger">Azzera il registro degli accessi</a></p>
+                    <p>Accessi al sito: ' . $options["database"]->count("accessi", "*") . '</p>
+                    <p><a href="' . $options["root"] . 'reset/accessi" class="btn btn-danger">Azzera il registro degli accessi</a></p>
                 </div>
             </div>';
 require_once 'templates/shared/footer.php';

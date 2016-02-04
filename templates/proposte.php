@@ -1,7 +1,8 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $tempo = tempoproposte($options["database"]);
-if (isset($cambia) && $tempo && stessauto($options["database"], $options["autogestione"], $cambia)) {
-    $options["database"]->update("corsi", array ("da" => $options["user"]), array ("id" => $cambia));
+if (isset($rifiuta) && $tempo && stessauto($options["database"], $options["autogestione"], $rifiuta)) {
+    $options["database"]->update("corsi", array ("da" => $options["user"]), array ("id" => $rifiuta));
     echo 1;
 }
 if (isset($stato) && $tempo && stessauto($options["database"], $options["autogestione"], $stato)) {
@@ -150,7 +151,7 @@ else {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'accettare/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -221,11 +222,11 @@ else {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'accettare/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                                 <li><a ';
                         if (modo()) echo 'id="cambia"';
-                        else echo 'href="' . $options["root"] . 'blocca/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'rifiuta/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-info"><i class="fa fa-arrow-right"></i> Boccia</a></li>
                                             </ul>';
                     }
@@ -274,7 +275,7 @@ else {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'accettare/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                             </ul>';
                     }

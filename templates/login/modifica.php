@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 if (isset($info)) $pageTitle = "Modifica impostazioni";
 else if (isset($email)) $pageTitle = "Modifica email";
 else $pageTitle = "Modifica credenziali";
@@ -111,8 +112,7 @@ else if (isset($email)) {
         $email = encode($_POST['email']);
         if (isEmailFree($options["database"], $email, $options["user"])) {
             $number = rand(1, 1000000000);
-            $options["database"]->update("persone", 
-                    array ("email" => $email, "verificata" => $number), 
+            $options["database"]->update("persone", array ("email" => $email, "verificata" => $number), 
                     array ("id" => $options["user"]));
             salva();
         }
@@ -164,16 +164,14 @@ else {
         $username = encode(strip_tags($_POST['username']));
         if ($options["first"]) $email = encode($_POST['email']);
         $password = $_POST['Password'];
-        if (isset($rand)) $options["user"] = $options["database"]->get("persone", "id", 
-                array ("stato" => $rand));
+        if (isset($rand)) $options["user"] = $options["database"]->get("persone", "id", array ("stato" => $rand));
         $userFree = isUserFree($options["database"], $username, $options["user"]);
         if ($options["first"]) $emailFree = isEmailFree($options["database"], $email, $options["user"]);
         if ($password != $_POST['RipPassword']) $msg = "Le password devono corrispondere!!!";
         else if ($userFree && (!$options["first"] || $emailFree)) {
             $control = hashpassword($password);
             if (isset($rand)) {
-                $options["database"]->update("persone", 
-                        array ("username" => $username, "password" => $control, "stato" => 1), 
+                $options["database"]->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
                         array ("stato" => $rand));
             }
             else if (isset($options["first"]) && $options["first"]) {
@@ -183,8 +181,7 @@ else {
                             "stato" => 1), array ("id" => $options["user"]));
             }
             else
-                $options["database"]->update("persone", 
-                        array ("username" => $username, "password" => $control, "stato" => 1), 
+                $options["database"]->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
                         array ("id" => $options["user"]));
             $_SESSION["username"] = $username;
             salva();

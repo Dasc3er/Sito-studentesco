@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $datatable = true;
 if (isAdminUserAutenticate() && isset($reset) && !isAdmin($options["database"], $id)) {
     $password = random(5);
@@ -73,16 +74,15 @@ else {
                                     <a class="btn btn-danger" id="reset">Reset credenziali</a>
                                 </td>';
                     else echo '
-                                <td>Username: ' .
-                             $result["username"] . ' - Password: ' . strtolower($result["password"]) . '</td>';
+                                <td>Username: ' . $result["username"] . ' - Password: ' . strtolower($result["password"]) .
+                             '</td>';
                 }
                 else
                     echo '
                                 <td>Amministratore!!!</td>';
             }
             echo '
-                                <td><a class="btn btn-success" href="' .
-                     $options["root"] . 'profilo/' . $result["id"] . '">Profilo</a></td>
+                                <td><a class="btn btn-success" href="' . $options["root"] . 'profilo/' . $result["id"] . '">Profilo</a></td>
                             </tr>';
         }
     }

@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 if (isset($recupero)) $pageTitle = "Recupero credenziali";
 else $pageTitle = "Accedi";
 $wait = true;
@@ -9,19 +10,16 @@ if (isset($recupero)) {
         $email = encode($_POST['email']);
         $number = rand(2, 1000000000);
         if ($options["database"]->count("persone", 
-                array (
-                    "AND" => array ("username" => $username, "email" => $email, "stato" => 1))) != 0) {
+                array ("AND" => array ("username" => $username, "email" => $email, "stato" => 1))) != 0) {
             $options["database"]->update("persone", array ("stato" => $number), 
-                    array (
-                        "AND" => array ("username" => $username, "email" => $email)));
+                    array ("AND" => array ("username" => $username, "email" => $email)));
             send(decode($email), $options["sito"], "Recupero credenziali", 
                     "<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell'autogestione.</p>
                     <p>Clicca sul link seguente o copialo nella barra del browser per completare l'operazione.</p>
-                    <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" .
-                             $number . "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", 
+                    <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" . $number .
+                             "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", 
                             $options["database"]->get("persone", "nome", 
-                                    array (
-                                        "AND" => array ("username" => $username, "email" => $email))));
+                                    array ("AND" => array ("username" => $username, "email" => $email))));
             salva();
         }
     }
@@ -71,8 +69,7 @@ else {
     if (isset($_POST['user']) && isset($_POST['password']) && (!isset($_SESSION["time"]) || $_SESSION["time"] < strtotime("now"))) {
         $username = $_POST['user'];
         $password = $_POST['password'];
-        $results = $options["database"]->select("persone", 
-                array ("username", "password", "stato"), 
+        $results = $options["database"]->select("persone", array ("username", "password", "stato"), 
                 array ("username" => array ($username, encode($username))));
         foreach ($results as $result) {
             if ($result["stato"] == 0 && strtolower($password) == strtolower($result["password"])) $_SESSION['username'] = $result["username"];
@@ -107,8 +104,7 @@ else {
             <div class="jumbotron yellow">
                 <div class="container">
                     <h2>Attenzione!</h2>
-                    <p>Adesso devi attendere ' .
-                 floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
+                    <p>Adesso devi attendere ' . floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
                     <p>Fai pi&ugrave; attenzione la prossima volta!</p>
                 </div>
             </div>
@@ -122,8 +118,7 @@ else {
             <div class="jumbotron blue">
                 <div class="container">
                     <h2>Buona fortuna!</h2>
-                    <p>Hai ' .
-             (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
+                    <p>Hai ' . (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
                     <p>Fai attenzione!!!</p>
                 </div>
             </div>';
@@ -156,8 +151,7 @@ else {
     if (intval($_SESSION["try"]) % 3 == 0) echo ' hidden';
     echo '" type="submit" id="button">Accedi</button>
                         <p><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span>Password dimenticata?</p>
-                        <p><a href="' .
-             $options["root"] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
+                        <p><a href="' . $options["root"] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
                     </div>
                 </div>
             </form>';

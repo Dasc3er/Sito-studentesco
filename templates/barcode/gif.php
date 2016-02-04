@@ -1,13 +1,16 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 require_once 'barcode.php';
 
 // -------------------------------------------------- //
 // PROPERTIES
 // -------------------------------------------------- //
 
+
 // download a ttf font here for example : http://www.dafont.com/fr/nottke.font
 // $font = './NOTTB___.TTF';
 // - -
+
 
 $fontSize = 10; // GD1 in px ; GD2 in point
 $marge = 10; // between barcode and hri in pixel
@@ -25,9 +28,8 @@ else {
 }
 $angle = 0; // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
 
-$code = $options["database"]->get("ean", "ean", array(
-    "persona" => $id
-)); // barcode, of course ;)
+
+$code = $options["database"]->get("ean", "ean", array ("persona" => $id)); // barcode, of course ;)
 $type = 'ean13';
 
 // -------------------------------------------------- //
@@ -53,9 +55,7 @@ else imagefilledrectangle($im, 0, 0, 200, 150, $white);
 // -------------------------------------------------- //
 // BARCODE
 // -------------------------------------------------- //
-$data = Barcode::gd($im, $black, $x, $y, $angle, $type, array(
-    'code' => $code
-), $width, $height);
+$data = Barcode::gd($im, $black, $x, $y, $angle, $type, array ('code' => $code), $width, $height);
 
 // -------------------------------------------------- //
 // HRI
@@ -63,7 +63,7 @@ $data = Barcode::gd($im, $black, $x, $y, $angle, $type, array(
 if (isset($font)) {
     $box = imagettfbbox($fontSize, 0, $font, $data['hri']);
     $len = $box[2] - $box[0];
-    Barcode::rotate(- $len / 2, ($data['height'] / 2) + $fontSize + $marge, $angle, $xt, $yt);
+    Barcode::rotate(-$len / 2, ($data['height'] / 2) + $fontSize + $marge, $angle, $xt, $yt);
     imagettftext($im, $fontSize, $angle, $x + $xt, $y + $yt, $blue, $font, $data['hri']);
 }
 // -------------------------------------------------- //

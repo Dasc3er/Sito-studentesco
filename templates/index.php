@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 if (isset($guida)) $pageTitle = "Guida rapida";
 else $pageTitle = "Home";
 require_once 'shared/header.php';
@@ -135,7 +136,8 @@ if (isset($guida)) {
                     <p>Per semplificare il controllo di presenza ai tornei sar&agrave; fornito un codice a barre univoco da presentare.</p>
                     <p>La presenza sar&agrave; controllata da un collaboratore dei Rappresentanti d\'Istituto in tutti i corsi. In caso di assenza non giustificata saranno presi provvedimenti.</p>';
         if (isUserAutenticate() && !$options["first"]) echo '
-                    <a href="' . $options["root"] . 'corsi" class="btn btn-success">Visualizza i corsi!</a>';
+                    <a href="' . $options["root"] .
+                 'corsi" class="btn btn-success">Visualizza i corsi!</a>';
         else if (isUserAutenticate() && $options["first"]) echo '
                     <a href="' . $options["root"] .
                  'modifica" class="btn btn-warning">Prima di poter iscriverti, devi cambiare le credenziali!!!</a>';
@@ -155,10 +157,12 @@ else {
              'login" class="btn btn-block btn-primary">Accedi ora</a>';
     else if (isUserAutenticate() && $options["first"]) echo '
                     <strong>Per motivi di sicurezza &egrave; necessario modificare password ed username; dopo questa rapida operazione ti sar&agrave; possibile proseguire normalmente.</strong>
-                    <a href="' . $options["root"] . 'modifica" class="btn btn-block btn-primary">Modifica credenziali</a>';
+                    <a href="' .
+             $options["root"] . 'modifica" class="btn btn-block btn-primary">Modifica credenziali</a>';
     else if (isAdminUserAutenticate() && $options["autogestione"] == null) echo '
                     <strong>Per rendere utilizzabile il sito &egrave; necessario inserire una prima autogestione...</strong>
-                    <a href="' . $options["root"] . 'autogestione" class="btn btn-block btn-primary">Nuova autogestione</a>';
+                    <a href="' .
+             $options["root"] . 'autogestione" class="btn btn-block btn-primary">Nuova autogestione</a>';
     echo '
                 </div>
             </div>
@@ -230,7 +234,8 @@ else {
         }
         echo '
                     </div>
-                    <a href="' . $options["root"] . 'citazioni" class="btn btn-success btn-lg">Mostra di pi&ugrave; <i class="fa fa-chevron-right"></i></a>
+                    <a href="' .
+                 $options["root"] . 'citazioni" class="btn btn-success btn-lg">Mostra di pi&ugrave; <i class="fa fa-chevron-right"></i></a>
                 </div>
             </div>
             <hr>';
@@ -259,7 +264,8 @@ else {
                                 <li><a href="' . $options["root"] . 'profilo">Profilo</a></li>
                                 <hr>
                                 <li><a href="' . $options["root"] . 'modifica">Modifica credenziali</a></li>
-                                <li><a href="' . $options["root"] . 'impostazioni">Modifica impostazioni</a></li>
+                                <li><a href="' .
+                     $options["root"] . 'impostazioni">Modifica impostazioni</a></li>
                                 <li><a href="' . $options["root"] . 'email">Modifica email</a></li>
                             </ul>
                         </div>
@@ -286,11 +292,18 @@ else {
                         <div class="panel-heading"><i class="fa fa-file-o fa-2x"></i></div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="' . $options["root"] . 'schedecorsi" target="_blank">Schede corsi</a></li>
-                                <li><a href="' . $options["root"] . 'schedeclassi" target="_blank">Schede classi</a></li>
-                                <li><a href="' . $options["root"] . 'rand" target="_blank">Assegnati a random</a></li>
-                                <li><i class="fa fa-credit-card-alt fa-2x"></i> <a href="' . $options["root"] . 'barcodes" target="_blank">Barcode degli studenti</a></li>
-                                <li><a href="' . $options["root"] . 'bar" target="_blank">Scarica database barcode</a></li>
+                                <li><a href="' .
+                     $options["root"] . 'mostra/corsi" target="_blank">Schede corsi</a></li>
+                                <li><a href="' .
+                     $options["root"] . 'mostra/classi" target="_blank">Schede classi</a></li>
+                                <li><a href="' .
+                     $options["root"] .
+                     'mostra/random" target="_blank">Assegnati a random</a></li>
+                                <li><i class="fa fa-credit-card-alt fa-2x"></i> <a href="' .
+                     $options["root"] .
+                     'mostra/barcodes" target="_blank">Barcode degli studenti</a></li>
+                                <li><a href="' .
+                     $options["root"] . 'download/barcodes" target="_blank">Scarica database barcode</a></li>
                             </ul>
                         </div>
                     </div>

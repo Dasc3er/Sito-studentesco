@@ -1,7 +1,7 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 require_once 'templates/barcode/barcode.php';
 if (isset($download)) {
-    
     $fontSize = 10; // GD1 in px ; GD2 in point
     $marge = 10; // between barcode and hri in pixel
     $x = 125; // barcode center
@@ -64,13 +64,28 @@ if (isset($download)) {
     }
 }
 else {
-    require_once 'templates/pdf/fpdf.php';
-    
-    // -------------------------------------------------- //
-    // USEFUL
-    // -------------------------------------------------- //
-    class eFPDF extends FPDF {
-        function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle = 0) {
+    class BarcodeFPDF extends FPDF {
+        public $h;
+        public $k;
+        public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4') {
+            parent::__construct($orientation, $unit, $size);
+            $this->h = parent::GetPageHeight();
+            $this->k = 1;
+        }
+        public function GetPageHeight() {
+            return $this->h;
+        }
+        public function GetK() {
+            return $this->k;
+        }
+        public function _out($s) {
+            // Add a line to the document
+            if ($this->state == 2) $this->pages[$this->page] .= $s . "\n";
+            elseif ($this->state == 1) $this->_put($s);
+            elseif ($this->state == 0) $this->Error('No page has been added yet');
+            elseif ($this->state == 3) $this->Error('The document is closed');
+        }
+        public function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle = 0) {
             $font_angle += 90 + $txt_angle;
             $txt_angle *= M_PI / 180;
             $font_angle *= M_PI / 180;
@@ -81,12 +96,11 @@ else {
             $font_dy = sin($font_angle);
             
             $s = sprintf('BT %.2F %.2F %.2F %.2F %.2F %.2F Tm (%s) Tj ET', $txt_dx, $txt_dy, $font_dx, $font_dy, $x * $this->k, 
-                    ($this->h - $y) * $this->k, $this->_escape($txt));
+                    ($this->GetPageHeight() - $y) * $this->k, $this->_escape($txt));
             if ($this->ColorFlag) $s = 'q ' . $this->TextColor . ' ' . $s . ' Q';
             $this->_out($s);
         }
     }
-    
     // -------------------------------------------------- //
     // PROPERTIES
     // -------------------------------------------------- //
@@ -110,7 +124,7 @@ else {
     // -------------------------------------------------- //
     
 
-    $pdf = new eFPDF('P', 'pt');
+    $pdf = new BarcodeFPDF('P', 'pt');
     $pdf->AddPage();
     
     $pdf->SetFont('Arial', 'B', $fontSize);
@@ -119,8 +133,8 @@ else {
     // BARCODE
     // -------------------------------------------------- //
     $eans = $options["database"]->select("ean", "*", array ("ORDER" => "persona"));
-    $persone = $options["database"]->select("persone", 
-            array ("id", "nome", "username", "password", "stato"), array ("ORDER" => "id"));
+    $persone = $options["database"]->select("persone", array ("id", "nome", "username", "password", "stato"), 
+            array ("ORDER" => "id"));
     $studenti = $options["database"]->select("studenti", "*", 
             array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
     $datas = $options["database"]->select("classi", "*");
@@ -137,17 +151,16 @@ else {
                         $ean = ricerca($eans, $studente["persona"], "persona");
                         if ($ean != -1) {
                             $code = $eans[ricerca($eans, $studente["persona"], "persona")]["ean"]; // barcode, of course ;)
-                            $result = Barcode::fpdf($pdf, $black, $x, $y, $angle, $type, 
-                                    array ('code' => $code), $width, $height);
+                            $result = Barcode::fpdf($pdf, $black, $x, $y, $angle, $type, array ('code' => $code), $width, $height);
                             
                             $len = $pdf->GetStringWidth($result['hri']);
                             Barcode::rotate(-$len / 2, ($result['height'] / 2) + $fontSize + $marge, $angle, $xt, $yt);
                             $nome = $persone[$persona]["nome"];
                             $pdf->TextWithRotation($x + $xt - (strlen($nome) + (strlen($nome) / 2)), $y + $yt, $nome, $angle);
-                            if ($pdf->h > $y + 100) $y += 100;
+                            if ($pdf->GetPageHeight() > $y + 100) $y += 100;
                             else {
                                 $y = 75;
-                                if ($pdf->w > $x + 270) $x += 270;
+                                if ($pdf->GetPageWidth() > $x + 270) $x += 270;
                                 else {
                                     $pdf->AddPage();
                                     $x = 150;

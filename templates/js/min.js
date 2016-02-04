@@ -685,11 +685,11 @@ $(document).ready(function() {
         var parent = $(this).parent().parent().parent().parent().parent();
         var orario = parent.find("#orario").text().toLowerCase();
         button.removeClass("btn-success").removeClass("btn-warning").addClass("btn-info disabled").html('<i class="fa fa-circle-o-notch fa-spin"></i>');
-        var link = indirizzo + "/";
-        if($("#page").text().toLowerCase() == "corsi") link += "stato";
-        else if($("#page").text().toLowerCase() == "proposte") link += "accettare";
-        else if($("#page").text().toLowerCase() == "aula") link += "accetta";
-        else if($("#page").text().toLowerCase() == "citazioni") link += "cit";
+        var link = indirizzo + "/cambia/";
+        if($("#page").text().toLowerCase() == "corsi") link += "corso";
+        else if($("#page").text().toLowerCase() == "proposte") link += "proposta";
+        else if($("#page").text().toLowerCase() == "aula") link += "aula";
+        else if($("#page").text().toLowerCase() == "citazioni") link += "citazione";
         link += "/"+parent.find("#value").text();
         $.ajax({
             method: "GET",
@@ -769,10 +769,10 @@ $(document).ready(function() {
         var button = $(this);
         var parent = button.parent().parent().parent().parent().parent();
         button.html('<i class="fa fa-circle-o-notch fa-spin"></i>').addClass("disabled");
-        var link = indirizzo + "/";
-        if($("#page").text().toLowerCase() == "proposte") link += "blocca";
-        else if($("#page").text().toLowerCase() == "aula") link += "sospendi";
-        else if($("#page").text().toLowerCase() == "citazioni") link += "cambia";
+        var link = indirizzo + "/rifiuta/";
+        if($("#page").text().toLowerCase() == "proposte") link += "proposta";
+        else if($("#page").text().toLowerCase() == "aula") link += "aula";
+        else if($("#page").text().toLowerCase() == "citazioni") link += "citazione";
         link += "/"+parent.find("#value").text();
         $.ajax({
             method: "GET",

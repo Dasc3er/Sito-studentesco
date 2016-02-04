@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $error = false;
 $done = false;
 if (isset($edit) || isset($new)) {
@@ -34,8 +35,7 @@ if (isset($edit) || isset($new)) {
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
             $options["database"]->update("autogestioni", 
                     array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"], 
-                        "proposte" => $_POST["proposte"], "random" => 0, "newsletter" => 0), 
-                    array ("id" => $edit));
+                        "proposte" => $_POST["proposte"], "random" => 0, "newsletter" => 0), array ("id" => $edit));
             salva();
         }
         echo '
@@ -202,8 +202,7 @@ else if (isset($random)) {
                 if (isset($persone[$i]) && !occupato($options["database"], $corso["id"], $persone[$i]["id"]) &&
                          scuolagiusta($options["database"], $corso["id"], $persone[$i]["id"])) {
                     // echo $persone[$i]["nome"] . " " . $corso["id"] . "<br>";
-                    $options["database"]->update("persone", array ("random" => 1), 
-                            array ("id" => $persone[$i]["id"]));
+                    $options["database"]->update("persone", array ("random" => 1), array ("id" => $persone[$i]["id"]));
                     $options["database"]->insert("iscrizioni", 
                             array ("persona" => $persone[$i]["id"], "corso" => $corso["id"], "stato" => 0));
                 }
@@ -211,8 +210,7 @@ else if (isset($random)) {
             }
         }
     }
-    $options["database"]->update("autogestioni", array ("random" => 1), 
-            array ("id" => $options["database"]->max("autogestioni", "id")));
+    $options["database"]->update("autogestioni", array ("random" => 1), array ("id" => $options["autogestione"]));
 }
 else if (isset($newsletter)) {
     set_time_limit(60 * 50);
@@ -242,14 +240,12 @@ else if (isset($newsletter)) {
                     }
                     if ($result["random"] == 1) $msg .= "<p>Attenzione: alcune iscrizioni potrebbero essere cambiate, quindi ricontrollale!!!</p><br><p>&Egrave; possibile che almeno uno dei corsi sia stato assegnato a caso, poich&egrave; non ti eri iscritto personalmente.</p>";
                     send(decode($result["email"]), $options["sito"], "Riepilogo corsi", $msg, $result["nome"]);
-                    $options["database"]->update("persone", array ("inviata" => 1), 
-                            array ("id" => $result["id"]));
+                    $options["database"]->update("persone", array ("inviata" => 1), array ("id" => $result["id"]));
                 }
             }
         }
     }
-    $options["database"]->update("autogestioni", array ("newsletter" => 1), 
-            array ("id" => $options["database"]->max("autogestioni", "id")));
+    $options["database"]->update("autogestioni", array ("newsletter" => 1), array ("id" => $options["autogestione"]));
 }
 else {
     if (isset($delete) && $delete == "yes") {
@@ -303,11 +299,11 @@ else {
                                 <td>' . $result["proposte"] . '</td>';
             if (strtotime($result["ultima"]) < strtotime("now")) {
                 if ($result["random"] == 0) echo '
-                                <td><a href="' .
-                         $options["root"] . 'random" class="btn btn-warning">Assegnazione casuale</a></td>';
+                                <td><a href="' . $options["root"] .
+                         'random" class="btn btn-warning">Assegnazione casuale</a></td>';
                 else if ($result["newsletter"] == 0) echo '
-                                <td><a href="' .
-                         $options["root"] . 'newsletter" class="btn btn-warning">Email informativa per l\'iscrizione</a></td>';
+                                <td><a href="' . $options["root"] .
+                         'newsletter" class="btn btn-warning">Email informativa per l\'iscrizione</a></td>';
                 else echo '
                                 <td>Opzioni non pi&ugrave; disponibili</td>';
             }

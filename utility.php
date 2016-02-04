@@ -1,4 +1,7 @@
 <?php
+session_cache_limiter(false);
+session_start();
+
 require_once __DIR__ . '/parameters.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/vendor/setasign/fpdf/fpdf.php';
@@ -16,9 +19,11 @@ require_once __DIR__ . '/vendor/ircmaxell/password-compat/lib/password.php';
 
 // Accesso alla tabella del progetto
 require_once __DIR__ . '/templates/shared/default.php';
+
 $options = array ("path" => $indirizzo . "/templates/", "root" => $indirizzo . "/", "snow" => false, "email" => "email@gmail.com", 
     "sito" => "Sito studentesco", "time" => false, "database" => database($username, $password, $tipo, $tabella), "debug" => false, 
-    "cookie-policy" => true);
+    "cookie-policy" => false);
+
 if (isUserAutenticate()) {
     $options["user"] = id($options["database"]);
     $options["first"] = first($options["database"], $options["user"]);

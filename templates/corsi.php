@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $tempo = tempo($options["database"]);
 if (isset($presente) && stessauto($options["database"], $options["autogestione"], $corso)) {
     if ($options["database"]->count("registro", array ("AND" => array ("corso" => $corso, "persona" => $persona))) != 0) {
@@ -54,19 +55,19 @@ if ((isset($edit) || isset($new)) && $tempo) {
             if (isset($_POST['all'])) $max = $options["database"]->count("persone");
             else $max = $_POST["number"];
             if (isset($_POST['first']) || isset($_POST['second'])) {
-                if (isset($_POST['first'])) $options["database"]->insert("corsi", 
-                        array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
-                            "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"], 
+                if (isset($_POST['first'])) $options["database"]->insert("corsi",
+                        array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
+                            "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"],
                             "autogestione" => $options["autogestione"], "creatore" => $options["user"], "stato" => 0));
-                if (isset($_POST['second'])) $options["database"]->insert("corsi", 
-                        array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
-                            "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"], 
+                if (isset($_POST['second'])) $options["database"]->insert("corsi",
+                        array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
+                            "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"],
                             "autogestione" => $options["autogestione"], "creatore" => $options["user"], "stato" => 0));
             }
             else if (isset($_POST['all'])) {
-                $xp = $options["database"]->insert("corsi", 
-                        array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
-                            "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2,3,4,5", "scuola" => $_POST["scuola"], 
+                $xp = $options["database"]->insert("corsi",
+                        array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
+                            "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2,3,4,5", "scuola" => $_POST["scuola"],
                             "autogestione" => $options["autogestione"], "creatore" => $options["user"], "stato" => 0));
                 /*
                  * $options["database"]->insert("corsi",
@@ -89,10 +90,10 @@ if ((isset($edit) || isset($new)) && $tempo) {
             }
             else
                 $max = $options["database"]->count("persone");
-            $options["database"]->update("corsi", 
-                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
-                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => $_POST["quando"], "scuola" => $_POST["scuola"], 
-                        "autogestione" => $options["autogestione"], "creatore" => $options["user"], "stato" => 0), 
+            $options["database"]->update("corsi",
+                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
+                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => $_POST["quando"], "scuola" => $_POST["scuola"],
+                        "autogestione" => $options["autogestione"], "creatore" => $options["user"], "stato" => 0),
                     array ("id" => $edit));
             salva();
         }
@@ -210,7 +211,8 @@ if ((isset($edit) || isset($new)) && $tempo) {
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' . $options["root"] . 'corsi" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' .
+                 $options["root"] . 'corsi" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -234,7 +236,7 @@ else if (isset($view)) {
                 <h1>' . $data["nome"] . '</h1>
                 <p><strong>Orario: ' . orario($data["quando"]) . '</strong></p>
                 <p>' . $data["descrizione"] . '</p>';
-            $iscritti = $options["database"]->select("iscrizioni", array ("persona"), 
+            $iscritti = $options["database"]->select("iscrizioni", array ("persona"),
                     array ("AND" => array ("corso" => $view, "stato" => 0)));
             echo '
                 <div class="level">
@@ -258,7 +260,7 @@ else if (isset($view)) {
             if ($iscritti != null) {
                 $presenze = $options["database"]->select("registro", "*", array ("corso" => $data["id"], "ORDER" => "persona"));
                 $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-                $studenti = $options["database"]->select("studenti", "*", 
+                $studenti = $options["database"]->select("studenti", "*",
                         array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
                 $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
                 foreach ($iscritti as $iscritto) {
@@ -274,9 +276,10 @@ else if (isset($view)) {
             echo '
                     </tbody>
                 </table>';
-            if ($data["controllore"] == $options["user"] && ($options["database"]->count("autogestioni", 
+            if ($data["controllore"] == $options["user"] && ($options["database"]->count("autogestioni",
                     array ("AND" => array ("id" => $options["autogestione"], "#data" => "CURDATE()"))) != 0)) echo '
-                <a href="' . $options["root"] . 'presenze" class="btn btn-success btn-block">Controlla le presenze</a>';
+                <a href="' .
+                     $options["root"] . 'presenze" class="btn btn-success btn-block">Controlla le presenze</a>';
             if ($data["quando"] == "1,2,3,4,5") {
                 echo '
                 <h3>Squadre</h3>';
@@ -294,9 +297,10 @@ else if (isset($view)) {
                     foreach ($results as $result) {
                         echo '
                         <tr>
-                            <td><a href="' . $options["root"] . 'squadra/' . $result["id"] . '">' . $result["nome"] . '</a></td>
-                            <td>' . $options["database"]->count("giocatori", 
-                                array ("squadra" => $result["id"])) . '</a></td>
+                            <td><a href="' .
+                                 $options["root"] . 'squadra/' . $result["id"] . '">' . $result["nome"] . '</a></td>
+                            <td>' . $options["database"]->count("giocatori",
+                                        array ("squadra" => $result["id"])) . '</a></td>
                         </tr>';
                     }
                 }
@@ -310,7 +314,8 @@ else if (isset($view)) {
                 <p class="clear">
                     <span class="hidden" id="value">' . $data["id"] . '</span>
                     <span class="hidden" id="page">corsi</span>
-                    <span class="hidden" id="orario">' . orario($data["quando"]) . '</span>';
+                    <span class="hidden" id="orario">' . orario($data["quando"]) .
+                         '</span>';
                 if (!$iscritto && !occupato($options["database"], $data["id"], $options["user"]) && count($iscritti) < $data["max"]) {
                     echo '
                                 <a ';
@@ -325,8 +330,8 @@ else if (isset($view)) {
                                 <a id="squad" href="' . $options["root"] .
                                  'squadra" class="btn btn-primary btn-block">Crea squadra</a>';
                         else echo '
-                                <a id="squad" href="' . $options["root"] . 'squadra/' . $squadra .
-                                 '" class="btn btn-primary btn-block">Gestisci squadra</a>';
+                                <a id="squad" href="' . $options["root"] .
+                                 'squadra/' . $squadra . '" class="btn btn-primary btn-block">Gestisci squadra</a>';
                     }
                     echo '
                                 <a ';
@@ -347,15 +352,15 @@ else if (isset($view)) {
         require_once 'shared/404.php';
 }
 else if (isset($presenze)) {
-    if (($options["database"]->count("autogestioni", 
+    if (($options["database"]->count("autogestioni",
             array ("AND" => array ("id" => $options["autogestione"], "#data" => "CURDATE()"))) != 0) &&
              (isAdminUserAutenticate() &&
-             $options["database"]->count("corsi", 
+             $options["database"]->count("corsi",
                     array ("AND" => array ("autogestione" => $options["autogestione"], "controllore" => $options["user"]))) != 0)) {
         $pageTitle = "Controllo presenze";
         $datatable = true;
         require_once 'shared/header.php';
-        $datas = $options["database"]->select("corsi", "*", 
+        $datas = $options["database"]->select("corsi", "*",
                 array ("AND" => array ("autogestione" => $options["autogestione"], "controllore" => $options["user"])));
         if ($datas != null) {
             foreach ($datas as $data) {
@@ -375,15 +380,15 @@ else if (isset($presenze)) {
                         </tr>
                     </thead>
                     <tbody>';
-                if (isAdminUserAutenticate()) $iscritti = $options["database"]->select("iscrizioni", array ("persona"), 
+                if (isAdminUserAutenticate()) $iscritti = $options["database"]->select("iscrizioni", array ("persona"),
                         array ("stato" => 0));
-                else $iscritti = $options["database"]->select("iscrizioni", array ("persona"), 
+                else $iscritti = $options["database"]->select("iscrizioni", array ("persona"),
                         array ("AND" => array ("corso" => $data["id"], "stato" => 0)));
                 if ($iscritti != null) {
-                    $presenze = $options["database"]->select("registro", "*", 
+                    $presenze = $options["database"]->select("registro", "*",
                             array ("corso" => $data["id"], "ORDER" => "persona"));
                     $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-                    $studenti = $options["database"]->select("studenti", "*", 
+                    $studenti = $options["database"]->select("studenti", "*",
                             array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
                     $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
                     foreach ($iscritti as $iscritto) {
@@ -397,7 +402,8 @@ else if (isset($presenze)) {
                         if (ricerca($presenze, $utenti[$id]["id"], "persona") != -1) {
                             echo '
                             <td id="pres">Attualmente presente</td>
-                            <td><span class="hidden" id="persona">' . $utenti[$id]["id"] . '</span><a ';
+                            <td><span class="hidden" id="persona">' . $utenti[$id]["id"] .
+                                     '</span><a ';
                             if (modo()) echo 'id="presenza"';
                             else echo 'href="' . $options["root"] . 'presente/' . $utenti[$id]["id"] . '/' . $data["id"] . '"';
                             echo ' class="btn btn-danger">Assente</a></td>';
@@ -405,7 +411,8 @@ else if (isset($presenze)) {
                         else {
                             echo '
                             <td id="pres">Attualmente assente</td>
-                            <td><span class="hidden" id="persona">' . $utenti[$id]["id"] . '</span><a ';
+                            <td><span class="hidden" id="persona">' . $utenti[$id]["id"] .
+                                     '</span><a ';
                             if (modo()) echo 'id="presenza"';
                             else echo 'href="' . $options["root"] . 'presente/' . $utenti[$id]["id"] . '/' . $data["id"] . '"';
                             echo ' class="btn btn-success">Presente</a></td>';
@@ -430,7 +437,7 @@ else if (isset($id) && stessauto($options["database"], $options["autogestione"],
          classe($options["database"], $options["user"]) && !iscritto($options["database"], $id, $options["user"]) &&
          !occupato($options["database"], $id, $options["user"]) && !pieno($options["database"], $id) &&
          scuolagiusta($options["database"], $id, $options["user"]) && tempo($options["database"])) {
-    if (interessato($options["database"], $id, $options["user"])) $options["database"]->update("iscrizioni", array ("stato" => 0), 
+    if (interessato($options["database"], $id, $options["user"])) $options["database"]->update("iscrizioni", array ("stato" => 0),
             array ("persona" => $options["user"], "corso" => $id));
     else $options["database"]->insert("iscrizioni", array ("persona" => $options["user"], "corso" => $id, "stato" => 0));
     echo 1;
@@ -450,11 +457,11 @@ else {
     $readmore = true;
     require_once 'shared/header.php';
     $scuola = scuola($options["database"], $options["user"]);
-    if (isAdminUserAutenticate()) $results = $options["database"]->select("corsi", "*", 
+    if (isAdminUserAutenticate()) $results = $options["database"]->select("corsi", "*",
             array ("AND" => array ("autogestione" => $options["autogestione"], "quando[!]" => null)));
-    else $results = $options["database"]->select("corsi", "*", 
+    else $results = $options["database"]->select("corsi", "*",
             array (
-                "AND" => array ("autogestione" => $options["autogestione"], "scuola" => $scuola, "quando[!]" => null, 
+                "AND" => array ("autogestione" => $options["autogestione"], "scuola" => $scuola, "quando[!]" => null,
                     "stato" => 0)));
     $scuole = $options["database"]->select("scuole", "*", array ("ORDER" => "id"));
     $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
@@ -478,9 +485,11 @@ else {
                     <h1><i class="fa fa-list fa-1x"></i> Corsi disponibili</h1>
                     <p><span id="page">Corsi</span> disponibili ;)</p>';
     if (isAdminUserAutenticate() && $tempo) echo '
-                    <a href="' . $options["root"] . 'corso" class="btn btn-primary">Nuovo corso</a>';
+                    <a href="' . $options["root"] .
+             'corso" class="btn btn-primary">Nuovo corso</a>';
     echo '
-                    <p>' . $infos[0]["nome"] . ', del ' . date("d-m-Y", strtotime($infos[0]["data"])) . '</p>
+                    <p>' . $infos[0]["nome"] .
+             ', del ' . date("d-m-Y", strtotime($infos[0]["data"])) . '</p>
                 </div>
              </div>
              <div class="jumbotron red';
@@ -508,10 +517,12 @@ else {
                                             <section';
                 if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="yellow"';
                 echo '>
-                                                <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' .
-                         $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
-                                                <span class="hidden" id="value">' . $result["id"] . '</span>
-                                                <p><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                                                <h3>' .
+                         $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                                                <span class="hidden" id="value">' . $result["id"] .
+                         '</span>
+                                                <p><strong>Orario: <span id="orario">' .
+                         orario($result["quando"]) . '</span></strong></p>
                                                 <p>Aule: ' . $result["aule"] .
                          '</p>
                                                 <div class="level">
@@ -551,7 +562,7 @@ else {
                         echo '
                                                     <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -561,8 +572,10 @@ else {
                                             </section>
                                         </td>
                                         <td>' . $result["nome"] . '</td>
-                                        <td>' . $result["aule"] . '</td>
-                                        <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                                        <td>' . $result["aule"] .
+                         '</td>
+                                        <td><span id="number">' .
+                         $cont . '</span><span id="max">' . $result["max"] . '</span></td>
                                     </tr>';
                 unset($results[$key]);
             }
@@ -591,10 +604,12 @@ else {
                                             <section';
                 if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="yellow"';
                 echo '>
-                                                <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' .
-                         $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
-                                                <span class="hidden" id="value">' . $result["id"] . '</span>
-                                                <p><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                                                <h3>' .
+                         $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                                                <span class="hidden" id="value">' . $result["id"] .
+                         '</span>
+                                                <p><strong>Orario: <span id="orario">' .
+                         orario($result["quando"]) . '</span></strong></p>
                                                 <p>Aule: ' . $result["aule"] .
                          '</p>
                                                 <div class="level">
@@ -634,7 +649,7 @@ else {
                         echo '
                                                     <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -644,8 +659,10 @@ else {
                                             </section>
                                         </td>
                                         <td>' . $result["nome"] . '</td>
-                                        <td>' . $result["aule"] . '</td>
-                                        <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                                        <td>' . $result["aule"] .
+                         '</td>
+                                        <td><span id="number">' .
+                         $cont . '</span><span id="max">' . $result["max"] . '</span></td>
                                     </tr>';
                 unset($results[$key]);
             }
@@ -674,9 +691,12 @@ else {
                                     <section';
                 if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="yellow"';
                 echo '>
-                                        <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
-                                        <span class="hidden" id="value">' . $result["id"] . '</span>
-                                        <p><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                                        <h3>' .
+                         $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                                        <span class="hidden" id="value">' . $result["id"] .
+                         '</span>
+                                        <p><strong>Orario: <span id="orario">' .
+                         orario($result["quando"]) . '</span></strong></p>
                                         <p>Aule: ' . $result["aule"] .
                          '</p>
                                         <div class="level">
@@ -688,7 +708,8 @@ else {
                          $number . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $number . '%"></div>
                                             </div>
                                         </div>
-                                        <p id="descrizione">' . $result["descrizione"] . '</p>';
+                                        <p id="descrizione">' . $result["descrizione"] .
+                         '</p>';
                 if (isAdminUserAutenticate()) {
                     echo '
                                         <p><strong>Creato da ';
@@ -715,14 +736,14 @@ else {
                                             <li><a id="squad" href="' . $options["root"] .
                                  'squadra" class="btn btn-primary">Crea squadra</a></li>';
                         else echo '
-                                            <li><a id="squad" href="' . $options["root"] . 'squadra/' . $squadra .
-                                 '" class="btn btn-primary">Gestisci squadra</a></li>';
+                                            <li><a id="squad" href="' .
+                                 $options["root"] . 'squadra/' . $squadra . '" class="btn btn-primary">Gestisci squadra</a></li>';
                     }
                     if (isAdminUserAutenticate()) {
                         echo '
                                             <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -733,7 +754,8 @@ else {
                                 </td>
                                 <td>' . $result["nome"] . '</td>
                                 <td>' . $result["aule"] . '</td>
-                                <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                                <td><span id="number">' .
+                         $cont . '</span><span id="max">' . $result["max"] . '</span></td>
                             </tr>';
                 unset($results[$key]);
             }
@@ -782,9 +804,12 @@ else {
                                     <section';
                 if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="yellow"';
                 echo '>
-                                        <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
-                                        <span class="hidden" id="value">' . $result["id"] . '</span>
-                                        <p class="hidden"><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                                        <h3>' .
+                         $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                                        <span class="hidden" id="value">' . $result["id"] .
+                         '</span>
+                                        <p class="hidden"><strong>Orario: <span id="orario">' .
+                         orario($result["quando"]) . '</span></strong></p>
                                         <p>Aule: ' . $result["aule"] .
                          '</p>
                                         <div class="level">
@@ -796,7 +821,8 @@ else {
                          $number . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $number . '%"></div>
                                             </div>
                                         </div>
-                                        <p id="descrizione">' . $result["descrizione"] . '</p>';
+                                        <p id="descrizione">' . $result["descrizione"] .
+                         '</p>';
                 if (isAdminUserAutenticate()) {
                     echo '
                                         <p><strong>Creato da ';
@@ -828,7 +854,7 @@ else {
                         echo '
                                             <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -839,7 +865,8 @@ else {
                                 </td>
                                 <td>' . $result["nome"] . '</td>
                                 <td>' . $result["aule"] . '</td>
-                                <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                                <td><span id="number">' .
+                         $cont . '</span><span id="max">' . $result["max"] . '</span></td>
                             </tr>';
                 unset($results[$key]);
             }
@@ -869,9 +896,12 @@ else {
                                     <section';
                 if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="yellow"';
                 echo '>
-                                        <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
-                                        <span class="hidden" id="value">' . $result["id"] . '</span>
-                                        <p class="hidden"><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                                        <h3>' .
+                         $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                                        <span class="hidden" id="value">' . $result["id"] .
+                         '</span>
+                                        <p class="hidden"><strong>Orario: <span id="orario">' .
+                         orario($result["quando"]) . '</span></strong></p>
                                         <p>Aule: ' . $result["aule"] .
                          '</p>
                                         <div class="level">
@@ -883,7 +913,8 @@ else {
                          $number . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $number . '%"></div>
                                             </div>
                                         </div>
-                                        <p id="descrizione">' . $result["descrizione"] . '</p>';
+                                        <p id="descrizione">' . $result["descrizione"] .
+                         '</p>';
                 if (isAdminUserAutenticate()) {
                     echo '
                                         <p><strong>Creato da ';
@@ -913,7 +944,7 @@ else {
                         echo '
                                             <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -924,7 +955,8 @@ else {
                                 </td>
                                 <td>' . $result["nome"] . '</td>
                                 <td>' . $result["aule"] . '</td>
-                                <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                                <td><span id="number">' .
+                         $cont . '</span><span id="max">' . $result["max"] . '</span></td>
                             </tr>';
                 unset($results[$key]);
             }
@@ -957,9 +989,12 @@ else {
                                     <section';
                 if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="yellow"';
                 echo '>
-                                        <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
-                                        <span class="hidden" id="value">' . $result["id"] . '</span>
-                                        <p class="hidden"><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                                        <h3>' .
+                         $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                                        <span class="hidden" id="value">' . $result["id"] .
+                         '</span>
+                                        <p class="hidden"><strong>Orario: <span id="orario">' .
+                         orario($result["quando"]) . '</span></strong></p>
                                         <p>Aule: ' . $result["aule"] .
                          '</p>
                                         <div class="level">
@@ -971,7 +1006,8 @@ else {
                          $number . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $number . '%"></div>
                                             </div>
                                         </div>
-                                        <p id="descrizione">' . $result["descrizione"] . '</p>';
+                                        <p id="descrizione">' . $result["descrizione"] .
+                         '</p>';
                 if (isAdminUserAutenticate()) {
                     echo '
                                         <p><strong>Creato da ';
@@ -1001,7 +1037,7 @@ else {
                         echo '
                                             <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -1012,7 +1048,8 @@ else {
                                 </td>
                                 <td>' . $result["nome"] . '</td>
                                 <td>' . $result["aule"] . '</td>
-                                <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                                <td><span id="number">' .
+                         $cont . '</span><span id="max">' . $result["max"] . '</span></td>
                             </tr>';
                 unset($results[$key]);
             }
@@ -1042,9 +1079,11 @@ else {
                     <section';
                     if (isAdminUserAutenticate() && $scuola != $result["scuola"]) echo ' class="blue"';
                     echo '>
-                        <h3>' . $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
+                        <h3>' .
+                             $result["nome"] . ' <a href="' . $options["root"] . 'corso/' . $result["id"] . '"><small>Approfondisci <i class="fa fa-chevron-right"></i></small></a></h3>
                         <span class="hidden" id="value">' . $result["id"] . '</span>
-                        <p><strong>Orario: <span id="orario">' . orario($result["quando"]) . '</span></strong></p>
+                        <p><strong>Orario: <span id="orario">' .
+                             orario($result["quando"]) . '</span></strong></p>
                         <p>Aule: ' . $result["aule"] . '</p>
                         <p id="descrizione">' . $result["descrizione"] . '</p>
                         <p><strong>Creato da ';
@@ -1061,7 +1100,7 @@ else {
                         <ul class="links">
                             <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'stato/' . $result["id"] . '"';
+                        else echo 'href="' . $options["root"] . 'cambia/corso/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                         </ul>';
                     }
@@ -1070,7 +1109,8 @@ else {
                 </td>
                 <td>' . $result["nome"] . '</td>
                 <td>' . $result["aule"] . '</td>
-                <td><span id="number">' . $cont . '</span><span id="max">' . $result["max"] . '</span></td>
+                <td><span id="number">' . $cont .
+                             '</span><span id="max">' . $result["max"] . '</span></td>
             </tr>';
                 }
             }

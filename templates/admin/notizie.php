@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $error = false;
 $done = false;
 if (isset($edit) || isset($new)) {
@@ -30,8 +31,7 @@ if (isset($edit) || isset($new)) {
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
             $options["database"]->update("news", 
                     array ("titolo" => strip_tags($_POST["name"]), "contenuto" => sanitize($_POST["contenuto"]), 
-                        "creatore" => $options["user"], "stato" => 1, "#data" => "CURDATE()"), 
-                    array ("id" => $edit));
+                        "creatore" => $options["user"], "stato" => 1, "#data" => "CURDATE()"), array ("id" => $edit));
             salva();
         }
         echo '
@@ -64,8 +64,7 @@ if (isset($edit) || isset($new)) {
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' .
-                 $options["root"] . 'notizie" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' . $options["root"] . 'notizie" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -88,8 +87,7 @@ else {
                 <div class="container text-center">
                     <p><strong>Eliminare il notizia?</strong></p>
                     <div class="col-xs-6 text-center">
-                        <a href="' .
-             $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina notizia</a>
+                        <a href="' . $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina notizia</a>
                     </div>
                     <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                     <div class="col-xs-6 text-center">

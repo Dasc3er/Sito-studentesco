@@ -1,4 +1,5 @@
 <?php
+if (!isset($options)) require_once 'utility.php';
 $error = false;
 $done = false;
 if (isset($edit) || isset($new)) {
@@ -23,8 +24,7 @@ if (isset($edit) || isset($new)) {
             $options["database"]->insert("scuole", array ("nome" => strip_tags($_POST["name"])));
         }
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-            $options["database"]->update("scuole", array ("nome" => strip_tags($_POST["name"])), 
-                    array ("id" => $edit));
+            $options["database"]->update("scuole", array ("nome" => strip_tags($_POST["name"])), array ("id" => $edit));
         }
         echo '<p class="text-right"><a href="' . $options["root"] . 'scuole" class="btn btn-success">Torna indietro</a></p>
             <p>Caratteristiche del scuola:</p>
@@ -62,8 +62,7 @@ else {
     if (isset($id)) echo '
                 <p class="text-center text-red"><strong>Eliminare il scuola?</strong></p>
                 <div class="col-xs-6 text-center">
-                    <a href="' .
-             $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina scuola</a>
+                    <a href="' . $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina scuola</a>
                 </div>
                 <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                 <div class="col-xs-6 text-center">

@@ -1,6 +1,5 @@
 <?php
-$utente = true;
-
+if (!isset($options)) require_once 'utility.php';
 $readmore = true;
 if (!isset($id)) $id = $options["user"];
 $datas = $options["database"]->select("persone", "*", array ("id" => $id));
@@ -19,10 +18,8 @@ if ($datas != null) {
     echo '
             <div class="jumbotron">
                 <div class="container text-center">
-                    <h1><i class="fa fa-user"></i> ' . $name .
-             '</h1>
-                    <p><a class="btn btn-success" href="' .
-             $options["root"] . 'barcode/' . $id . '" target="_blank">Ottieni barcode <i class="fa fa-chevron-down"></i></a></p>
+                    <h1><i class="fa fa-user"></i> ' . $name . '</h1>
+                    <p><a class="btn btn-success" href="' . $options["root"] . 'barcode/' . $id . '" target="_blank">Ottieni barcode <i class="fa fa-chevron-down"></i></a></p>
                 </div>
             </div>
             <hr>
@@ -51,10 +48,8 @@ if ($datas != null) {
                                 <li><a href="' . $options["root"] .
                  'modifica">Modifica credenziali</a></li>';
         if ($options["autogestione"] != null && !$options["first"]) echo '
-                                <li><a href="' .
-                 $options["root"] . 'impostazioni">Modifica impostazioni</a></li>
-                                <li><a href="' . $options["root"] .
-                 'email">Modifica email</a></li>';
+                                <li><a href="' . $options["root"] . 'impostazioni">Modifica impostazioni</a></li>
+                                <li><a href="' . $options["root"] . 'email">Modifica email</a></li>';
         echo '
                             </ul>
                         </div>
@@ -63,33 +58,29 @@ if ($datas != null) {
                 <div class="col-xs-12 col-md-9">';
     }
     $corsi = $options["database"]->select("corsi", "*", array ("stato" => 0, "ORDER" => "id"));
-    $results = $options["database"]->select("iscrizioni", "*", 
-            array ("AND" => array ("persona" => $id, "stato" => 0)));
+    $results = $options["database"]->select("iscrizioni", "*", array ("AND" => array ("persona" => $id, "stato" => 0)));
     if ($results != null) {
         foreach ($results as $result) {
             $corso = ricerca($corsi, $result["corso"]);
             if ($corso != -1) {
                 echo '
                     <section>
-                        <p class="title"><a href="' .
-                         $options["root"] . 'corso/' . $corsi[$corso]["id"] . '">' . $corsi[$corso]["nome"] . '</a>';
+                        <p class="title"><a href="' . $options["root"] . 'corso/' . $corsi[$corso]["id"] . '">' .
+                         $corsi[$corso]["nome"] . '</a>';
                 echo '</p>
-                        <p><strong>Orario: ' .
-                         orario($corsi[$corso]["quando"]) . '</strong></p>
+                        <p><strong>Orario: ' . orario($corsi[$corso]["quando"]) . '</strong></p>
                         <p>Aule: ' . $corsi[$corso]["aule"] . '</p>
                         <p id="descrizione">' . $corsi[$corso]["descrizione"] . '</p>';
                 if ($id == $options["user"] && time($options["database"])) {
                     $squadra = squadra($options["database"], $options["user"]);
                     if ($squadra == null) echo '
-                                <a id="squad" href="' .
-                             $options["root"] . 'squadra" class="btn btn-primary btn-block btn-lg">Crea squadra</a>';
+                                <a id="squad" href="' . $options["root"] .
+                             'squadra" class="btn btn-primary btn-block btn-lg">Crea squadra</a>';
                     else echo '
-                                <a id="squad" href="' .
-                             $options["root"] . 'squadra/' . $squadra .
+                                <a id="squad" href="' . $options["root"] . 'squadra/' . $squadra .
                              '" class="btn btn-primary btn-block btn-lg">Gestisci squadra</a>';
                     echo '
-                        <a href="' .
-                             $options["root"] . 'corsi/' . $corsi[$corso]["id"] .
+                        <a href="' . $options["root"] . 'corsi/' . $corsi[$corso]["id"] .
                              '" class="btn btn-danger btn-block btn-lg">Elimina iscrizione</a>';
                 }
                 echo '
