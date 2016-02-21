@@ -1,9 +1,9 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 if (isset($guida)) $pageTitle = "Guida rapida";
 else $pageTitle = "Home";
 require_once 'shared/header.php';
-if ($options["debug"]) echo '
+if ($dati["debug"]) echo '
             <div class="jumbotron yellow">
                 <div class="container">
                     <h2>Attenzione: sito in manutenzione!</h2>
@@ -19,7 +19,7 @@ if (isset($guida)) {
                     <h1><i class="fa fa-list fa-1x"></i> Guida ai corsi</h1>
                     <p>Questa &egrave la guida per l\'iscrizione ai corsi dell\'autogestione.</p>
                     <p>Siete pregati di scorrerla rapidamente</p>
-                    <a href="' . $options["root"] . 'guida/1" class="btn btn-success">Ho capito</a>
+                    <a href="' . $dati['info']['root'] . 'guida/1" class="btn btn-success">Ho capito</a>
                 </div>
             </div>';
     }
@@ -52,9 +52,9 @@ if (isset($guida)) {
                     <p>I corsi sono suddivisi in base al turno: quelli del primo (8-10) saranno disponibili in alto a sinistra della pagina, quelli del secondo (10-12) in alto a destra, ed infine quelli dell\'intera giornata in basso. (Per mobile saranno semplicemente in colonna)</p>
                     <p>Attenzione: i corsi di intera giornata sono solo per i partecipanti ai tornei; se si desidera vedere un torneo &egrave; necessario cercarlo nel primo o nel secondo turno.</p>
                     <p>Se si presentassero problematiche in relazione all\'iscrizione (il pulsante non funziona), siete pregati di effettuare una segnalazione e di cambiare le impostazioni';
-        if (isUserAutenticate()) echo 'a <a href="' . $options["root"] . 'impostazioni">questo indirizzo</a>';
+        if (isUserAutenticate()) echo 'a <a href="' . $dati['info']['root'] . 'impostazioni">questo indirizzo</a>';
         echo '.</p>
-                    <a href="' . $options["root"] . 'guida/2" class="btn btn-success">Ho capito</a>
+                    <a href="' . $dati['info']['root'] . 'guida/2" class="btn btn-success">Ho capito</a>
                 </div>
             </div>';
     }
@@ -124,7 +124,7 @@ if (isset($guida)) {
                             <tr><td><div class="jumbo">Torneo. &Egrave; effettuabile una ricerca ad un\'ordinamento per nome</div></td></tr>
                         </tbody>
                     </table>
-                    <a href="' . $options["root"] . 'guida/3" class="btn btn-success">Ho capito</a>
+                    <a href="' . $dati['info']['root'] . 'guida/3" class="btn btn-success">Ho capito</a>
                 </div>
             </div>';
     }
@@ -135,11 +135,11 @@ if (isset($guida)) {
                     <h1>Ultime informazioni...</h1>
                     <p>Per semplificare il controllo di presenza ai tornei sar&agrave; fornito un codice a barre univoco da presentare.</p>
                     <p>La presenza sar&agrave; controllata da un collaboratore dei Rappresentanti d\'Istituto in tutti i corsi. In caso di assenza non giustificata saranno presi provvedimenti.</p>';
-        if (isUserAutenticate() && !$options["first"]) echo '
-                    <a href="' . $options["root"] .
+        if (isUserAutenticate() && !$dati["first"]) echo '
+                    <a href="' . $dati['info']['root'] .
                  'corsi" class="btn btn-success">Visualizza i corsi!</a>';
-        else if (isUserAutenticate() && $options["first"]) echo '
-                    <a href="' . $options["root"] .
+        else if (isUserAutenticate() && $dati["first"]) echo '
+                    <a href="' . $dati['info']['root'] .
                  'modifica" class="btn btn-warning">Prima di poter iscriverti, devi cambiare le credenziali!!!</a>';
         echo '
                 </div>
@@ -153,23 +153,23 @@ else {
                     <h1><i class="fa fa-graduation-cap"></i> IIS Euganeo</h1>
                     <p>Benvenuti nel sito organizzativo delle assemblee d\'Istituto e dei corsi pomeridiani di recupero ad opera degli studenti stessi.</p>';
     if (!isUserAutenticate()) echo '
-                    <a href="' . $options["root"] .
+                    <a href="' . $dati['info']['root'] .
              'login" class="btn btn-block btn-primary">Accedi ora</a>';
-    else if (isUserAutenticate() && $options["first"]) echo '
+    else if (isUserAutenticate() && $dati["first"]) echo '
                     <strong>Per motivi di sicurezza &egrave; necessario modificare password ed username; dopo questa rapida operazione ti sar&agrave; possibile proseguire normalmente.</strong>
                     <a href="' .
-             $options["root"] . 'modifica" class="btn btn-block btn-primary">Modifica credenziali</a>';
-    else if (isAdminUserAutenticate() && $options["autogestione"] == null) echo '
+             $dati['info']['root'] . 'modifica" class="btn btn-block btn-primary">Modifica credenziali</a>';
+    else if (isAdminUserAutenticate() && $dati["autogestione"] == null) echo '
                     <strong>Per rendere utilizzabile il sito &egrave; necessario inserire una prima autogestione...</strong>
                     <a href="' .
-             $options["root"] . 'autogestione" class="btn btn-block btn-primary">Nuova autogestione</a>';
+             $dati['info']['root'] . 'autogestione" class="btn btn-block btn-primary">Nuova autogestione</a>';
     echo '
                 </div>
             </div>
             <hr>
             <div class="container">
                 <h1 class="text-center"><i class="fa fa-newspaper-o fa-2x"></i> Notizie</h1>';
-    $news = $options["database"]->select("news", "*", array ("ORDER" => "id DESC", "LIMIT" => 5));
+    $news = $dati['database']->select("news", "*", array ("ORDER" => "id DESC", "LIMIT" => 5));
     if ($news != null) {
         $cont = 0;
         echo '
@@ -211,8 +211,8 @@ else {
     echo '
             <hr>';
     if (isUserAutenticate()) {
-        $results = $options["database"]->select("citazioni", "*", array ("stato" => "0", "LIMIT" => 4, "ORDER" => "id DESC"));
-        $profs = $options["database"]->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
+        $results = $dati['database']->select("citazioni", "*", array ("stato" => "0", "LIMIT" => 4, "ORDER" => "id DESC"));
+        $profs = $dati['database']->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
         echo '
             <div class="jumbotron">
                 <div class="container">
@@ -235,11 +235,11 @@ else {
         echo '
                     </div>
                     <a href="' .
-                 $options["root"] . 'citazioni" class="btn btn-success btn-lg">Mostra di pi&ugrave; <i class="fa fa-chevron-right"></i></a>
+                 $dati['info']['root'] . 'citazioni" class="btn btn-success btn-lg">Mostra di pi&ugrave; <i class="fa fa-chevron-right"></i></a>
                 </div>
             </div>
             <hr>';
-        if (!$options["first"] && $options["autogestione"] != null) {
+        if (!$dati["first"] && $dati["autogestione"] != null) {
             echo '
             <div class="container">
                 <div class="col-xs-12 col-sm-6">
@@ -247,11 +247,11 @@ else {
                         <div class="panel-heading"><i class="fa fa-user fa-2x"></i></div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="' . $options["root"] . 'corsi">Corsi</a></li>
-                                <li><a href="' . $options["root"] . 'proposte">Proposte</a></li>
-                                <li><a href="' . $options["root"] . 'citazioni">Citazioni</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'corsi">Corsi</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'proposte">Proposte</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'citazioni">Citazioni</a></li>
                                 <hr>
-                                <li><a href="' . $options["root"] . 'utenti">Utenti</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'utenti">Utenti</a></li>
                             </ul>
                         </div>
                     </div>
@@ -261,12 +261,12 @@ else {
                         <div class="panel-heading"><i class="fa fa-cogs fa-2x"></i></div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="' . $options["root"] . 'profilo">Profilo</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'profilo">Profilo</a></li>
                                 <hr>
-                                <li><a href="' . $options["root"] . 'modifica">Modifica credenziali</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'modifica">Modifica credenziali</a></li>
                                 <li><a href="' .
-                     $options["root"] . 'impostazioni">Modifica impostazioni</a></li>
-                                <li><a href="' . $options["root"] . 'email">Modifica email</a></li>
+                     $dati['info']['root'] . 'impostazioni">Modifica impostazioni</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'email">Modifica email</a></li>
                             </ul>
                         </div>
                     </div>
@@ -277,12 +277,12 @@ else {
                         <div class="panel-heading"><i class="fa fa-wrench fa-2x"></i></div>
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
-                                <li><a href="' . $options["root"] .
-                     'credenziali" target="_blank">Credenziali <span class="badge">' . $options["database"]->count("persone", 
+                                <li><a href="' . $dati['info']['root'] .
+                     'credenziali" target="_blank">Credenziali <span class="badge">' . $dati['database']->count("persone", 
                             array ("stato" => 0)) . '</span></a></li>
-                                <li><a href="' . $options["root"] . 'liberi">Studenti liberi</a></li>
-                                <li><a href="' . $options["root"] . 'notizie">Notizie</a></li>
-                                <li><a href="' . $options["root"] . 'autogestioni">Autogestioni</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'liberi">Studenti liberi</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'notizie">Notizie</a></li>
+                                <li><a href="' . $dati['info']['root'] . 'autogestioni">Autogestioni</a></li>
                             </ul>
                         </div>
                     </div>
@@ -293,17 +293,17 @@ else {
                         <div class="panel-body">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="' .
-                     $options["root"] . 'mostra/corsi" target="_blank">Schede corsi</a></li>
+                     $dati['info']['root'] . 'mostra/corsi" target="_blank">Schede corsi</a></li>
                                 <li><a href="' .
-                     $options["root"] . 'mostra/classi" target="_blank">Schede classi</a></li>
+                     $dati['info']['root'] . 'mostra/classi" target="_blank">Schede classi</a></li>
                                 <li><a href="' .
-                     $options["root"] .
+                     $dati['info']['root'] .
                      'mostra/random" target="_blank">Assegnati a random</a></li>
                                 <li><i class="fa fa-credit-card-alt fa-2x"></i> <a href="' .
-                     $options["root"] .
+                     $dati['info']['root'] .
                      'mostra/barcodes" target="_blank">Barcode degli studenti</a></li>
                                 <li><a href="' .
-                     $options["root"] . 'download/barcodes" target="_blank">Scarica database barcode</a></li>
+                     $dati['info']['root'] . 'download/barcodes" target="_blank">Scarica database barcode</a></li>
                             </ul>
                         </div>
                     </div>

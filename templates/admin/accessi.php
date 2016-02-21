@@ -1,10 +1,10 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
-if (isset($reset)) $options["database"]->query("TRUNCATE TABLE accessi");
+if (!isset($dati)) require_once 'utility.php';
+if (isset($reset)) $dati['database']->query("TRUNCATE TABLE accessi");
 $datatable = true;
 $pageTitle = "Accessi effettuati";
 require_once 'templates/shared/header.php';
-$results = $options["database"]->select("accessi", "*", array ("ORDER" => "data DESC"));
+$results = $dati['database']->select("accessi", "*", array ("ORDER" => "data DESC"));
 echo '
             <div class="jumbotron indigo">
                 <div class="container text-center">
@@ -27,7 +27,7 @@ echo '
 if ($results != null) {
     foreach ($results as $result) {
         $name = "";
-        $datas = $options["database"]->select("persone", "*", array ("id" => $result["id"]));
+        $datas = $dati['database']->select("persone", "*", array ("id" => $result["id"]));
         if ($datas != null) {
             foreach ($datas as $data) {
                 $name = $data["nome"];
@@ -45,8 +45,8 @@ if ($results != null) {
 echo '
                         </tbody>
             	    </table>
-                    <p>Accessi al sito: ' . $options["database"]->count("accessi", "*") . '</p>
-                    <p><a href="' . $options["root"] . 'reset/accessi" class="btn btn-danger">Azzera il registro degli accessi</a></p>
+                    <p>Accessi al sito: ' . $dati['database']->count("accessi", "*") . '</p>
+                    <p><a href="' . $dati['info']['root'] . 'reset/accessi" class="btn btn-danger">Azzera il registro degli accessi</a></p>
                 </div>
             </div>';
 require_once 'templates/shared/footer.php';

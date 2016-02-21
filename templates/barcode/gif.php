@@ -1,5 +1,5 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 require_once 'barcode.php';
 
 // -------------------------------------------------- //
@@ -29,7 +29,7 @@ else {
 $angle = 0; // rotation in degrees : nb : non horizontable barcode might not be usable because of pixelisation
 
 
-$code = $options["database"]->get("ean", "ean", array ("persona" => $id)); // barcode, of course ;)
+$code = $dati['database']->get("ean", "ean", array ("persona" => $id)); // barcode, of course ;)
 $type = 'ean13';
 
 // -------------------------------------------------- //

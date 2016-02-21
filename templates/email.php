@@ -1,26 +1,31 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) {
+    require_once 'utility.php';
+}
 if (isset($_POST['txtEditor'])) {
-    $msg = "";
-    $msg .= "Informazioni tecniche: " . getenv('HTTP_USER_AGENT') . "<br><br>";
+    $msg = 'Informazioni tecniche: ' . getenv('HTTP_USER_AGENT') . '<br><br>';
     if (isUserAutenticate()) {
-        $persone = $options["database"]->select("persone", array ("nome", "email"), array ("id" => $options["user"]));
+        $persone = $dati['database']->select('persone', array ('nome', 'email'), array ('id' => $dati['user']));
         if ($persone != null) {
-            foreach ($persone as $persona)
-                $msg .= "Messaggio da parte di " . $persona["nome"] . " (entrato)<br>Email: " . decode($persona["email"]) . "<br>";
+            foreach ($persone as $persona) {
+                $msg .= 'Messaggio da parte di ' . $persona['nome'] . ' (entrato)<br>Email: ' . decode($persona['email']) . '<br>';
+            }
         }
     }
-    else
-        $msg .= "Messaggio da parte di " . $_POST["name"] . "<br>Email: " . $_POST["email"] . "<br>";
-    if (isset($_POST['number']) && $_POST['number'] != "") $msg .= "Numero di telefono: " . $_POST['number'] . "<br>";
+    else {
+        $msg .= 'Messaggio da parte di ' . $_POST['name'] . '<br>Email: ' . $_POST['email'] . '<br>';
+    }
+    if (isset($_POST['number']) && $_POST['number'] != '') {
+        $msg .= 'Numero di telefono: ' . $_POST['number'] . '<br>';
+    }
     $msg .= $_POST['txtEditor'];
-    send($options["email"], $options["sito"], "Assistenza", $msg);
+    send($dati['info']['email'], $dati['info']['sito'], 'Assistenza', $msg);
     salva();
-    finito("email");
+    finito('email');
 }
 else {
     $editor = true;
-    $pageTitle = "Contattaci";
+    $pageTitle = 'Contattaci';
     require_once 'shared/header.php';
     echo '
             <div class="jumbotron">
@@ -36,13 +41,15 @@ else {
             <hr>
             <div class="container">
                 <form action="" method="post" class="form-horizontal" role="form">';
-    if (!isUserAutenticate() || $options["first"]) {
+    if (!isUserAutenticate() || $dati['first']) {
         echo '
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Nome e cognome</label>
                         <div class="col-sm-10">
                             <input class="form-control" name="name" id="name" type="text"';
-        if (isset($_POST['name'])) echo ' value="' . $_POST['name'] . '"';
+        if (isset($_POST['name'])) {
+            echo ' value="' . $_POST['name'] . '"';
+        }
         echo ' required>
                         </div>
                     </div>
@@ -50,7 +57,9 @@ else {
                         <label for="email" class="col-xs-12 col-sm-2 control-label">Email</label>
                         <div class="col-xs-12 col-sm-10">
                             <input class="form-control" name="email" maxlength="100" id="email" type="email"';
-        if (isset($_POST['email'])) echo ' value="' . $_POST['email'] . '"';
+        if (isset($_POST['email'])) {
+            echo ' value="' . $_POST['email'] . '"';
+        }
         echo ' required>
                         </div>
                     </div>';
@@ -60,7 +69,9 @@ else {
                         <label for="email" class="col-xs-12 col-sm-2 control-label">Numero di telefono (facoltativo)</label>
                         <div class="col-xs-12 col-sm-10">
                             <input class="form-control" name="number" id="number" type="number"';
-    if (isset($_POST['number'])) echo ' value="' . $_POST['number'] . '"';
+    if (isset($_POST['number'])) {
+        echo ' value="' . $_POST['number'] . '"';
+    }
     echo '>
                         </div>
                     </div>
@@ -71,11 +82,10 @@ else {
                             <button type="submit" class="btn btn-primary btn-block">Invia</button>
                         </div>
                         <div class="col-xs-6">
-                            <a href="' . $options["root"] . '" class="btn btn-default btn-block">Annulla</a>
+                            <a href="' . $dati['root'] . '" class="btn btn-default btn-block">Annulla</a>
                         </div>
                     </div>
                 </form>
             </div>';
     require_once 'shared/footer.php';
 }
-?>

@@ -1,13 +1,13 @@
 {
     "require": {
-        "thomaspark/bootswatch": "*",
         "ircmaxell/password-compat": "^1.0",
-        "slim/slim": "^2.0",
+        "slim/slim": "2.*",
         "catfan/Medoo": "^1.0",
         "phpmailer/phpmailer": "^5.2",
         "datatables/datatables": "^1.10",
         "tinymce/tinymce": "^4.3",
         "fortawesome/font-awesome": "^4.5",
-        "setasign/fpdf": "^1.8"
+        "setasign/fpdf": "^1.8",
+        "thomaspark/bootswatch": "^3.3"
     }
 }

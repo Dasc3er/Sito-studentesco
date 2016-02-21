@@ -2,9 +2,9 @@
 if (isAdminUserAutenticate()) {
     require_once 'pdf.php';
     $pdf = new PDF();
-    $classi = $options["database"]->select("classi", "*");
-    $studenti = $options["database"]->select("studenti", "*", array ("id" => $options["database"]->max("studenti", "id")));
-    $datas = $options["database"]->select("persone", "*", array ("stato" => 0, "ORDER" => "id"));
+    $classi = $dati['database']->select("classi", "*");
+    $studenti = $dati['database']->select("studenti", "*", array ("id" => $dati['database']->max("studenti", "id")));
+    $datas = $dati['database']->select("persone", "*", array ("stato" => 0, "ORDER" => "id"));
     $text = "";
     $cont = 0;
     if ($datas != null) {

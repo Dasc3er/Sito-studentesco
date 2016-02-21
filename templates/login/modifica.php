@@ -1,5 +1,5 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 if (isset($info)) $pageTitle = "Modifica impostazioni";
 else if (isset($email)) $pageTitle = "Modifica email";
 else $pageTitle = "Modifica credenziali";
@@ -17,9 +17,9 @@ if (isset($info)) {
         if (isset($_POST['news']) && $_POST['news'] == "yes") $news = 1;
         $_SESSION["mode"] = $mode;
         $_SESSION["style"] = $_POST['stile'];
-        $options["database"]->update("opzioni", 
+        $dati['database']->update("opzioni", 
                 array ("newsletter" => $newsletter, "style" => $_POST['stile'], "mode" => $mode, "rap" => $rap, "news" => $news), 
-                array ("id" => $options["user"]));
+                array ("id" => $dati["user"]));
         salva();
     }
     $newsletter = 0;
@@ -27,7 +27,7 @@ if (isset($info)) {
     $rap = 0;
     $news = 0;
     $stile = 0;
-    $results = $options["database"]->select("opzioni", "*", array ("id" => $options["user"]));
+    $results = $dati['database']->select("opzioni", "*", array ("id" => $dati["user"]));
     if ($results != null) {
         foreach ($results as $result) {
             $newsletter = $result["newsletter"];
@@ -100,7 +100,7 @@ if (isset($info)) {
                                 <button type="submit" class="btn btn-primary">Salva impostazioni</button>
                             </div>
                             <div class="col-xs-12 col-sm-5">
-                                <a href="' . $options["root"] . '" class="btn btn-default">Annulla</a>
+                                <a href="' . $dati['info']['root'] . '" class="btn btn-default">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -110,10 +110,10 @@ if (isset($info)) {
 else if (isset($email)) {
     if (isset($_POST['email'])) {
         $email = encode($_POST['email']);
-        if (isEmailFree($options["database"], $email, $options["user"])) {
+        if (isEmailFree($dati['database'], $email, $dati["user"])) {
             $number = rand(1, 1000000000);
-            $options["database"]->update("persone", array ("email" => $email, "verificata" => $number), 
-                    array ("id" => $options["user"]));
+            $dati['database']->update("persone", array ("email" => $email, "verificata" => $number), 
+                    array ("id" => $dati["user"]));
             salva();
         }
         else
@@ -131,7 +131,7 @@ else if (isset($email)) {
                     <h1><i class="fa fa-envelope"></i> Modifica email</h1>
                     <p>L\'email verr&agrave; utilizzata esclusivamente per news importanti, e non sar&agrave; resa disponibile a nessuno! Siete in buone mani... <span class="text-blue">Parola di Scout!</span> (qualcuno tra gli iscritti ne far&agrave; pur parte)</p>
                     <p>Il tuo indirizzo email attuale &egrave; ' . decode(
-            $options["database"]->get("persone", "email", array ("id" => $options["user"]))) . '</p>
+            $dati['database']->get("persone", "email", array ("id" => $dati["user"]))) . '</p>
                 </div>
             </div>
             <div class="jumbotron">
@@ -162,31 +162,31 @@ else {
     $complexify = true;
     if (isset($_POST['username']) && isset($_POST['Password'])) {
         $username = encode(strip_tags($_POST['username']));
-        if ($options["first"]) $email = encode($_POST['email']);
+        if ($dati["first"]) $email = encode($_POST['email']);
         $password = $_POST['Password'];
-        if (isset($rand)) $options["user"] = $options["database"]->get("persone", "id", array ("stato" => $rand));
-        $userFree = isUserFree($options["database"], $username, $options["user"]);
-        if ($options["first"]) $emailFree = isEmailFree($options["database"], $email, $options["user"]);
+        if (isset($rand)) $dati["user"] = $dati['database']->get("persone", "id", array ("stato" => $rand));
+        $userFree = isUserFree($dati['database'], $username, $dati["user"]);
+        if ($dati["first"]) $emailFree = isEmailFree($dati['database'], $email, $dati["user"]);
         if ($password != $_POST['RipPassword']) $msg = "Le password devono corrispondere!!!";
-        else if ($userFree && (!$options["first"] || $emailFree)) {
+        else if ($userFree && (!$dati["first"] || $emailFree)) {
             $control = hashpassword($password);
             if (isset($rand)) {
-                $options["database"]->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
+                $dati['database']->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
                         array ("stato" => $rand));
             }
-            else if (isset($options["first"]) && $options["first"]) {
+            else if (isset($dati["first"]) && $dati["first"]) {
                 $number = rand(2, 1000000000);
-                $options["database"]->update("persone", 
+                $dati['database']->update("persone", 
                         array ("username" => $username, "email" => $email, "verificata" => $number, "password" => $control, 
-                            "stato" => 1), array ("id" => $options["user"]));
+                            "stato" => 1), array ("id" => $dati["user"]));
             }
             else
-                $options["database"]->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
-                        array ("id" => $options["user"]));
+                $dati['database']->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
+                        array ("id" => $dati["user"]));
             $_SESSION["username"] = $username;
             salva();
         }
-        else if ($options["first"] && $emailFree) $msg = "L'email inserita &egrave; gi&agrave; utilizzata da un altro utente.";
+        else if ($dati["first"] && $emailFree) $msg = "L'email inserita &egrave; gi&agrave; utilizzata da un altro utente.";
         else if ($userFree) $msg = "L'username inserito &egrave; gi&agrave; utilizzata da un altro utente.";
         else $msg = "Username e/p email inseriti sono gi&agrave; utilizzati da altri utenti.";
     }
@@ -203,7 +203,7 @@ else {
                     <p>Requisiti e avvertimenti:</p><ul>
                         <li><p>Gli username devono essere pi&ugrave; corti di 100 caratteri.<span class="text-red">Per gli informatici: non devono essere presenti tag HTML, che vengono eliminate automaticamente ;)</p></li>
                         <li><p><strong>Le password sono case sensitive: i caratteri maiuscoli e minuscoli sono differenti!!!</strong></p></li>';
-    if (isset($options["first"]) && $options["first"]) echo '
+    if (isset($dati["first"]) && $dati["first"]) echo '
                         <li><p>L\'email verr&agrave; utilizzata esclusivamente per news importanti, e non sar&agrave; resa disponibile a nessuno! Siete in buone mani... <span class="text-blue">Parola di Scout!</span> (qualcuno tra gli iscritti ne far&agrave; pur parte)</p></li>';
     echo '
                     </ul>
@@ -221,7 +221,7 @@ else {
     echo 'required>
                             </div>
                         </div>';
-    if (isset($options["first"]) && $options["first"]) {
+    if (isset($dati["first"]) && $dati["first"]) {
         echo '
                         <div class="form-group">
                             <label for="email" class="col-xs-12 col-sm-2 control-label">Email</label>

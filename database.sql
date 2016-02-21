@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 04, 2016 at 03:40 PM
+-- Generation Time: Feb 18, 2016 at 02:38 PM
 -- Server version: 5.7.10
 -- PHP Version: 7.0.2
 
@@ -27,15 +27,15 @@ USE `autogestione`;
 --
 -- Table structure for table `accessi`
 --
--- Creation: Feb 04, 2016 at 02:39 PM
--- Last update: Feb 04, 2016 at 02:39 PM
+-- Creation: Feb 13, 2016 at 01:21 PM
+-- Last update: Feb 18, 2016 at 01:32 PM
 --
 
 CREATE TABLE `accessi` (
   `id` int(11) DEFAULT NULL,
   `tipo_browser` varchar(255) DEFAULT NULL,
   `indirizzo` varchar(255) DEFAULT NULL,
-  `data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `data` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -43,6 +43,23 @@ CREATE TABLE `accessi` (
 --
 
 TRUNCATE TABLE `accessi`;
+--
+-- Dumping data for table `accessi`
+--
+
+INSERT INTO `accessi` (`id`, `tipo_browser`, `indirizzo`, `data`) VALUES
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36', '127.0.0.1', '2016-02-04 16:51:03'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36', '127.0.0.1', '2016-02-07 11:13:20'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36', '127.0.0.1', '2016-02-07 16:59:57'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-12 14:14:49'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-12 18:20:56'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-12 20:27:22'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-13 13:49:20'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-16 18:02:27'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-16 18:06:45'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-16 18:17:45'),
+(1, 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-18 14:32:34');
+
 -- --------------------------------------------------------
 
 --
@@ -67,6 +84,41 @@ TRUNCATE TABLE `admins`;
 
 INSERT INTO `admins` (`id`) VALUES
 (1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `articoli`
+--
+-- Creation: Feb 13, 2016 at 01:16 PM
+-- Last update: Feb 13, 2016 at 04:29 PM
+--
+
+CREATE TABLE `articoli` (
+  `id` int(11) NOT NULL,
+  `categoria` int(11) DEFAULT NULL,
+  `nome` varchar(255) DEFAULT NULL,
+  `closed` int(11) DEFAULT NULL,
+  `stato` int(1) DEFAULT NULL,
+  `da` int(11) DEFAULT NULL,
+  `creatore` int(11) DEFAULT NULL,
+  `data` datetime DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Truncate table before insert `articoli`
+--
+
+TRUNCATE TABLE `articoli`;
+--
+-- Dumping data for table `articoli`
+--
+
+INSERT INTO `articoli` (`id`, `categoria`, `nome`, `closed`, `stato`, `da`, `creatore`, `data`) VALUES
+(1, 1, 'Articolo 1', 0, 0, NULL, 1, '2016-02-13 14:34:33'),
+(2, 2, 'Articolo 2', 1, 0, NULL, 2, '2016-02-13 14:34:33'),
+(3, 2, 'Articolo 3', 1, 0, NULL, 2, '2016-02-13 14:34:33'),
+(4, 2, 'Articolo 4', 0, 0, NULL, 1, '2016-02-13 14:34:33');
 
 -- --------------------------------------------------------
 
@@ -129,10 +181,43 @@ INSERT INTO `autogestioni` (`id`, `nome`, `data`, `ultima`, `random`, `newslette
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `categorie`
+--
+-- Creation: Feb 13, 2016 at 01:21 PM
+-- Last update: Feb 13, 2016 at 01:21 PM
+--
+
+CREATE TABLE `categorie` (
+  `id` int(11) NOT NULL,
+  `tipo` int(11) DEFAULT NULL,
+  `nome` varchar(255) DEFAULT NULL,
+  `stato` int(1) DEFAULT NULL,
+  `da` int(11) DEFAULT NULL,
+  `creatore` int(11) DEFAULT NULL,
+  `data` datetime NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Truncate table before insert `categorie`
+--
+
+TRUNCATE TABLE `categorie`;
+--
+-- Dumping data for table `categorie`
+--
+
+INSERT INTO `categorie` (`id`, `tipo`, `nome`, `stato`, `da`, `creatore`, `data`) VALUES
+(1, 3, 'Categoria 1', 0, NULL, 1, '2016-02-12 18:27:10'),
+(2, 1, 'Categoria 2', 0, NULL, 1, '2016-02-12 18:26:59'),
+(3, 1, 'Categoria 3', 0, NULL, 2, '2016-02-12 18:37:15');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `citazioni`
 --
--- Creation: Jan 22, 2016 at 04:37 PM
--- Last update: Jan 30, 2016 at 03:16 PM
+-- Creation: Feb 13, 2016 at 01:23 PM
+-- Last update: Feb 13, 2016 at 01:23 PM
 --
 
 CREATE TABLE `citazioni` (
@@ -141,7 +226,8 @@ CREATE TABLE `citazioni` (
   `descrizione` varchar(2500) DEFAULT NULL,
   `creatore` int(11) DEFAULT NULL,
   `stato` int(1) DEFAULT NULL,
-  `da` int(11) DEFAULT NULL
+  `da` int(11) DEFAULT NULL,
+  `data` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -153,12 +239,12 @@ TRUNCATE TABLE `citazioni`;
 -- Dumping data for table `citazioni`
 --
 
-INSERT INTO `citazioni` (`id`, `prof`, `descrizione`, `creatore`, `stato`, `da`) VALUES
-(1, 1, 'Citazione 1', 1, 0, 1),
-(2, 1, 'Citazione 2', 1, 0, 1),
-(3, 2, 'Citazione 3', 1, 0, 1),
-(4, 2, 'Citazione 4', 1, 0, 1),
-(5, 3, 'Citazione 5', 1, 1, 1);
+INSERT INTO `citazioni` (`id`, `prof`, `descrizione`, `creatore`, `stato`, `da`, `data`) VALUES
+(1, 1, 'Citazione 1', 1, 0, 1, NULL),
+(2, 1, 'Citazione 2', 1, 0, 1, NULL),
+(3, 2, 'Citazione 3', 1, 0, 1, NULL),
+(4, 2, 'Citazione 4', 1, 0, 1, NULL),
+(5, 3, 'Citazione 5', 1, 0, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -233,8 +319,8 @@ INSERT INTO `classi` (`id`, `scuola`, `nome`) VALUES
 --
 -- Table structure for table `corsi`
 --
--- Creation: Jan 22, 2016 at 04:37 PM
--- Last update: Jan 22, 2016 at 04:37 PM
+-- Creation: Feb 13, 2016 at 01:23 PM
+-- Last update: Feb 13, 2016 at 01:23 PM
 --
 
 CREATE TABLE `corsi` (
@@ -249,7 +335,8 @@ CREATE TABLE `corsi` (
   `creatore` int(11) NOT NULL,
   `stato` int(1) NOT NULL,
   `da` int(11) DEFAULT NULL,
-  `controllore` int(11) NOT NULL
+  `controllore` int(11) NOT NULL,
+  `data` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -261,48 +348,48 @@ TRUNCATE TABLE `corsi`;
 -- Dumping data for table `corsi`
 --
 
-INSERT INTO `corsi` (`id`, `autogestione`, `scuola`, `nome`, `descrizione`, `quando`, `max`, `aule`, `creatore`, `stato`, `da`, `controllore`) VALUES
-(1, 1, 1, 'Prova 1', 'Corso di prova 1', '1,2', 30, 'Aula 1', 1, 0, NULL, 1),
-(2, 1, 2, 'Scuola 2, prova 1', 'Scuola 2, corso di prova 1', '1,2', 30, 'Aula 1', 1, 0, NULL, 1),
-(3, 1, 1, 'Prova 2', 'Corso di prova 2', '1,2', 30, 'Aula 2', 1, 0, NULL, 1),
-(4, 1, 2, 'Scuola 2, prova 2', 'Scuola 2, corso di prova 2', '1,2', 30, 'Aula 2', 1, 0, NULL, 1),
-(5, 1, 1, 'Prova 3', 'Corso di prova 3', '1,2', 30, 'Aula 3', 1, 0, NULL, 1),
-(6, 1, 2, 'Scuola 2, prova 3', 'Scuola 2, corso di prova 3', '1,2', 30, 'Aula 3', 1, 0, NULL, 1),
-(7, 1, 1, 'Prova 4', 'Corso di prova 4', '1,2', 30, 'Aula 4', 1, 0, NULL, 1),
-(8, 1, 2, 'Scuola 2, prova 4', 'Scuola 2, corso di prova 4', '1,2', 30, 'Aula 4', 1, 0, NULL, 1),
-(9, 1, 1, 'Prova 5', 'Corso di prova 5', '1,2', 30, 'Aula 5', 1, 0, NULL, 1),
-(10, 1, 2, 'Scuola 2, prova 5', 'Scuola 2, corso di prova 5', '1,2', 30, 'Aula 5', 1, 0, NULL, 1),
-(11, 1, 1, 'Prova 6', 'Corso di prova 6', '3,4', 30, 'Aula 6', 1, 0, NULL, 1),
-(12, 1, 2, 'Scuola 2, prova 6', 'Scuola 2, corso di prova 6', '3,4', 30, 'Aula 6', 1, 0, NULL, 1),
-(13, 1, 1, 'Prova 7', 'Corso di prova 7', '3,4', 30, 'Aula 7', 1, 0, NULL, 1),
-(14, 1, 2, 'Scuola 2, prova 7', 'Scuola 2, corso di prova 7', '3,4', 30, 'Aula 7', 1, 0, NULL, 1),
-(15, 1, 1, 'Prova 8', 'Corso di prova 8', '3,4', 30, 'Aula 8', 1, 0, NULL, 1),
-(16, 1, 2, 'Scuola 2, prova 8', 'Scuola 2, corso di prova 8', '3,4', 30, 'Aula 8', 1, 0, NULL, 1),
-(17, 1, 1, 'Prova 9', 'Corso di prova 9', '3,4', 30, 'Aula 9', 1, 0, NULL, 1),
-(18, 1, 2, 'Scuola 2, prova 9', 'Scuola 2, corso di prova 9', '3,4', 30, 'Aula 9', 1, 0, NULL, 1),
-(19, 1, 1, 'Prova 10', 'Corso di prova 10', '3,4', 30, 'Aula 10', 1, 0, NULL, 1),
-(20, 1, 2, 'Scuola 2, prova 10', 'Scuola 2, corso di prova 10', '3,4', 30, 'Aula 10', 1, 0, NULL, 1),
-(21, 1, 1, 'Torneo 1', 'Torneo 1', '1,2,3,4,5', 30, 'Palestra 1', 1, 0, NULL, 1),
-(22, 1, 1, 'Proposta 1', 'Proposta di prova 1', NULL, 0, '', 1, 0, 1, 0),
-(23, 1, 2, 'Scuola 2, proposta 1', 'Scuola 2, proposta di prova 1', NULL, 0, '', 1, 0, 1, 0),
-(24, 1, 1, 'Proposta 2', 'Proposta di prova 2', NULL, 0, '', 1, 0, 1, 0),
-(25, 1, 2, 'Scuola 2, proposta 2', 'Scuola 2, proposta di prova 2', NULL, 0, '', 1, 0, 1, 0),
-(26, 1, 1, 'Proposta 3', 'Proposta di prova 3', NULL, 0, '', 1, 0, 1, 0),
-(27, 1, 2, 'Scuola 2, proposta 3', 'Scuola 2, proposta di prova 3', NULL, 0, '', 1, 0, 1, 0),
-(28, 1, 1, 'Proposta 4', 'Proposta di prova 4', NULL, 0, '', 1, 0, 1, 0),
-(29, 1, 2, 'Scuola 2, proposta 4', 'Scuola 2, proposta di prova 4', NULL, 0, '', 1, 0, 1, 0),
-(30, 1, 1, 'Proposta 5', 'Proposta di prova 5', NULL, 0, '', 1, 0, 1, 0),
-(31, 1, 2, 'Scuola 2, proposta 5', 'Scuola 2, proposta di prova 5', NULL, 0, '', 1, 0, 1, 0),
-(32, 1, 1, 'Proposta 6', 'Proposta di prova 6', NULL, 0, '', 1, 0, 1, 0),
-(33, 1, 2, 'Scuola 2, proposta 6', 'Scuola 2, proposta di prova 6', NULL, 0, '', 1, 0, 1, 0),
-(34, 1, 1, 'Proposta 7', 'Proposta di prova 7', NULL, 0, '', 1, 0, 1, 0),
-(35, 1, 2, 'Scuola 2, proposta 7', 'Scuola 2, proposta di prova 7', NULL, 0, '', 1, 0, 1, 0),
-(36, 1, 1, 'Proposta 8', 'Proposta di prova 8', NULL, 0, '', 1, 0, 1, 0),
-(37, 1, 2, 'Scuola 2, proposta 8', 'Scuola 2, proposta di prova 8', NULL, 0, '', 1, 0, 1, 0),
-(38, 1, 1, 'Proposta 9', 'Proposta di prova 9', NULL, 0, '', 1, 0, 1, 0),
-(39, 1, 2, 'Scuola 2, proposta 9', 'Scuola 2, proposta di prova 9', NULL, 0, '', 1, 0, 1, 0),
-(40, 1, 1, 'Proposta 10', 'Proposta di prova 10', NULL, 0, '', 1, 0, 1, 0),
-(41, 1, 2, 'Scuola 2, proposta 10', 'Scuola 2, proposta di prova 10', NULL, 0, '', 1, 0, 1, 0);
+INSERT INTO `corsi` (`id`, `autogestione`, `scuola`, `nome`, `descrizione`, `quando`, `max`, `aule`, `creatore`, `stato`, `da`, `controllore`, `data`) VALUES
+(1, 1, 1, 'Prova 1', 'Corso di prova 1', '1,2', 30, 'Aula 1', 1, 0, NULL, 1, NULL),
+(2, 1, 2, 'Scuola 2, prova 1', 'Scuola 2, corso di prova 1', '1,2', 30, 'Aula 1', 1, 0, NULL, 1, NULL),
+(3, 1, 1, 'Prova 2', 'Corso di prova 2', '1,2', 30, 'Aula 2', 1, 0, NULL, 1, NULL),
+(4, 1, 2, 'Scuola 2, prova 2', 'Scuola 2, corso di prova 2', '1,2', 30, 'Aula 2', 1, 0, NULL, 1, NULL),
+(5, 1, 1, 'Prova 3', 'Corso di prova 3', '1,2', 30, 'Aula 3', 1, 0, NULL, 1, NULL),
+(6, 1, 2, 'Scuola 2, prova 3', 'Scuola 2, corso di prova 3', '1,2', 30, 'Aula 3', 1, 0, NULL, 1, NULL),
+(7, 1, 1, 'Prova 4', 'Corso di prova 4', '1,2', 30, 'Aula 4', 1, 0, NULL, 1, NULL),
+(8, 1, 2, 'Scuola 2, prova 4', 'Scuola 2, corso di prova 4', '1,2', 30, 'Aula 4', 1, 0, NULL, 1, NULL),
+(9, 1, 1, 'Prova 5', 'Corso di prova 5', '1,2', 30, 'Aula 5', 1, 0, NULL, 1, NULL),
+(10, 1, 2, 'Scuola 2, prova 5', 'Scuola 2, corso di prova 5', '1,2', 30, 'Aula 5', 1, 0, NULL, 1, NULL),
+(11, 1, 1, 'Prova 6', 'Corso di prova 6', '3,4', 30, 'Aula 6', 1, 0, NULL, 1, NULL),
+(12, 1, 2, 'Scuola 2, prova 6', 'Scuola 2, corso di prova 6', '3,4', 30, 'Aula 6', 1, 0, NULL, 1, NULL),
+(13, 1, 1, 'Prova 7', 'Corso di prova 7', '3,4', 30, 'Aula 7', 1, 0, NULL, 1, NULL),
+(14, 1, 2, 'Scuola 2, prova 7', 'Scuola 2, corso di prova 7', '3,4', 30, 'Aula 7', 1, 0, NULL, 1, NULL),
+(15, 1, 1, 'Prova 8', 'Corso di prova 8', '3,4', 30, 'Aula 8', 1, 0, NULL, 1, NULL),
+(16, 1, 2, 'Scuola 2, prova 8', 'Scuola 2, corso di prova 8', '3,4', 30, 'Aula 8', 1, 0, NULL, 1, NULL),
+(17, 1, 1, 'Prova 9', 'Corso di prova 9', '3,4', 30, 'Aula 9', 1, 0, NULL, 1, NULL),
+(18, 1, 2, 'Scuola 2, prova 9', 'Scuola 2, corso di prova 9', '3,4', 30, 'Aula 9', 1, 0, NULL, 1, NULL),
+(19, 1, 1, 'Prova 10', 'Corso di prova 10', '3,4', 30, 'Aula 10', 1, 0, NULL, 1, NULL),
+(20, 1, 2, 'Scuola 2, prova 10', 'Scuola 2, corso di prova 10', '3,4', 30, 'Aula 10', 1, 0, NULL, 1, NULL),
+(21, 1, 1, 'Torneo 1', 'Torneo 1', '1,2,3,4,5', 30, 'Palestra 1', 1, 0, NULL, 1, NULL),
+(22, 1, 1, 'Proposta 1', 'Proposta di prova 1', NULL, 0, '', 1, 0, 1, 0, NULL),
+(23, 1, 2, 'Scuola 2, proposta 1', 'Scuola 2, proposta di prova 1', NULL, 0, '', 1, 0, 1, 0, NULL),
+(24, 1, 1, 'Proposta 2', 'Proposta di prova 2', NULL, 0, '', 1, 0, 1, 0, NULL),
+(25, 1, 2, 'Scuola 2, proposta 2', 'Scuola 2, proposta di prova 2', NULL, 0, '', 1, 0, 1, 0, NULL),
+(26, 1, 1, 'Proposta 3', 'Proposta di prova 3', NULL, 0, '', 1, 0, 1, 0, NULL),
+(27, 1, 2, 'Scuola 2, proposta 3', 'Scuola 2, proposta di prova 3', NULL, 0, '', 1, 0, 1, 0, NULL),
+(28, 1, 1, 'Proposta 4', 'Proposta di prova 4', NULL, 0, '', 1, 0, 1, 0, NULL),
+(29, 1, 2, 'Scuola 2, proposta 4', 'Scuola 2, proposta di prova 4', NULL, 0, '', 1, 0, 1, 0, NULL),
+(30, 1, 1, 'Proposta 5', 'Proposta di prova 5', NULL, 0, '', 1, 0, 1, 0, NULL),
+(31, 1, 2, 'Scuola 2, proposta 5', 'Scuola 2, proposta di prova 5', NULL, 0, '', 1, 0, 1, 0, NULL),
+(32, 1, 1, 'Proposta 6', 'Proposta di prova 6', NULL, 0, '', 1, 0, 1, 0, NULL),
+(33, 1, 2, 'Scuola 2, proposta 6', 'Scuola 2, proposta di prova 6', NULL, 0, '', 1, 0, 1, 0, NULL),
+(34, 1, 1, 'Proposta 7', 'Proposta di prova 7', NULL, 0, '', 1, 0, 1, 0, NULL),
+(35, 1, 2, 'Scuola 2, proposta 7', 'Scuola 2, proposta di prova 7', NULL, 0, '', 1, 0, 1, 0, NULL),
+(36, 1, 1, 'Proposta 8', 'Proposta di prova 8', NULL, 0, '', 1, 0, 1, 0, NULL),
+(37, 1, 2, 'Scuola 2, proposta 8', 'Scuola 2, proposta di prova 8', NULL, 0, '', 1, 0, 1, 0, NULL),
+(38, 1, 1, 'Proposta 9', 'Proposta di prova 9', NULL, 0, '', 1, 0, 1, 0, NULL),
+(39, 1, 2, 'Scuola 2, proposta 9', 'Scuola 2, proposta di prova 9', NULL, 0, '', 1, 0, 1, 0, NULL),
+(40, 1, 1, 'Proposta 10', 'Proposta di prova 10', NULL, 0, '', 1, 0, 1, 0, NULL),
+(41, 1, 2, 'Scuola 2, proposta 10', 'Scuola 2, proposta di prova 10', NULL, 0, '', 1, 0, 1, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -1286,7 +1373,7 @@ TRUNCATE TABLE `giocatori`;
 -- Table structure for table `iscrizioni`
 --
 -- Creation: Jan 22, 2016 at 04:37 PM
--- Last update: Jan 30, 2016 at 03:16 PM
+-- Last update: Feb 12, 2016 at 05:07 PM
 --
 
 CREATE TABLE `iscrizioni` (
@@ -1343,8 +1430,8 @@ TRUNCATE TABLE `max`;
 --
 -- Table structure for table `news`
 --
--- Creation: Jan 22, 2016 at 04:37 PM
--- Last update: Jan 22, 2016 at 04:37 PM
+-- Creation: Feb 12, 2016 at 04:21 PM
+-- Last update: Feb 12, 2016 at 04:21 PM
 --
 
 CREATE TABLE `news` (
@@ -1354,7 +1441,8 @@ CREATE TABLE `news` (
   `creatore` int(11) DEFAULT NULL,
   `stato` int(1) DEFAULT NULL,
   `da` int(11) DEFAULT NULL,
-  `data` date DEFAULT NULL
+  `data` date DEFAULT NULL,
+  `classe` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -1366,9 +1454,9 @@ TRUNCATE TABLE `news`;
 -- Dumping data for table `news`
 --
 
-INSERT INTO `news` (`id`, `titolo`, `contenuto`, `creatore`, `stato`, `da`, `data`) VALUES
-(1, 'Notizia di prova', '<p>Notizia di prova</p>', 1, 1, NULL, '2015-11-18'),
-(2, 'Attenzione!!!', '<p>Username di Admin - Username e Password: admin</p>\r\n<p>Username utente normale - Username e Password: user</p>', 1, 1, NULL, '2016-01-15');
+INSERT INTO `news` (`id`, `titolo`, `contenuto`, `creatore`, `stato`, `da`, `data`, `classe`) VALUES
+(1, 'Notizia di prova', '<p>Notizia di prova</p>', 1, 1, NULL, '2015-11-18', 0),
+(2, 'Attenzione!!!', '<p>Username di Admin - Username e Password: admin</p>\r\n<p>Username utente normale - Username e Password: user</p>', 1, 1, NULL, '2016-01-15', 0);
 
 -- --------------------------------------------------------
 
@@ -3318,6 +3406,46 @@ TRUNCATE TABLE `pomeriggio`;
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `posts`
+--
+-- Creation: Feb 13, 2016 at 01:18 PM
+-- Last update: Feb 18, 2016 at 01:35 PM
+--
+
+CREATE TABLE `posts` (
+  `id` int(11) NOT NULL,
+  `articolo` int(11) DEFAULT NULL,
+  `number` int(11) DEFAULT NULL,
+  `answer` int(11) DEFAULT NULL,
+  `content` varchar(10000) DEFAULT NULL,
+  `da` int(11) DEFAULT NULL,
+  `stato` int(1) DEFAULT NULL,
+  `data` datetime NOT NULL,
+  `creatore` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Truncate table before insert `posts`
+--
+
+TRUNCATE TABLE `posts`;
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`id`, `articolo`, `number`, `answer`, `content`, `da`, `stato`, `data`, `creatore`) VALUES
+(1, 1, 0, 0, '<p>Post di prova 1</p>', NULL, 0, '2016-02-12 16:56:14', 1),
+(2, 2, 0, 0, '<p>Post di prova 2</p>', NULL, 0, '2016-02-12 16:56:17', 1),
+(3, 2, 1, 1, '<p>Post di prova 3</p>', NULL, 0, '2016-02-13 14:13:23', 2),
+(4, 1, 1, 1, '<p>Post di prova 4</p>', NULL, 0, '2016-02-12 17:56:51', 1),
+(5, 1, 2, 2, '<p>Post di prova 5</p>', NULL, 0, '2016-02-13 14:13:47', 2),
+(6, 1, 3, 3, '<p>Post di prova 6</p>', NULL, 0, '2016-02-12 17:56:47', 2),
+(7, 3, 0, 0, '<p>Post di prova 7</p>', NULL, 0, '2016-02-12 19:34:47', 1),
+(8, 4, 0, 0, '<p>Post di prova 8</p>', NULL, 0, '2016-02-13 14:34:46', 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `profs`
 --
 -- Creation: Jan 22, 2016 at 04:37 PM
@@ -3398,14 +3526,14 @@ INSERT INTO `scuole` (`id`, `nome`) VALUES
 --
 -- Table structure for table `sessioni`
 --
--- Creation: Feb 04, 2016 at 02:39 PM
--- Last update: Feb 04, 2016 at 02:39 PM
+-- Creation: Feb 13, 2016 at 01:21 PM
+-- Last update: Feb 18, 2016 at 01:24 PM
 --
 
 CREATE TABLE `sessioni` (
   `tipo_browser` varchar(255) DEFAULT NULL,
   `indirizzo` varchar(255) DEFAULT NULL,
-  `data` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `data` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -3413,6 +3541,21 @@ CREATE TABLE `sessioni` (
 --
 
 TRUNCATE TABLE `sessioni`;
+--
+-- Dumping data for table `sessioni`
+--
+
+INSERT INTO `sessioni` (`tipo_browser`, `indirizzo`, `data`) VALUES
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36', '127.0.0.1', '2016-02-04 16:50:30'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36', '127.0.0.1', '2016-02-07 11:11:29'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.103 Safari/537.36', '127.0.0.1', '2016-02-07 16:59:44'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-12 14:14:37'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-12 00:00:00'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-12 20:27:14'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-13 13:49:11'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-16 17:07:31'),
+('Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36', '127.0.0.1', '2016-02-18 14:24:35');
+
 -- --------------------------------------------------------
 
 --
@@ -4395,10 +4538,42 @@ INSERT INTO `studenti` (`id`, `classe`, `persona`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tipi`
+--
+-- Creation: Feb 13, 2016 at 01:20 PM
+-- Last update: Feb 13, 2016 at 01:20 PM
+--
+
+CREATE TABLE `tipi` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(255) DEFAULT NULL,
+  `stato` int(1) DEFAULT NULL,
+  `da` int(11) DEFAULT NULL,
+  `creatore` int(11) DEFAULT NULL,
+  `data` datetime NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Truncate table before insert `tipi`
+--
+
+TRUNCATE TABLE `tipi`;
+--
+-- Dumping data for table `tipi`
+--
+
+INSERT INTO `tipi` (`id`, `nome`, `stato`, `da`, `creatore`, `data`) VALUES
+(1, 'Tipologia di prova 1', 0, NULL, 1, '2016-02-12 14:47:08'),
+(2, 'Tipologia di prova 2', 0, NULL, 1, '2016-02-12 14:47:10'),
+(3, 'Tipologia di prova 3', 0, NULL, 1, '2016-02-12 17:15:17');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `voti`
 --
 -- Creation: Jan 22, 2016 at 04:37 PM
--- Last update: Jan 30, 2016 at 03:16 PM
+-- Last update: Feb 04, 2016 at 06:18 PM
 --
 
 CREATE TABLE `voti` (
@@ -4417,11 +4592,18 @@ TRUNCATE TABLE `voti`;
 --
 
 INSERT INTO `voti` (`persona`, `citazione`, `stato`) VALUES
-(1, 1, 0);
+(1, 1, 0),
+(1, 4, 0);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `articoli`
+--
+ALTER TABLE `articoli`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `aule`
@@ -4433,6 +4615,12 @@ ALTER TABLE `aule`
 -- Indexes for table `autogestioni`
 --
 ALTER TABLE `autogestioni`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `categorie`
+--
+ALTER TABLE `categorie`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -4466,6 +4654,12 @@ ALTER TABLE `persone`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `profs`
 --
 ALTER TABLE `profs`
@@ -4484,9 +4678,20 @@ ALTER TABLE `squadre`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tipi`
+--
+ALTER TABLE `tipi`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
+--
+-- AUTO_INCREMENT for table `articoli`
+--
+ALTER TABLE `articoli`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `aule`
 --
@@ -4497,6 +4702,11 @@ ALTER TABLE `aule`
 --
 ALTER TABLE `autogestioni`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `categorie`
+--
+ALTER TABLE `categorie`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `citazioni`
 --
@@ -4523,6 +4733,11 @@ ALTER TABLE `news`
 ALTER TABLE `persone`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2824;
 --
+-- AUTO_INCREMENT for table `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+--
 -- AUTO_INCREMENT for table `profs`
 --
 ALTER TABLE `profs`
@@ -4536,6 +4751,11 @@ ALTER TABLE `scuole`
 -- AUTO_INCREMENT for table `squadre`
 --
 ALTER TABLE `squadre`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+--
+-- AUTO_INCREMENT for table `tipi`
+--
+ALTER TABLE `tipi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

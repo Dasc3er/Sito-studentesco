@@ -2,17 +2,17 @@
 if (isAdminUserAutenticate()) {
     require 'pdf.php';
     $pdf = new PDF();
-    $studenti = $options["database"]->select("studenti", "*", 
-            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
-    $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
-    $utenti = $options["database"]->select("persone", "*", array ("ORDER" => "id"));
-    $datas = $options["database"]->select("corsi", "*", 
+    $studenti = $dati['database']->select("studenti", "*", 
+            array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+    $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
+    $utenti = $dati['database']->select("persone", "*", array ("ORDER" => "id"));
+    $datas = $dati['database']->select("corsi", "*", 
             array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
     if ($datas != null) {
         foreach ($datas as $data) {
             $cont = 0;
             $text = "";
-            $results = $options["database"]->select("iscrizioni", "*", 
+            $results = $dati['database']->select("iscrizioni", "*", 
                     array ("AND" => array ("corso" => $data["id"], "stato" => 0)));
             if ($results != null) {
                 foreach ($results as $result) {

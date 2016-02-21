@@ -14,7 +14,7 @@ echo '
         </footer>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>';
 if (isset($editor) && $editor) echo '
-        <script src="' . $options["root"] . 'vendor/tinymce/tinymce/tinymce.min.js"></script>
+        <script src="' . $dati['info']['root'] . 'vendor/tinymce/tinymce/tinymce.min.js"></script>
         <script type="text/javascript">
             tinyMCE.init({
                 selector: "#txtEditor",
@@ -27,7 +27,7 @@ if (isset($editor) && $editor) echo '
             });
         </script>';
 if (isset($readmore) && $readmore) echo '
-        <script src="' . $options["path"] . 'js/readmore.min.js"></script>
+        <script src="' . $dati['info']['path'] . 'js/readmore.min.js"></script>
         <script>
             $("*").find(\'#descrizione\').each(function() {
                 $(this).readmore({
@@ -38,15 +38,16 @@ if (isset($readmore) && $readmore) echo '
                 });
             });
         </script>';
-if (isset($datatable) && $datatable) echo '
-        <script src="' .
-         $options["root"] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
-        <script src="' .
-         $options["root"] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
-        <script async src="' . $options["path"] .
-         'js/minified.js" type="text/javascript"></script>';
+if (isset($datatable) && $datatable) {
+    echo '
+        <script src="' . $dati['info']['root'] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
+        <script src="' . $dati['info']['root'] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
+        <script async src="' . $dati['info']['path'] . 'js/minified.js" type="text/javascript"></script>';
+    if (isMobile()) echo '
+        <script async src="' . $dati['info']['path'] . 'js/jquery.tap.min.js" type="text/javascript"></script>';
+}
 if (isset($complexify) && $complexify) echo '
-        <script src="' . $options["path"] . 'js/jquery.complexify.min.js" type="text/javascript"></script>
+        <script src="' . $dati['info']['path'] . 'js/jquery.complexify.min.js" type="text/javascript"></script>
         <script>
             function check(){
                 if ($("#Password").val() != $("#RipPassword").val()) {
@@ -85,8 +86,7 @@ if (isset($style) && $style) echo '
                     $(\'<link id="css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">\').prependTo("#font");
                 }
                 else {
-                    $(\'<link id="css" href="' .
-         $options["root"] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
+                    $(\'<link id="css" href="' . $dati['info']['root'] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
                 }
             });
         </script>';
@@ -103,8 +103,8 @@ if (isset($wait) && $wait) echo '
         </script>';
 echo '
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>';
-if ($options["snow"]) echo '
-        <script async type="text/javascript" src="' . $options["path"] . 'js/jquery.let_it_snow.js"></script>
+if ($dati["snow"]) echo '
+        <script async type="text/javascript" src="' . $dati['info']['path'] . 'js/jquery.let_it_snow.js"></script>
         <script async>
             $("canvas.snow").let_it_snow({
                 windPower: 3,
@@ -116,7 +116,7 @@ if ($options["snow"]) echo '
 echo '
     </body>
 </html>';
-if ($options["time"]) {
+if ($dati['opzioni']['time']) {
     $mtime = microtime();
     $mtime = explode(" ", $mtime);
     $mtime = $mtime[1] + $mtime[0];

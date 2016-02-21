@@ -1,37 +1,37 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
-$tempo = tempoproposte($options["database"]);
-if (isset($rifiuta) && $tempo && stessauto($options["database"], $options["autogestione"], $rifiuta)) {
-    $options["database"]->update("corsi", array ("da" => $options["user"]), array ("id" => $rifiuta));
+if (!isset($dati)) require_once 'utility.php';
+$tempo = tempoproposte($dati['database']);
+if (isset($rifiuta) && $tempo && stessauto($dati['database'], $dati["autogestione"], $rifiuta)) {
+    $dati['database']->update("corsi", array ("da" => $dati["user"]), array ("id" => $rifiuta));
     echo 1;
 }
-if (isset($stato) && $tempo && stessauto($options["database"], $options["autogestione"], $stato)) {
-    if ($options["database"]->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
-        $options["database"]->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
-        $options["database"]->update("corsi", array ("stato" => 1, "da" => $options["user"]), array ("id" => $stato));
+if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
+    if ($dati['database']->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
+        $dati['database']->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
+        $dati['database']->update("corsi", array ("stato" => 1, "da" => $dati["user"]), array ("id" => $stato));
         echo 1;
     }
-    else if ($options["database"]->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 1))) != 0) {
-        $options["database"]->update("corsi", array ("stato" => 0, "da" => $options["user"]), array ("id" => $stato));
+    else if ($dati['database']->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 1))) != 0) {
+        $dati['database']->update("corsi", array ("stato" => 0, "da" => $dati["user"]), array ("id" => $stato));
         echo 0;
     }
 }
-if (isset($new) && $tempo && proposta($options["database"], $options["autogestione"], $options["user"])) {
-    $pageTitle = "Nuova proposta";
-    $editor = true;
-    require_once 'shared/header.php';
+if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"])) {
     if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-        $options["database"]->insert("corsi", 
-                array ("autogestione" => $options["autogestione"], "nome" => strip_tags($_POST["name"]), 
-                    "descrizione" => $_POST['txtEditor'], "creatore" => $options["user"], "stato" => 1, 
-                    "scuola" => scuola($options["database"], $options["user"])));
+        $dati['database']->insert("corsi", 
+                array ("autogestione" => $dati["autogestione"], "nome" => strip_tags($_POST["name"]), 
+                    "descrizione" => $_POST['txtEditor'], "creatore" => $dati["user"], "stato" => 1, 
+                    "scuola" => scuola($dati['database'], $dati["user"]), "#data" => "NOW()"));
         salva();
         finito("proposta");
     }
+    $pageTitle = "Nuova proposta";
+    $editor = true;
+    require_once 'shared/header.php';
     echo '<div class="jumbotron green">
                 <div class="container text-center">
                     <h1><i class="fa fa-plus"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'proposte" class="btn btn-success">Torna indietro</a>
+                    <a href="' . $dati['info']['root'] . 'proposte" class="btn btn-success">Torna indietro</a>
                 </div>
             </div>
             <div class="jumbotron">
@@ -55,7 +55,7 @@ if (isset($new) && $tempo && proposta($options["database"], $options["autogestio
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' . $options["root"] . 'proposte" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' . $dati['info']['root'] . 'proposte" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -66,12 +66,12 @@ if (isset($new) && $tempo && proposta($options["database"], $options["autogestio
 else if (isset($new)) {
     require_once 'shared/404.php';
 }
-else if (isset($id) && !like($options["database"], $id, $options["user"]) && scuolagiusta($options["database"], $id, $user)) {
-    $options["database"]->insert("like", array ("persona" => $options["user"], "corso" => $id));
+else if (isset($id) && !like($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $user)) {
+    $dati['database']->insert("like", array ("persona" => $dati["user"], "corso" => $id));
     echo 1;
 }
-else if (isset($id) && like($options["database"], $id, $options["user"])) {
-    $options["database"]->delete("like", array ("AND" => array ("persona" => $options["user"], "corso" => $id)));
+else if (isset($id) && like($dati['database'], $id, $dati["user"])) {
+    $dati['database']->delete("like", array ("AND" => array ("persona" => $dati["user"], "corso" => $id)));
     echo 0;
 }
 else {
@@ -79,23 +79,22 @@ else {
     $datatable = true;
     $readmore = true;
     require_once 'shared/header.php';
-    $scuola = scuola($options["database"], $options["user"]);
-    $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-    if (isAdminUserAutenticate()) $results = $options["database"]->select("corsi", "*", 
-            array ("AND" => array ("autogestione" => $options["autogestione"], "quando" => null)));
-    else $results = $options["database"]->select("corsi", "*", 
-            array ("AND" => array ("quando" => null, "scuola" => $scuola, "stato" => 0)));
-    $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-    $like = $options["database"]->select("like", "*");
+    $scuola = scuola($dati['database'], $dati["user"]);
+    $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
+    if (isAdminUserAutenticate()) $results = $dati['database']->select("corsi", "*", 
+            array ("AND" => array ("autogestione" => $dati["autogestione"], "quando" => null)));
+    else $results = $dati['database']->select("corsi", "*", array ("AND" => array ("quando" => null, "scuola" => $scuola, "stato" => 0)));
+    $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
+    $like = $dati['database']->select("like", "*");
     $numero = pieni($like);
-    $interessato = io($like, $options["user"], -1);
+    $interessato = io($like, $dati["user"], -1);
     echo '
             <div class="jumbotron">
                 <div class="container text-center">
                     <h1><i class="fa fa-list fa-1x"></i> Proposte disponibili</h1>
                     <p>Le proposte degli studenti per i corsi dell\'autogestione</p>';
-    if ($tempo && proposta($options["database"], $options["autogestione"], $options["user"]) && $options["autogestione"] != null) echo '
-                    <a href="' . $options["root"] . 'proposta" class="btn btn-primary">Nuova proposta</a>';
+    if ($tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"]) && $dati["autogestione"] != null) echo '
+                    <a href="' . $dati['info']['root'] . 'proposta" class="btn btn-primary">Nuova proposta</a>';
     echo '
                     <p>Puoi creare solo tre <span id="page">proposte</span>...</p>
                 </div>
@@ -113,8 +112,8 @@ else {
         foreach ($results as $key => $result) {
             if ($result["stato"] == 0) {
                 $cont = 0;
-                if ($result["id"] - $numero[0] >= 0 && $numero[1] - $result["id"] >= 0 &&
-                         $numero[2][$result["id"] - $numero[0]] != "") $cont = $numero[2][$result["id"] - $numero[0]];
+                if ($result["id"] - $numero[0] >= 0 && $numero[1] - $result["id"] >= 0 && $numero[2][$result["id"] - $numero[0]] != "") $cont = $numero[2][$result["id"] -
+                         $numero[0]];
                 echo '
                                 <tr>
                                     <td>
@@ -127,7 +126,8 @@ else {
                 if (isAdminUserAutenticate()) {
                     $utente = ricerca($utenti, $result["creatore"]);
                     if ($utente != -1) echo '
-                                            <p><strong>Creato da ' . $utenti[$utente]["nome"] . '</strong></p>';
+                                            <p><strong>Creato da ' . $utenti[$utente]["nome"] .
+                             '</strong></p>';
                 }
                 if ($tempo) {
                     echo '
@@ -136,7 +136,7 @@ else {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="like"';
-                        else echo 'href="' . $options["root"] . 'citazioni/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'citazioni/' . $result["id"] . '"';
                         echo ' class="btn ';
                         if (!inside($interessato, $result["id"])) {
                             echo 'btn-success"><span id="text"><i class="fa fa-thumbs-o-up"></i></span>';
@@ -151,7 +151,7 @@ else {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cambia/proposta/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'cambia/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -222,11 +222,11 @@ else {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cambia/proposta/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'cambia/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                                 <li><a ';
                         if (modo()) echo 'id="cambia"';
-                        else echo 'href="' . $options["root"] . 'rifiuta/proposta/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'rifiuta/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-info"><i class="fa fa-arrow-right"></i> Boccia</a></li>
                                             </ul>';
                     }
@@ -275,7 +275,7 @@ else {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cambia/proposta/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'cambia/proposta/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                             </ul>';
                     }

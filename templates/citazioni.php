@@ -1,18 +1,18 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 if (isset($rifiuta)) {
-    $options["database"]->update("citazioni", array ("da" => $options["user"]), array ("id" => $rifiuta));
+    $dati['database']->update("citazioni", array ("da" => $dati["user"]), array ("id" => $rifiuta));
     salva();
     echo 1;
 }
 else if (isset($stato)) {
-    if ($options["database"]->count("citazioni", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
-        $options["database"]->update("voti", array ("stato" => 1), array ("citazione" => $stato));
-        $options["database"]->update("citazioni", array ("stato" => 1, "da" => $options["user"]), array ("id" => $stato));
+    if ($dati['database']->count("citazioni", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
+        $dati['database']->update("voti", array ("stato" => 1), array ("citazione" => $stato));
+        $dati['database']->update("citazioni", array ("stato" => 1, "da" => $dati["user"]), array ("id" => $stato));
         echo 1;
     }
-    else if ($options["database"]->count("citazioni", array ("AND" => array ("id" => $stato, "stato" => 1))) != 0) {
-        $options["database"]->update("citazioni", array ("stato" => 0, "da" => $options["user"]), array ("id" => $stato));
+    else if ($dati['database']->count("citazioni", array ("AND" => array ("id" => $stato, "stato" => 1))) != 0) {
+        $dati['database']->update("citazioni", array ("stato" => 0, "da" => $dati["user"]), array ("id" => $stato));
         echo 0;
     }
 }
@@ -21,7 +21,7 @@ else if (isset($citazione)) {
         $error = false;
         if (isset($edit)) {
             $pageTitle = "Modifica citazione";
-            $results = $options["database"]->select("citazioni", "*", array ("id" => $edit));
+            $results = $dati['database']->select("citazioni", "*", array ("id" => $edit));
             if ($results == null) $error = true;
             else {
                 foreach ($results as $result) {
@@ -42,32 +42,32 @@ else if (isset($citazione)) {
                 $id = $_POST['prof'];
             }
             else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-                if ($options["database"]->count("profs", 
-                        array ("AND" => array ("nome" => trim(stripcslashes(strip_tags($_POST["name"]))), "stato" => 1))) == 0) $id = $options["database"]->insert(
-                        "profs", array ("nome" => strip_tags(trim($_POST["name"])), "creatore" => $options["user"], "stato" => 1));
-                else $id = $options["database"]->get("profs", "id", 
+                if ($dati['database']->count("profs", 
+                        array ("AND" => array ("nome" => trim(stripcslashes(strip_tags($_POST["name"]))), "stato" => 1))) == 0) $id = $dati['database']->insert(
+                        "profs", array ("nome" => strip_tags(trim($_POST["name"])), "creatore" => $dati["user"], "stato" => 1));
+                else $id = $dati['database']->get("profs", "id", 
                         array ("AND" => array ("nome" => trim(stripcslashes(strip_tags($_POST["name"]))), "stato" => 1)));
             }
             if (isset($_POST['txtEditor']) && strlen($_POST['txtEditor']) > 0 && isset($new) && isset($id)) {
-                $options["database"]->insert("citazioni", 
-                        array ("descrizione" => sanitize(stripcslashes($_POST['txtEditor'])), "prof" => $id, 
-                            "creatore" => $options["user"], "stato" => 1));
+                $dati['database']->insert("citazioni", 
+                        array ("descrizione" => sanitize(stripcslashes($_POST['txtEditor'])), "prof" => $id, "creatore" => $dati["user"], 
+                            "stato" => 1));
                 salva();
                 finito("citazione");
             }
             else if (isset($_POST['txtEditor']) && strlen($_POST['txtEditor']) > 0 && isset($id)) {
-                $options["database"]->update("citazioni", 
-                        array ("descrizione" => sanitize(stripcslashes($_POST['txtEditor'])), "prof" => $id, 
-                            "creatore" => $options["user"], "stato" => 1), array ("id" => $edit));
+                $dati['database']->update("citazioni", 
+                        array ("descrizione" => sanitize(stripcslashes($_POST['txtEditor'])), "prof" => $id, "creatore" => $dati["user"], 
+                            "stato" => 1), array ("id" => $edit));
                 salva();
                 finito("citazione");
             }
-            $profs = $options["database"]->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
+            $profs = $dati['database']->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
             echo '
             <div class="jumbotron green">
                 <div class="container text-center">
                     <h1><i class="fa fa-plus"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'citazioni" class="btn btn-success">Torna indietro</a>
+                    <a href="' . $dati['info']['root'] . 'citazioni" class="btn btn-success">Torna indietro</a>
                 </div>
             </div>
             <div class="jumbotron">
@@ -109,8 +109,7 @@ else if (isset($citazione)) {
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' .
-                     $options["root"] . 'citazioni" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' . $dati['info']['root'] . 'citazioni" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -121,15 +120,15 @@ else if (isset($citazione)) {
         else
             require 'shared/404.php';
     }
-    else if (isset($id) && classe($options["database"], $options["user"]) && !voti($options["database"], $id, $options["user"])) {
-        if ($options["database"]->count("voti", 
-                array ("AND" => array ("persona" => $options["user"], "citazione" => $id, "stato" => 1))) != 0) $options["database"]->update(
-                "voti", array ("stato" => 0), array ("AND" => array ("persona" => $options["user"], "citazione" => $id)));
-        else $options["database"]->insert("voti", array ("persona" => $options["user"], "citazione" => $id, "stato" => 0));
+    else if (isset($id) && classe($dati['database'], $dati["user"]) && !voti($dati['database'], $id, $dati["user"])) {
+        if ($dati['database']->count("voti", array ("AND" => array ("persona" => $dati["user"], "citazione" => $id, "stato" => 1))) !=
+                 0) $dati['database']->update("voti", array ("stato" => 0), 
+                array ("AND" => array ("persona" => $dati["user"], "citazione" => $id)));
+        else $dati['database']->insert("voti", array ("persona" => $dati["user"], "citazione" => $id, "stato" => 0));
         echo 1;
     }
-    else if (isset($id) && classe($options["database"], $options["user"]) && voti($options["database"], $id, $options["user"])) {
-        $options["database"]->delete("voti", array ("AND" => array ("persona" => $options["user"], "citazione" => $id)));
+    else if (isset($id) && classe($dati['database'], $dati["user"]) && voti($dati['database'], $id, $dati["user"])) {
+        $dati['database']->delete("voti", array ("AND" => array ("persona" => $dati["user"], "citazione" => $id)));
         echo 0;
     }
     else {
@@ -138,19 +137,18 @@ else if (isset($citazione)) {
         $readmore = true;
         require_once 'shared/header.php';
         if (!isset($view)) {
-            if (isAdminUserAutenticate()) $results = $options["database"]->select("citazioni", "*");
-            else $results = $options["database"]->select("citazioni", "*", array ("stato" => "0"));
+            if (isAdminUserAutenticate()) $results = $dati['database']->select("citazioni", "*");
+            else $results = $dati['database']->select("citazioni", "*", array ("stato" => "0"));
         }
         else {
-            if (isAdminUserAutenticate()) $results = $options["database"]->select("citazioni", "*", array ("prof" => $view));
-            else $results = $options["database"]->select("citazioni", "*", 
-                    array ("AND" => array ("prof" => $view, "stato" => "0")));
+            if (isAdminUserAutenticate()) $results = $dati['database']->select("citazioni", "*", array ("prof" => $view));
+            else $results = $dati['database']->select("citazioni", "*", array ("AND" => array ("prof" => $view, "stato" => "0")));
         }
-        $profs = $options["database"]->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
-        $utenti = $options["database"]->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-        $iscritti = $options["database"]->select("voti", "*", array ("ORDER" => "citazione"));
+        $profs = $dati['database']->select("profs", array ("id", "nome"), array ("ORDER" => "id"));
+        $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
+        $iscritti = $dati['database']->select("voti", "*", array ("ORDER" => "citazione"));
         $numero = pieni($iscritti, "citazione");
-        $iscrizioni = io($iscritti, $options["user"], -1, "citazione");
+        $iscrizioni = io($iscritti, $dati["user"], -1, "citazione");
         echo '<div class="jumbotron">
                 <div class="container text-center">
                     <h1><i class="fa fa-quote-left fa-1x"></i> Citazioni <span id="who">';
@@ -159,7 +157,7 @@ else if (isset($citazione)) {
         if (!isset($view)) echo '
                     <p>Le migliori <span id="page">citazioni</span> dei professori, inserite dagli studenti e curate dai Rappresentanti</p>';
         echo '
-                    <a href="' . $options["root"] . 'citazione" class="btn btn-primary">Nuova citazione</a>
+                    <a href="' . $dati['info']['root'] . 'citazione" class="btn btn-primary">Nuova citazione</a>
                 </div>
             </div>
             <hr>
@@ -171,8 +169,8 @@ else if (isset($citazione)) {
         if (!isset($view)) echo ' class="active"';
         echo '><a ';
         if (modo()) echo 'id="professore" href="#good"';
-        else echo 'href="' . $options["root"] . 'citazioni#good"';
-        echo '><span id="nome">Tutti i professori</span> <span class="badge">' . $options["database"]->count("citazioni", 
+        else echo 'href="' . $dati['info']['root'] . 'citazioni#good"';
+        echo '><span id="nome">Tutti i professori</span> <span class="badge">' . $dati['database']->count("citazioni", 
                 array ("stato" => 0)) . '</span><span class="hidden" id="prof"></span></a></li>';
         $order = array ();
         $i = 0;
@@ -185,13 +183,13 @@ else if (isset($citazione)) {
         if ($order != null) {
             foreach ($order as $prof) {
                 echo '
-            <li';
+                        <li';
                 if (isset($view) && $view == $prof["id"]) echo ' class="active"';
                 echo '><a ';
                 if (modo()) echo 'id="professore"';
-                else echo 'href="' . $options["root"] . 'citazione/' . $prof["id"] . '"';
+                else echo 'href="' . $dati['info']['root'] . 'citazione/' . $prof["id"] . '"';
                 echo '><span id="nome">' . $prof["nome"] . '</span> <span class="badge">' .
-                         $options["database"]->count("citazioni", array ("AND" => array ("prof" => $prof["id"], "stato" => 0))) .
+                         $dati['database']->count("citazioni", array ("AND" => array ("prof" => $prof["id"], "stato" => 0))) .
                          '</span><span class="hidden" id="prof">' . $prof["id"] . '</span></a></li>';
             }
         }
@@ -207,9 +205,8 @@ else if (isset($citazione)) {
                             <tbody>';
         if ($results != null) {
             foreach ($results as $key => $result) {
-                $cont = 0;
-                if ($result["id"] - $numero[0] >= 0 && $numero[1] - $result["id"] >= 0 &&
-                         $numero[2][$result["id"] - $numero[0]] != "") $cont = $numero[2][$result["id"] - $numero[0]];
+                if (isset($numero[$result["id"]]) && $numero[$result["id"]] != null) $cont = $numero[$result["id"]];
+                else $cont = 0;
                 if ($result["stato"] == 0) {
                     echo '
                                 <tr>
@@ -217,14 +214,13 @@ else if (isset($citazione)) {
                                         <section>
                                             <span class="hidden" id="value">' . $result["id"] . '</span>
                                             <blockquote>
-                                                ' .
-                             stripcslashes($result["descrizione"]) . '
+                                                ' . stripcslashes($result["descrizione"]) . '
                                                 <footer>';
                     $prof = ricerca($profs, $result["prof"]);
                     $utente = ricerca($utenti, $result["creatore"]);
                     if ($prof != -1) echo $profs[$prof]["nome"];
-                    if ($utente != -1) echo ', inserito da <cite title="' . $utenti[$utente]["nome"] . '">' .
-                             $utenti[$utente]["nome"] . '</cite>';
+                    if ($utente != -1) echo ', inserito da <cite title="' . $utenti[$utente]["nome"] . '">' . $utenti[$utente]["nome"] .
+                             '</cite>';
                     echo '</footer>
                                             </blockquote>
                                             <ul class="links">';
@@ -232,23 +228,23 @@ else if (isset($citazione)) {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="like"';
-                        else echo 'href="' . $options["root"] . 'citazioni/' . $result["id"] . '"';
-                        echo ' class="btn btn-success"><span id="text"><i class="fa fa-thumbs-o-up"></i></span> <span id="cont">' .
-                                 $cont . '</span></a></li>';
+                        else echo 'href="' . $dati['info']['root'] . 'citazioni/' . $result["id"] . '"';
+                        echo ' class="btn btn-success"><span id="text"><i class="fa fa-thumbs-o-up"></i></span> <span id="cont">' . $cont .
+                                 '</span></a></li>';
                     }
                     else {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="like"';
-                        else echo 'href="' . $options["root"] . 'citazioni/' . $result["id"] . '"';
-                        echo ' class="btn btn-danger"><span id="text"><i class="fa fa-thumbs-up"></i></span> <span id="cont">' .
-                                 $cont . '</span></a></li>';
+                        else echo 'href="' . $dati['info']['root'] . 'citazioni/' . $result["id"] . '"';
+                        echo ' class="btn btn-danger"><span id="text"><i class="fa fa-thumbs-up"></i></span> <span id="cont">' . $cont .
+                                 '</span></a></li>';
                     }
                     if (isAdminUserAutenticate()) {
                         echo '
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cambia/citazione/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'cambia/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-warning"><i class="fa fa-eye-slash"></i> Blocca</a></li>';
                     }
                     echo '
@@ -306,24 +302,23 @@ else if (isset($citazione)) {
                                         <section>
                                             <span class="hidden" id="value">' . $result["id"] . '</span>
                                             <blockquote>
-                                                ' .
-                                 stripcslashes($result["descrizione"]) . '
+                                                ' . stripcslashes($result["descrizione"]) . '
                                                 <footer>';
                         $prof = ricerca($profs, $result["prof"]);
                         $utente = ricerca($utenti, $result["creatore"]);
                         if ($prof != -1) echo $profs[$prof]["nome"];
-                        if ($utente != -1) echo ', inserito da <cite title="' . $utenti[$utente]["nome"] . '">' .
-                                 $utenti[$utente]["nome"] . '</cite>';
+                        if ($utente != -1) echo ', inserito da <cite title="' . $utenti[$utente]["nome"] . '">' . $utenti[$utente]["nome"] .
+                                 '</cite>';
                         echo '</footer>
                                             </blockquote>
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cambia/citazione/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'cambia/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                                 <li><a ';
                         if (modo()) echo 'id="cambia"';
-                        else echo 'href="' . $options["root"] . 'rifiuta/citazione/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'rifiuta/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-info"><i class="fa fa-arrow-right"></i> Boccia</a></li>
                                             </ul>
                                         </section>
@@ -357,14 +352,13 @@ else if (isset($citazione)) {
                                         <section>
                                             <span class="hidden" id="value">' . $result["id"] . '</span>
                                             <blockquote>
-                                                ' .
-                                 stripcslashes($result["descrizione"]) . '
+                                                ' . stripcslashes($result["descrizione"]) . '
                                                 <footer>';
                         $prof = ricerca($profs, $result["prof"]);
                         $utente = ricerca($utenti, $result["creatore"]);
                         if ($prof != -1) echo $profs[$prof]["nome"];
-                        if ($utente != -1) echo ', inserito da <cite title="' . $utenti[$utente]["nome"] . '">' .
-                                 $utenti[$utente]["nome"] . '</cite>';
+                        if ($utente != -1) echo ', inserito da <cite title="' . $utenti[$utente]["nome"] . '">' . $utenti[$utente]["nome"] .
+                                 '</cite>';
                         echo '</footer>
                                             </blockquote>';
                         if (ricerca($utenti, $result["da"]) != -1) echo '
@@ -374,7 +368,7 @@ else if (isset($citazione)) {
                                             <ul class="links">
                                                 <li><a ';
                         if (modo()) echo 'id="stato"';
-                        else echo 'href="' . $options["root"] . 'cambia/citazione/' . $result["id"] . '"';
+                        else echo 'href="' . $dati['info']['root'] . 'cambia/citazione/' . $result["id"] . '"';
                         echo ' class="btn btn-success"><i class="fa fa-eye"></i> Abilita</a></li>
                                             </ul>
                                         </section>

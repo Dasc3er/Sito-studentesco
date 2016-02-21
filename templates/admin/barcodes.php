@@ -1,5 +1,5 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 require_once 'templates/barcode/barcode.php';
 if (isset($download)) {
     $fontSize = 10; // GD1 in px ; GD2 in point
@@ -35,11 +35,11 @@ if (isset($download)) {
     $text = fopen("barcode.txt", "w+");
     fclose($text);
     file_put_contents("barcode.txt", "", LOCK_EX);
-    $eans = $options["database"]->select("ean", "*", array ("ORDER" => "persona"));
-    $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
-    $studenti = $options["database"]->select("studenti", "*", 
-            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
-    $results = $options["database"]->select("persone", "*");
+    $eans = $dati['database']->select("ean", "*", array ("ORDER" => "persona"));
+    $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
+    $studenti = $dati['database']->select("studenti", "*", 
+            array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+    $results = $dati['database']->select("persone", "*");
     if ($results != null) {
         foreach ($results as $result) {
             $studente = ricerca($studenti, $result["id"], "persona");
@@ -132,12 +132,12 @@ else {
     // -------------------------------------------------- //
     // BARCODE
     // -------------------------------------------------- //
-    $eans = $options["database"]->select("ean", "*", array ("ORDER" => "persona"));
-    $persone = $options["database"]->select("persone", array ("id", "nome", "username", "password", "stato"), 
+    $eans = $dati['database']->select("ean", "*", array ("ORDER" => "persona"));
+    $persone = $dati['database']->select("persone", array ("id", "nome", "username", "password", "stato"), 
             array ("ORDER" => "id"));
-    $studenti = $options["database"]->select("studenti", "*", 
-            array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
-    $datas = $options["database"]->select("classi", "*");
+    $studenti = $dati['database']->select("studenti", "*", 
+            array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+    $datas = $dati['database']->select("classi", "*");
     if ($datas != null) {
         foreach ($datas as $data) {
             $pdf->SetFillColor(200, 220, 255);
@@ -175,10 +175,10 @@ else {
         }
     }
     /*
-     * $eans = $options["database"]->select("ean", "*", array ("ORDER" => "persona"));
-     * $classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
-     * $studenti = $options["database"]->select("studenti", "*", array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
-     * $results = $options["database"]->select("persone", "*");
+     * $eans = $dati['database']->select("ean", "*", array ("ORDER" => "persona"));
+     * $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
+     * $studenti = $dati['database']->select("studenti", "*", array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+     * $results = $dati['database']->select("persone", "*");
      * if ($results != null) {
      * foreach ($results as $result) {
      * $studente = ricerca($studenti, $result["id"], "persona");

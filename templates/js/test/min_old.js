@@ -355,7 +355,7 @@
     // Enable tab when document is ready
     $(document).ready(Tap.enable);
 
-    // Configurable options
+    // Configurable dati
     $.tap = {
         POSITION_DELTA: 10, // Max distance between touchstart and touchend to be considered a tap
         TIME_DELTA: 400, // Max duration between touchstart and touchend to be considered a tap

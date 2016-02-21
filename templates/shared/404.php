@@ -7,7 +7,7 @@ echo '
                     <span class="help">404</span>
                     <h2>Pagina non trovata!</h2>
                     <p>Non siamo riusciti a trovare quello che cercavi :(</p>
-                    <p><a href="' . $options["root"] . '" class="btn btn-success">Torna alla home</a></p>
+                    <p><a href="' . $dati['info']['root'] . '" class="btn btn-success">Torna alla home</a></p>
                 </div>
             </div>';
 require_once 'footer.php';

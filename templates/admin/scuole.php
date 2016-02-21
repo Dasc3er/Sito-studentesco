@@ -1,11 +1,11 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 $error = false;
 $done = false;
 if (isset($edit) || isset($new)) {
     if (isset($edit)) {
         $pageTitle = "Modifica scuola";
-        $results = $options["database"]->select("scuole", "*", array ("id" => $edit));
+        $results = $dati['database']->select("scuole", "*", array ("id" => $edit));
         if ($results == null) $error = true;
         else {
             foreach ($results as $result) {
@@ -21,12 +21,12 @@ if (isset($edit) || isset($new)) {
         $editor = true;
         require_once 'templates/shared/header.php';
         if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
-            $options["database"]->insert("scuole", array ("nome" => strip_tags($_POST["name"])));
+            $dati['database']->insert("scuole", array ("nome" => strip_tags($_POST["name"])));
         }
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-            $options["database"]->update("scuole", array ("nome" => strip_tags($_POST["name"])), array ("id" => $edit));
+            $dati['database']->update("scuole", array ("nome" => strip_tags($_POST["name"])), array ("id" => $edit));
         }
-        echo '<p class="text-right"><a href="' . $options["root"] . 'scuole" class="btn btn-success">Torna indietro</a></p>
+        echo '<p class="text-right"><a href="' . $dati['info']['root'] . 'scuole" class="btn btn-success">Torna indietro</a></p>
             <p>Caratteristiche del scuola:</p>
             <form action="" method="post" class="form-horizontal" role="form">
                 <div class="form-group">
@@ -43,7 +43,7 @@ if (isset($edit) || isset($new)) {
                         <button type="submit" class="btn btn-primary">Salva</button>
                     </div>
                     <div class="col-sm-5">
-                        <a href="' . $options["root"] . 'scuole" class="btn btn-default">Annulla</a>
+                        <a href="' . $dati['info']['root'] . 'scuole" class="btn btn-default">Annulla</a>
                     </div>
                 </div>
             </form>';
@@ -54,7 +54,7 @@ if (isset($edit) || isset($new)) {
 }
 else {
     if (isset($delete) && $delete == "yes") {
-        $options["database"]->delete("scuole", array ("id" => $id));
+        $dati['database']->delete("scuole", array ("id" => $id));
     }
     $datatable = true;
     $pageTitle = "Scuole";
@@ -62,14 +62,14 @@ else {
     if (isset($id)) echo '
                 <p class="text-center text-red"><strong>Eliminare il scuola?</strong></p>
                 <div class="col-xs-6 text-center">
-                    <a href="' . $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina scuola</a>
+                    <a href="' . $dati['info']['root'] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina scuola</a>
                 </div>
                 <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                 <div class="col-xs-6 text-center">
-                    <a href="' . $options["root"] . 'scuole" class="btn btn-primary">Annulla</a>
+                    <a href="' . $dati['info']['root'] . 'scuole" class="btn btn-primary">Annulla</a>
                 </div>
                 <div class="col-xs-12"><hr></div>';
-    // echo '<p class="text-right"><a href="' . $options["root"] . 'scuola" class="btn btn-success">Nuova scuola</a></p>';
+    // echo '<p class="text-right"><a href="' . $dati['info']['root'] . 'scuola" class="btn btn-success">Nuova scuola</a></p>';
     echo '
             <div class="jumbotron indigo">
                 <div class="container text-center">
@@ -79,7 +79,7 @@ else {
             <div class="jumbotron">
                 <div class="container">
                     <p>Elenco scuole disponibili</p>';
-    $results = $options["database"]->select("scuole", "*");
+    $results = $dati['database']->select("scuole", "*");
     echo '
                     <table class="table table-hover scroll">
                         <thead>

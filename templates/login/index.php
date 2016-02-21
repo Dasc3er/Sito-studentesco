@@ -1,5 +1,5 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 if (isset($recupero)) $pageTitle = "Recupero credenziali";
 else $pageTitle = "Accedi";
 $wait = true;
@@ -9,16 +9,16 @@ if (isset($recupero)) {
         $username = encode($_POST['username']);
         $email = encode($_POST['email']);
         $number = rand(2, 1000000000);
-        if ($options["database"]->count("persone", 
+        if ($dati['database']->count("persone", 
                 array ("AND" => array ("username" => $username, "email" => $email, "stato" => 1))) != 0) {
-            $options["database"]->update("persone", array ("stato" => $number), 
+            $dati['database']->update("persone", array ("stato" => $number), 
                     array ("AND" => array ("username" => $username, "email" => $email)));
-            send(decode($email), $options["sito"], "Recupero credenziali", 
+            send(decode($email), $dati['info']['sito'], "Recupero credenziali", 
                     "<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell'autogestione.</p>
                     <p>Clicca sul link seguente o copialo nella barra del browser per completare l'operazione.</p>
                     <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" . $number .
                              "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", 
-                            $options["database"]->get("persone", "nome", 
+                            $dati['database']->get("persone", "nome", 
                                     array ("AND" => array ("username" => $username, "email" => $email))));
             salva();
         }
@@ -69,7 +69,7 @@ else {
     if (isset($_POST['user']) && isset($_POST['password']) && (!isset($_SESSION["time"]) || $_SESSION["time"] < strtotime("now"))) {
         $username = $_POST['user'];
         $password = $_POST['password'];
-        $results = $options["database"]->select("persone", array ("username", "password", "stato"), 
+        $results = $dati['database']->select("persone", array ("username", "password", "stato"), 
                 array ("username" => array ($username, encode($username))));
         foreach ($results as $result) {
             if ($result["stato"] == 0 && strtolower($password) == strtolower($result["password"])) $_SESSION['username'] = $result["username"];
@@ -80,13 +80,13 @@ else {
         unset($_POST['password']);
         if (isset($_SESSION['username']) && $_SESSION['username'] != "") {
             $_SESSION['loggedin'] = "loggedin";
-            $id = id($options["database"]);
-            if ($options["database"]->count("admins", array ("id" => $id)) != 0) {
+            $id = id($dati['database']);
+            if ($dati['database']->count("admins", array ("id" => $id)) != 0) {
                 $_SESSION['loggedAsAdmin'] = "true";
             }
-            $_SESSION['mode'] = $options["database"]->get("opzioni", "mode", array ("id" => $id));
-            $_SESSION['style'] = $options["database"]->get("opzioni", "style", array ("id" => $id));
-            $options["database"]->query(
+            $_SESSION['mode'] = $dati['database']->get("opzioni", "mode", array ("id" => $id));
+            $_SESSION['style'] = $dati['database']->get("opzioni", "style", array ("id" => $id));
+            $dati['database']->query(
                     "INSERT INTO accessi (id, tipo_browser, indirizzo, data) VALUES ('" . $id . "', '" . getenv('HTTP_USER_AGENT') .
                              "', '" . getenv('REMOTE_ADDR') . "', '" . date("Y-m-d H:i:s") . "')");
         }
@@ -96,7 +96,7 @@ else {
             else $_SESSION["try"] = intval($_SESSION["try"]) + 1;
         }
     }
-    if (isUserAutenticate()) $options["user"] = id($options["database"]);
+    if (isUserAutenticate()) $dati["user"] = id($dati['database']);
     if (intval($_SESSION["try"]) % 3 == 0) {
         $time = 180 + (30 * (intval($_SESSION["try"]) / 3 - 1));
         $_SESSION["time"] = strtotime("+" . floor($time / 60) . " Minutes +" . floor($time % 60) . " Seconds", strtotime("now"));
@@ -151,7 +151,7 @@ else {
     if (intval($_SESSION["try"]) % 3 == 0) echo ' hidden';
     echo '" type="submit" id="button">Accedi</button>
                         <p><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span>Password dimenticata?</p>
-                        <p><a href="' . $options["root"] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
+                        <p><a href="' . $dati['info']['root'] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
                     </div>
                 </div>
             </form>';

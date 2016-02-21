@@ -1,5 +1,5 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 /* ATTENZIONE: problema di omonimi per aggiornamento!!!!!!!!! */
 if (!empty($_FILES)) {
     if (file_exists("text.txt")) unlink("text.txt");
@@ -10,27 +10,27 @@ if (!empty($_FILES)) {
     $targetFile = $targetPath . "text." . pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
     move_uploaded_file($tempFile, $targetFile);
     $text = file($targetFile);
-    $xp = $options["database"]->max("studenti", "id") + 1;
+    $xp = $dati['database']->max("studenti", "id") + 1;
     $school = 1;
     $scuola = 0;
     $classe = 0;
     foreach ($text as $data) {
         if (trim($data) != "") {
             if ($school == 1) {
-                if ($options["database"]->count("scuole", array ("nome" => trim($data))) == 0) $scuola = $options["database"]->insert(
+                if ($dati['database']->count("scuole", array ("nome" => trim($data))) == 0) $scuola = $dati['database']->insert(
                         "scuole", array ("nome" => trim($data)));
-                else $scuola = $options["database"]->get("scuole", "id", array ("nome" => trim($data)));
+                else $scuola = $dati['database']->get("scuole", "id", array ("nome" => trim($data)));
                 $school = 0;
             }
             else {
                 $content = explode(";", $data);
-                if ($options["database"]->count("classi", 
-                        array ("AND" => array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))))) == 0) $classe = $options["database"]->insert(
+                if ($dati['database']->count("classi", 
+                        array ("AND" => array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))))) == 0) $classe = $dati['database']->insert(
                         "classi", array ("scuola" => $scuola, "nome" => preg_replace('/\s+/', ' ', trim($content[1]))));
-                else $classe = $options["database"]->get("classi", "id", 
+                else $classe = $dati['database']->get("classi", "id", 
                         array ("nome" => preg_replace('/\s+/', ' ', trim($content[1]))));
                 $name = ucwords(strtolower(preg_replace('/\s+/', ' ', trim($content[0]))));
-                if ($options["database"]->count("persone", array ("nome" => $name)) == 0) {
+                if ($dati['database']->count("persone", array ("nome" => $name)) == 0) {
                     $password = "";
                     while (strlen($password) <= 5) {
                         $what = rand(0, 2);
@@ -46,14 +46,14 @@ if (!empty($_FILES)) {
                     }
                     $username = mb_strimwidth(str_replace(" ", "", strtolower($name)), 0, 7) .
                              substr(strtolower($name), strlen($name) - $cont);
-                    while ($options["database"]->count("persone", array ("username" => $username)) != 0)
+                    while ($dati['database']->count("persone", array ("username" => $username)) != 0)
                         $username .= rand(0, 999);
-                    $id = $options["database"]->insert("persone", 
+                    $id = $dati['database']->insert("persone", 
                             array ("nome" => $name, "username" => $username, "password" => $password, "email" => "", "stato" => 0));
                 }
                 else
-                    $id = $options["database"]->get("persone", "id", array ("nome" => $name));
-                $options["database"]->insert("studenti", array ("id" => $xp, "classe" => $classe, "persona" => $id));
+                    $id = $dati['database']->get("persone", "id", array ("nome" => $name));
+                $dati['database']->insert("studenti", array ("id" => $xp, "classe" => $classe, "persona" => $id));
             }
         }
         else {

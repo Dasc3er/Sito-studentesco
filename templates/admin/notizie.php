@@ -1,11 +1,11 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 $error = false;
 $done = false;
 if (isset($edit) || isset($new)) {
     if (isset($edit)) {
         $pageTitle = "Modifica notizia";
-        $results = $options["database"]->select("news", "*", array ("id" => $edit));
+        $results = $dati['database']->select("news", "*", array ("id" => $edit));
         if ($results == null) $error = true;
         else {
             foreach ($results as $result) {
@@ -23,22 +23,22 @@ if (isset($edit) || isset($new)) {
         $editor = true;
         require_once 'templates/shared/header.php';
         if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
-            $options["database"]->insert("news", 
+            $dati['database']->insert("news", 
                     array ("titolo" => strip_tags($_POST["name"]), "contenuto" => sanitize($_POST["contenuto"]), 
-                        "creatore" => $options["user"], "stato" => 1, "#data" => "CURDATE()"));
+                        "creatore" => $dati["user"], "stato" => 1, "#data" => "NOW()"));
             salva();
         }
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-            $options["database"]->update("news", 
+            $dati['database']->update("news", 
                     array ("titolo" => strip_tags($_POST["name"]), "contenuto" => sanitize($_POST["contenuto"]), 
-                        "creatore" => $options["user"], "stato" => 1, "#data" => "CURDATE()"), array ("id" => $edit));
+                        "creatore" => $dati["user"], "stato" => 1, "#data" => "NOW()"), array ("id" => $edit));
             salva();
         }
         echo '
             <div class="jumbotron green">
                 <div class="container text-center">
                     <h1><i class="fa fa-plus"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'notizie" class="btn btn-success">Torna indietro</a>
+                    <a href="' . $dati['info']['root'] . 'notizie" class="btn btn-success">Torna indietro</a>
                 </div>
             </div>
             <div class="jumbotron">
@@ -64,7 +64,7 @@ if (isset($edit) || isset($new)) {
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' . $options["root"] . 'notizie" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' . $dati['info']['root'] . 'notizie" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -77,7 +77,7 @@ if (isset($edit) || isset($new)) {
 }
 else {
     if (isset($delete) && $delete == "yes") {
-        $options["database"]->delete("news", array ("id" => $id));
+        $dati['database']->delete("news", array ("id" => $id));
     }
     $datatable = true;
     $pageTitle = "Notizie";
@@ -87,11 +87,11 @@ else {
                 <div class="container text-center">
                     <p><strong>Eliminare il notizia?</strong></p>
                     <div class="col-xs-6 text-center">
-                        <a href="' . $options["root"] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina notizia</a>
+                        <a href="' . $dati['info']['root'] . 'elimina/yes/' . $id . '" class="btn btn-danger">Elimina notizia</a>
                     </div>
                     <div class="col-xs-12 hidden-md hidden-lg"><hr></div>
                     <div class="col-xs-6 text-center">
-                        <a href="' . $options["root"] . 'notizie" class="btn btn-primary">Annulla</a>
+                        <a href="' . $dati['info']['root'] . 'notizie" class="btn btn-primary">Annulla</a>
                     </div>
                 </div>
             </div>';
@@ -99,13 +99,13 @@ else {
             <div class="jumbotron indigo">
                 <div class="container text-center">
                     <h1><i class="fa fa-bars"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $options["root"] . 'notizia" class="btn btn-success">Nuova notizia</a>
+                    <a href="' . $dati['info']['root'] . 'notizia" class="btn btn-success">Nuova notizia</a>
                 </div>
             </div>
             <div class="jumbotron">
                 <div class="container">
                     <p>Elenco notizie disponibili</p>';
-    $results = $options["database"]->select("news", "*");
+    $results = $dati['database']->select("news", "*");
     
     echo '
                     <table class="table table-hover scroll">

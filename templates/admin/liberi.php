@@ -1,5 +1,5 @@
 <?php
-if (!isset($options)) require_once 'utility.php';
+if (!isset($dati)) require_once 'utility.php';
 $pageTitle = "Studenti liberi";
 $datatable = true;
 require_once 'templates/shared/header.php';
@@ -22,7 +22,7 @@ echo '
                             </tr>
                         </thead>
                         <tbody>';
-$corsi = $options["database"]->select("corsi", "*", array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
+$corsi = $dati['database']->select("corsi", "*", array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
 $array = array ();
 if ($corsi != null) {
     foreach ($corsi as $data) {
@@ -36,12 +36,12 @@ if ($corsi != null) {
         }
     }
 }
-$scuole = $options["database"]->select("scuole", "*", array ("ORDER" => "id"));
-$classi = $options["database"]->select("classi", "*", array ("ORDER" => "id"));
-$studenti = $options["database"]->select("studenti", "*", 
-        array ("id" => $options["database"]->max("studenti", "id"), "ORDER" => "persona"));
-$iscritti = $options["database"]->select("iscrizioni", "*", array ("stato" => 0, "ORDER" => "corso"));
-$results = $options["database"]->select("persone", "*");
+$scuole = $dati['database']->select("scuole", "*", array ("ORDER" => "id"));
+$classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
+$studenti = $dati['database']->select("studenti", "*", 
+        array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+$iscritti = $dati['database']->select("iscrizioni", "*", array ("stato" => 0, "ORDER" => "corso"));
+$results = $dati['database']->select("persone", "*");
 if ($results != null) {
     foreach ($results as $result) {
         $nuovo = array ();

@@ -4,7 +4,7 @@ Il sito funzionante è disponibile [a questo indirizzo](http://www.itiseuganeo.a
 
 Sentitevi liberi di segnalare malfunzinamenti o bug, oltre che di proporre nuove sezioni ed implementazioni (ovviamente relative all'utilizzo scolastico). [Vedi come...](#contribuire-e-testare)
 
-## Table of contents
+## Tabella dei contenuti
  * [Framework utilizzati](#framework-utilizzati)
  * [Parametri](#parametri)
  * [Sicurezza](#sicurezza)
@@ -42,7 +42,7 @@ Cambiare le impostazioni di accesso al database ("parameters.php"):
  * `$username` - username di accesso al server del database
  * `$password` - password di accesso al server del database
  
-Cambiare le impostazioni grafiche del sito (array`$options` in "utility.php"):
+Cambiare le impostazioni grafiche del sito (array`$dati` in "utility.php"):
  * `snow`  - se abilitato, inserisce un effetto di neve cascante in tutte le pagine
  * `sito`  - nome del sito
  * `email`  - email a cui inviare i messaggi della sezione di contatto
