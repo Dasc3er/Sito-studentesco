@@ -5,7 +5,7 @@ if (isset($rifiuta) && $tempo && stessauto($dati['database'], $dati["autogestion
     $dati['database']->update("corsi", array ("da" => $dati["user"]), array ("id" => $rifiuta));
     echo 1;
 }
-if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
+else if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
     if ($dati['database']->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
         $dati['database']->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
         $dati['database']->update("corsi", array ("stato" => 1, "da" => $dati["user"]), array ("id" => $stato));
@@ -16,12 +16,11 @@ if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"
         echo 0;
     }
 }
-if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"])) {
+else if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"])) {
     if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
         $dati['database']->insert("corsi", 
-                array ("autogestione" => $dati["autogestione"], "nome" => strip_tags($_POST["name"]), 
-                    "descrizione" => $_POST['txtEditor'], "creatore" => $dati["user"], "stato" => 1, 
-                    "scuola" => scuola($dati['database'], $dati["user"]), "#data" => "NOW()"));
+                array ("autogestione" => $dati["autogestione"], "nome" => strip_tags($_POST["name"]), "descrizione" => $_POST['txtEditor'], 
+                    "creatore" => $dati["user"], "stato" => 1, "scuola" => scuola($dati['database'], $dati["user"]), "#data" => "NOW()"));
         salva();
         finito("proposta");
     }
@@ -55,7 +54,8 @@ if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestione"], 
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' . $dati['info']['root'] . 'proposte" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' .
+             $dati['info']['root'] . 'proposte" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -66,7 +66,7 @@ if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestione"], 
 else if (isset($new)) {
     require_once 'shared/404.php';
 }
-else if (isset($id) && !like($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $user)) {
+else if (isset($id) && !like($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $dati["user"])) {
     $dati['database']->insert("like", array ("persona" => $dati["user"], "corso" => $id));
     echo 1;
 }
@@ -94,7 +94,8 @@ else {
                     <h1><i class="fa fa-list fa-1x"></i> Proposte disponibili</h1>
                     <p>Le proposte degli studenti per i corsi dell\'autogestione</p>';
     if ($tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"]) && $dati["autogestione"] != null) echo '
-                    <a href="' . $dati['info']['root'] . 'proposta" class="btn btn-primary">Nuova proposta</a>';
+                    <a href="' . $dati['info']['root'] .
+             'proposta" class="btn btn-primary">Nuova proposta</a>';
     echo '
                     <p>Puoi creare solo tre <span id="page">proposte</span>...</p>
                 </div>
@@ -111,9 +112,8 @@ else {
     if ($results != null) {
         foreach ($results as $key => $result) {
             if ($result["stato"] == 0) {
-                $cont = 0;
-                if ($result["id"] - $numero[0] >= 0 && $numero[1] - $result["id"] >= 0 && $numero[2][$result["id"] - $numero[0]] != "") $cont = $numero[2][$result["id"] -
-                         $numero[0]];
+                if (isset($numero[$result["id"]]) && $numero[$result["id"]] != null) $cont = $numero[$result["id"]];
+                else $cont = 0;
                 echo '
                                 <tr>
                                     <td>
@@ -215,8 +215,8 @@ else {
                                             <span class="hidden" id="value">' . $result["id"] . '</span>
                                             <p id="descrizione">' . $result["descrizione"] . '</p>';
                     if (isAdminUserAutenticate()) echo '
-                                            <p><strong>Creato da ' . $utenti[ricerca($utenti, $result["creatore"])]["nome"] .
-                             '</strong></p>';
+                                            <p><strong>Creato da ' .
+                             $utenti[ricerca($utenti, $result["creatore"])]["nome"] . '</strong></p>';
                     if ($tempo) {
                         echo '
                                             <ul class="links">

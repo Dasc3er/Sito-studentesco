@@ -20,8 +20,7 @@ else if (isset($id)) {
         echo '<div class="jumbotron">
                 <div class="container text-center">
                     <h1><i class="fa fa-th-list fa-1x"></i> ' . $pageTitle . '</h1>
-                    <a href="' .
-                 $dati['info']['root'] . 'nuovo/categoria/' . $id . '" class="btn btn-primary">Nuova categoria</a>
+                    <a href="' . $dati['info']['root'] . 'nuovo/categoria/' . $id . '" class="btn btn-primary">Nuova categoria</a>
                 </div>
             </div>
             <hr>
@@ -34,8 +33,8 @@ else if (isset($id)) {
                 echo '
                     <a href="' . $dati['info']['root'] . 'categoria/' . $data["id"] .
                          '" class="list-group-item"><span class="badge">' .
-                         $dati['database']->count("articoli", array ("categoria" => $data["id"])) . ' articoli</span>' . $data["nome"] .
-                         '</a>';
+                         $dati['database']->count("articoli", array ("AND" => array ("categoria" => $data["id"], "stato[!]" => 1))) .
+                         ' articoli</span>' . $data["nome"] . '</a>';
             }
             echo '
                 </div>';
@@ -70,8 +69,8 @@ else if (isset($edit) || isset($new)) {
         if (isset($_POST['nome']) && strlen($_POST['nome']) > 0) {
             if (isset($new)) $dati['database']->insert("tipi", 
                     array ("nome" => sanitize($_POST["nome"]), "stato" => 0, "creatore" => $dati["user"], "#data" => "NOW()"));
-            else $dati['database']->update("tipi", 
-                    array ("nome" => sanitize($_POST["nome"]), "stato" => 0, "creatore" => $dati["user"]), array ("id" => $edit));
+            else $dati['database']->update("tipi", array ("nome" => sanitize($_POST["nome"]), "stato" => 0, "creatore" => $dati["user"]), 
+                    array ("id" => $edit));
             salva();
             finito("tipo");
         }
@@ -100,7 +99,8 @@ else if (isset($edit) || isset($new)) {
                             <button tipo="submit" class="btn btn-primary btn-block">Salva</button>
                         </div>
                         <div class="col-xs-6">
-                            <a href="' . $dati['info']['root'] . 'tipi" class="btn btn-default btn-block">Annulla</a>
+                            <a href="' .
+                 $dati['info']['root'] . 'tipi" class="btn btn-default btn-block">Annulla</a>
                         </div>
                     </div>
                 </form>
@@ -120,8 +120,7 @@ else {
                     <h1><i class="fa fa-th-list fa-1x"></i> ' . $pageTitle . '</h1>
                     <p>Elenco <span id="page">tipologie</span> di discussione disponibili</p>';
     if (isAdminUserAutenticate()) echo '
-                    <a href="' .
-             $dati['info']['root'] . 'nuovo/tipo" class="btn btn-primary">Nuova tipologia di discussione</a>';
+                    <a href="' . $dati['info']['root'] . 'nuovo/tipo" class="btn btn-primary">Nuova tipologia di discussione</a>';
     echo '
                 </div>
             </div>
@@ -147,13 +146,13 @@ else {
                                 <tr>
                                     <td>
                                         <span class="hidden" id="value">' . $result["id"] . '</span>
-                                        <a href="' . $dati['info']['root'] . 'tipo/' .
-                         $result["id"] . '">' . $result["nome"] . '</a>
+                                        <a href="' . $dati['info']['root'] . 'tipo/' . $result["id"] .
+                         '">' . $result["nome"] . '</a>
                                         <span class="badge">' . $cont . ' categorie</span>';
                 if (isAdminUserAutenticate()) {
                     echo '
-                                        <span class="label label-info pull-right"><a href="' . $dati['info']['root'] .
-                             'modifica/tipo/' . $result["id"] . '">Modifica</a></span>
+                                        <span class="label label-info pull-right"><a href="' .
+                             $dati['info']['root'] . 'modifica/tipo/' . $result["id"] . '">Modifica</a></span>
                                         <span><span><span class="label label-warning pull-right"><a ';
                     if (modo()) echo 'id="stato"';
                     else echo 'href="' . $dati['info']['root'] . 'cambia/tipo/' . $result["id"] . '"';
@@ -211,13 +210,12 @@ else {
                             <tr>
                                 <td>
                                     <span class="hidden" id="value">' . $result["id"] . '</span>
-                                    <a href="' .
-                             $dati['info']['root'] . 'tipo/' . $result["id"] . '">' . $result["nome"] . '</a>
+                                    <a href="' . $dati['info']['root'] . 'tipo/' . $result["id"] . '">' . $result["nome"] . '</a>
                                     <span class="badge">' . $cont . ' categorie</span>';
                     if (isAdminUserAutenticate()) {
                         echo '
-                                        <span class="label label-info pull-right"><a href="' . $dati['info']['root'] .
-                                 'modifica/tipo/' . $result["id"] . '">Modifica</a></span>
+                                        <span class="label label-info pull-right"><a href="' .
+                                 $dati['info']['root'] . 'modifica/tipo/' . $result["id"] . '">Modifica</a></span>
                                         <span><span><span class="label label-success pull-right"><a ';
                         if (modo()) echo 'id="stato"';
                         else echo 'href="' . $dati['info']['root'] . 'cambia/tipo/' . $result["id"] . '"';

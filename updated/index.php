@@ -59,8 +59,8 @@ if (!$dati['debug']) {
     
     $app->map([ 'GET', 'POST'], '/verifica/:id', 
             function ($request, $response, $args) use($dati) {
-                $dati['database']->update('persone', array ('dati' => $dati, 'verificata' => 1), 
-                        array ('dati' => $dati, 'verificata' => $args['id']));
+                $dati['database']->update('persone', array ('verificata' => 1), 
+                        array ('verificata' => $args['id']));
                 $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('index'));
                 return $response;
             });
@@ -444,8 +444,7 @@ if (!$dati['debug']) {
             
             $app->get('/citazioni/:id', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'citazioni.php', 
-                                array ('dati' => $dati, 'citazione' => true, 'id' => $args['id']));
+                        $response = $this->renderer->render($response, 'citazioni.php', array ('dati' => $dati, 'id' => $args['id']));
                         if (!isset($_GET['ajax'])) {
                             $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('citazioni'));
                         }
@@ -454,15 +453,13 @@ if (!$dati['debug']) {
             
             $app->get('/citazione/:id', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'citazioni.php', 
-                                array ('dati' => $dati, 'citazione' => true, 'view' => $args['id']));
+                        $response = $this->renderer->render($response, 'citazioni.php', array ('dati' => $dati, 'view' => $args['id']));
                         return $response;
                     });
             
             $app->map([ 'GET', 'POST'], '/citazione', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'citazioni.php', 
-                                array ('dati' => $dati, 'citazione' => true, 'new' => true));
+                        $response = $this->renderer->render($response, 'citazioni.php', array ('dati' => $dati, 'new' => true));
                         if (fatto()) {
                             $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('citazioni'));
                         }
@@ -479,8 +476,7 @@ if (!$dati['debug']) {
             
             $app->get('/aule/:id', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'aule.php', 
-                                array ('dati' => $dati, 'aula' => true, 'id' => $args['id']));
+                        $response = $this->renderer->render($response, 'aule.php', array ('dati' => $dati, 'id' => $args['id']));
                         if (!isset($_GET['ajax'])) {
                             $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('aule'));
                         }
@@ -489,14 +485,13 @@ if (!$dati['debug']) {
             
             $app->get('/aula/:id', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'aule.php', 
-                                array ('dati' => $dati, 'aula' => true, 'view' => $args['id']));
+                        $response = $this->renderer->render($response, 'aule.php', array ('dati' => $dati, 'view' => $args['id']));
                         return $response;
                     });
             
             $app->map([ 'GET', 'POST'], '/aula', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'aule.php', array ('dati' => $dati, 'aula' => true, 'new' => true));
+                        $response = $this->renderer->render($response, 'aule.php', array ('dati' => $dati, 'new' => true));
                         if (fatto()) {
                             $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('aule'));
                         }

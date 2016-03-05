@@ -17,8 +17,8 @@ $results = $dati['database']->select("tipi", "*", array ("stato[!]" => 1));
 if ($results != null) {
     foreach ($results as $result) {
         echo '
-                    <h4><a href="' . $dati['info']['root'] .
-                 'tipo/' . $result["id"] . '">' . $result["nome"] . '</a></h4>';
+                    <h4><a href="' . $dati['info']['root'] . 'tipo/' . $result["id"] . '">' . $result["nome"] .
+                 '</a></h4>';
         $datas = $dati['database']->select("categorie", "*", 
                 array ("AND" => array ("tipo" => $result["id"], "stato[!]" => 1), "ORDER" => "nome"));
         if ($datas != null) {
@@ -26,10 +26,10 @@ if ($results != null) {
                         <div class="list-group">';
             foreach ($datas as $data) {
                 echo '
-                            <a href="' . $dati['info']['root'] . 'categoria/' . $data["id"] .
-                         '" class="list-group-item"><span class="badge">' .
-                         $dati['database']->count("articoli", array ("categoria" => $data["id"])) . ' discussioni</span>' . $data["nome"] .
-                         '</a>';
+                            <a href="' . $dati['info']['root'] . 'categoria/' .
+                         $data["id"] . '" class="list-group-item"><span class="badge">' .
+                         $dati['database']->count("articoli", array ("AND" => array ("categoria" => $data["id"], "stato[!]" => 1))) .
+                         ' discussioni</span>' . $data["nome"] . '</a>';
             }
             echo '
                         </div>';
@@ -55,11 +55,11 @@ echo '
                                     <li><a href="' . $dati['info']['root'] . 'categorie">Categorie</a></li>
                                     <li><a href="' . $dati['info']['root'] . 'articoli">Articoli</a></li>
                                     <hr>
-                                    <li><a href="' . $dati['info']['root'] .
-         'posts">I miei post</a></li>';
+                                    <li><a href="' . $dati['info']['root'] . 'posts">I miei post</a></li>';
 if (isAdminUserAutenticate()) echo '
                                     <hr>
-                                    <li><a href="' . $dati['info']['root'] . 'post">Tutti i post</a></li>';
+                                    <li><a href="' . $dati['info']['root'] .
+         'post">Tutti i post</a></li>';
 echo '
                                 </ul>
                             </div>
@@ -69,10 +69,8 @@ echo '
                             <div class="panel-body">
                                 <pVisite totali: ' . $dati['database']->count("sessioni") . '</p>
                                 <p>Visite ultimo mese: ' .
-         $dati['database']->count("sessioni", array ("#data[>=]" => "DATE_SUB(NOW(),INTERVAL 31 DAY")) .
-         '</p>
-                                <p>Visite oggi: ' .
-         $dati['database']->count("sessioni", array ("data[~]" => '%' . date("-m-d") . '%')) . '</p>
+         $dati['database']->count("sessioni", array ("#data[>=]" => "DATE_SUB(NOW(),INTERVAL 31 DAY")) . '</p>
+                                <p>Visite oggi: ' . $dati['database']->count("sessioni", array ("data[~]" => '%' . date("-m-d") . '%')) . '</p>
                                 <p>Accessi effettuati oggi: ' .
          $dati['database']->count("accessi", array ("data[~]" => '%' . date("-m-d") . '%')) . '</p>
                             </div>

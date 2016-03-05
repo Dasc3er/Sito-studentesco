@@ -1,16 +1,16 @@
 <?php
 if (!isset($dati)) require_once 'utility.php';
-
 $datatable = true;
-if (isAdminUserAutenticate() && isset($reset) && !isAdmin($dati['database'], $id)) {
+if (isAdminUserAutenticate() && isset($reset) && !isAdmin($dati['database'], $reset)) {
     $password = random(5);
     $name = $dati['database']->get('persone', 'nome', array ('id' => $reset));
-    $username = mb_strimwidth(preg_replace(' ', '', strtolower($name)), 0, 7) . substr(strtolower($name), strlen($name) - $cont);
+    $username = str_replace(" ", "", strtolower($name));
     while (!isUserFree($dati['database'], $username, $reset)) {
         $username .= rand(0, 999);
     }
-    $dati['database']->update('persone', array ('username' => $username, 'password' => $password, 'email' => '', 'stato' => 0), 
-            array ('AND' => array ('id' => $id, 'stato[!]' => 1)));
+    $dati['database']->update('persone', 
+            array ('username' => $username, 'password' => $password, 'email' => '', 'stato' => 0, 'verificata' => 0), 
+            array ('AND' => array ('id' => $reset, 'stato[!]' => 0)));
     echo 'Username: ' . $username . ' - Password: ' . $password;
 }
 else {
@@ -18,8 +18,7 @@ else {
     $accessi = $dati['database']->select('accessi', '*');
     $numero = pieni($accessi, 'id');
     $admins = $dati['database']->select('admins', '*', array ('ORDER' => 'id'));
-    $studenti = $dati['database']->select('studenti', '*', 
-            array ('id' => $dati['database']->max('studenti', 'id'), 'ORDER' => 'persona'));
+    $studenti = $dati['database']->select('studenti', '*', array ('id' => $dati['database']->max('studenti', 'id'), 'ORDER' => 'persona'));
     $classi = $dati['database']->select('classi', '*', array ('ORDER' => 'id'));
     $results = $dati['database']->select('persone', '*', array ('ORDER' => 'nome'));
     $pageTitle = 'Utenti registrati';
@@ -85,8 +84,7 @@ else {
                     }
                     else {
                         echo '
-                                <td>Username: ' .
-                                 $result['username'] . ' - Password: ' . strtolower($result['password']) . '</td>';
+                                <td>Username: ' . $result['username'] . ' - Password: ' . strtolower($result['password']) . '</td>';
                     }
                 }
                 else {
@@ -95,8 +93,7 @@ else {
                 }
             }
             echo '
-                                <td><a class="btn btn-success" href="' .
-                     $dati['root'] . 'profilo/' . $result['id'] . '">Profilo</a></td>
+                                <td><a class="btn btn-success" href="' . $dati['root'] . 'profilo/' . $result['id'] . '">Profilo</a></td>
                             </tr>';
         }
     }

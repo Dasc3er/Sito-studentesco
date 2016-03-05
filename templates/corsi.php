@@ -11,7 +11,7 @@ if (isset($presente) && stessauto($dati['database'], $dati["autogestione"], $cor
         echo 1;
     }
 }
-if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
+else if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
     if ($dati['database']->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
         $dati['database']->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
         $dati['database']->update("corsi", array ("stato" => 1, "da" => $dati["user"]), array ("id" => $stato));
@@ -22,7 +22,7 @@ if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"
         echo 0;
     }
 }
-if ((isset($edit) || isset($new)) && $tempo) {
+else if ((isset($edit) || isset($new)) && $tempo) {
     $error = false;
     $pageTitle = "Nuovo corso";
     $name = "";
