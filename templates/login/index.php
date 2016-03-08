@@ -6,20 +6,16 @@ $wait = true;
 require_once 'templates/shared/header.php';
 if (isset($recupero)) {
     if (isset($_POST['username']) && isset($_POST['email'])) {
-        $username = encode($_POST['username']);
         $email = encode($_POST['email']);
         $number = rand(2, 1000000000);
-        if ($dati['database']->count("persone", 
-                array ("AND" => array ("username" => $username, "email" => $email, "stato" => 1))) != 0) {
-            $dati['database']->update("persone", array ("stato" => $number), 
-                    array ("AND" => array ("username" => $username, "email" => $email)));
+        if ($dati['database']->count("persone", array ("AND" => array ("email" => $email, "stato[!]" => 0))) != 0) {
+            $dati['database']->update("persone", array ("stato" => $number), array ("email" => $email));
             send(decode($email), $dati['info']['sito'], "Recupero credenziali", 
                     "<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell'autogestione.</p>
                     <p>Clicca sul link seguente o copialo nella barra del browser per completare l'operazione.</p>
                     <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" . $number .
                              "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", 
-                            $dati['database']->get("persone", "nome", 
-                                    array ("AND" => array ("username" => $username, "email" => $email))));
+                            $dati['database']->get("persone", "nome", array ("AND" => array ("username" => $username, "email" => $email))));
             salva();
         }
     }
@@ -35,14 +31,6 @@ if (isset($recupero)) {
                 <div class="container">
                     <p>Inserire le informazione che identificano l\'account:</p>
                     <form action="" method="post" class="form-horizontal" role="form">
-                        <div class="form-group">
-                            <label for="username" class="col-xs-12 col-sm-2 control-label">Username</label>
-                            <div class="col-xs-12 col-sm-10">
-                                <input class="form-control" name="username" maxlength="100" id="username" type="text"';
-    if (isset($_POST['username'])) echo ' value="' . $_POST['username'] . '"';
-    echo 'required>
-                            </div>
-                        </div>
                         <div class="form-group">
                             <label for="email" class="col-xs-12 col-sm-2 control-label">Email</label>
                             <div class="col-xs-12 col-sm-10">
@@ -87,8 +75,8 @@ else {
             $_SESSION['mode'] = $dati['database']->get("opzioni", "mode", array ("id" => $id));
             $_SESSION['style'] = $dati['database']->get("opzioni", "style", array ("id" => $id));
             $dati['database']->query(
-                    "INSERT INTO accessi (id, tipo_browser, indirizzo, data) VALUES ('" . $id . "', '" . getenv('HTTP_USER_AGENT') .
-                             "', '" . getenv('REMOTE_ADDR') . "', '" . date("Y-m-d H:i:s") . "')");
+                    "INSERT INTO accessi (id, tipo_browser, indirizzo, data) VALUES ('" . $id . "', '" . getenv('HTTP_USER_AGENT') . "', '" .
+                             getenv('REMOTE_ADDR') . "', '" . date("Y-m-d H:i:s") . "')");
         }
         else {
             $errore = true;
@@ -104,7 +92,8 @@ else {
             <div class="jumbotron yellow">
                 <div class="container">
                     <h2>Attenzione!</h2>
-                    <p>Adesso devi attendere ' . floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
+                    <p>Adesso devi attendere ' .
+                 floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
                     <p>Fai pi&ugrave; attenzione la prossima volta!</p>
                 </div>
             </div>
@@ -118,7 +107,8 @@ else {
             <div class="jumbotron blue">
                 <div class="container">
                     <h2>Buona fortuna!</h2>
-                    <p>Hai ' . (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
+                    <p>Hai ' .
+             (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
                     <p>Fai attenzione!!!</p>
                 </div>
             </div>';
@@ -151,7 +141,8 @@ else {
     if (intval($_SESSION["try"]) % 3 == 0) echo ' hidden';
     echo '" type="submit" id="button">Accedi</button>
                         <p><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span>Password dimenticata?</p>
-                        <p><a href="' . $dati['info']['root'] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
+                        <p><a href="' .
+             $dati['info']['root'] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
                     </div>
                 </div>
             </form>';

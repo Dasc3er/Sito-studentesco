@@ -53,19 +53,19 @@ else if ((isset($edit) || isset($new)) && $tempo) {
         if (isset($_POST['all'])) $max = $dati['database']->count("persone");
         else $max = $_POST["number"];
         if (isset($_POST['first']) || isset($_POST['second'])) {
-            if (isset($_POST['first'])) $dati['database']->insert("corsi",
-                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
-                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"],
+            if (isset($_POST['first'])) $dati['database']->insert("corsi", 
+                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
+                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"], 
                         "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
-            if (isset($_POST['second'])) $dati['database']->insert("corsi",
-                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
-                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"],
+            if (isset($_POST['second'])) $dati['database']->insert("corsi", 
+                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
+                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"], 
                         "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
         }
         else if (isset($_POST['all'])) {
-            $xp = $dati['database']->insert("corsi",
-                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
-                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2,3,4,5", "scuola" => $_POST["scuola"],
+            $xp = $dati['database']->insert("corsi", 
+                    array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
+                        "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2,3,4,5", "scuola" => $_POST["scuola"], 
                         "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
             /*
              * $dati['database']->insert("corsi",
@@ -77,7 +77,7 @@ else if ((isset($edit) || isset($new)) && $tempo) {
              */
             $dati['database']->insert("max", array ("torneo" => $xp, "max" => $_POST["number"]));
         }
-
+        
         //         }
         //         else  {
         //             if (isset($_POST['school']) && $_POST['school'] == "yes") $school = 1;
@@ -163,41 +163,41 @@ else if ((isset($edit) || isset($new)) && $tempo) {
                             <label for="all" class="col-xs-12 col-sm-2 control-label">Tutta la giornata (palestra)</label>
                             <div class="col-xs-12 col-sm-10"><input class="form-control" id="all" type="checkbox" name="all" value="yes"></div>
                         </div>';
-//     echo '
-//                         <div class="form-group">
-//                             <label for="quando" class="col-sm-2 control-label">Orario:</label>
-//                             <div class="col-sm-10">
-//                                 <select class="form-control" name="quando" id="quando">
-//                                     <option value="1"';
-//     if ($when == "1") echo ' selected';
-//     echo '>Prima ora</option>
-//                                     <option value="2"';
-//     if ($when == "2") echo ' selected';
-//     echo '>Seconda ora</option>
-//                                     <option value="3"';
-//     if ($when == "3") echo ' selected';
-//     echo '>Terza ora</option>
-//                                     <option value="4"';
-//     if ($when == "4") echo ' selected';
-//     echo '>Quarta ora</option>
-//                                     <option value="5"';
-//     if ($when == "5") echo ' selected';
-//     echo '>Quinta ora</option>
-//                                     <option value="1,2"';
-//     if ($when == "1,2") echo ' selected';
-//     echo '>Prima e seconda ora</option>
-//                                     <option value="3,4"';
-//     if ($when == "3,4") echo ' selected';
-//     echo '>Terza e quarta ora</option>
-//                                     <option value="5"';
-//     if ($when == "5") echo ' selected';
-//     echo '>Quinta ora</option>
-//                                     <option value="1,2,3,4,5"';
-//     if ($when == "1,2,3,4,5") echo ' selected';
-//     echo '>Tutte le ore (palestra)</option>
-//                                 </select>
-//                             </div>
-//                         </div>';
+    //     echo '
+    //                         <div class="form-group">
+    //                             <label for="quando" class="col-sm-2 control-label">Orario:</label>
+    //                             <div class="col-sm-10">
+    //                                 <select class="form-control" name="quando" id="quando">
+    //                                     <option value="1"';
+    //     if ($when == "1") echo ' selected';
+    //     echo '>Prima ora</option>
+    //                                     <option value="2"';
+    //     if ($when == "2") echo ' selected';
+    //     echo '>Seconda ora</option>
+    //                                     <option value="3"';
+    //     if ($when == "3") echo ' selected';
+    //     echo '>Terza ora</option>
+    //                                     <option value="4"';
+    //     if ($when == "4") echo ' selected';
+    //     echo '>Quarta ora</option>
+    //                                     <option value="5"';
+    //     if ($when == "5") echo ' selected';
+    //     echo '>Quinta ora</option>
+    //                                     <option value="1,2"';
+    //     if ($when == "1,2") echo ' selected';
+    //     echo '>Prima e seconda ora</option>
+    //                                     <option value="3,4"';
+    //     if ($when == "3,4") echo ' selected';
+    //     echo '>Terza e quarta ora</option>
+    //                                     <option value="5"';
+    //     if ($when == "5") echo ' selected';
+    //     echo '>Quinta ora</option>
+    //                                     <option value="1,2,3,4,5"';
+    //     if ($when == "1,2,3,4,5") echo ' selected';
+    //     echo '>Tutte le ore (palestra)</option>
+    //                                 </select>
+    //                             </div>
+    //                         </div>';
     echo '
                         <div class="col-xs-12"><p>Descrizione:</p></div>
                         <div class="col-xs-12"><textarea name="txtEditor" id="txtEditor">';
@@ -233,8 +233,7 @@ else if (isset($view)) {
                 <h1>' . $data["nome"] . '</h1>
                 <p><strong>Orario: ' . orario($data["quando"]) . '</strong></p>
                 <p>' . $data["descrizione"] . '</p>';
-            $iscritti = $dati['database']->select("iscrizioni", array ("persona"),
-                    array ("AND" => array ("corso" => $view, "stato" => 0)));
+            $iscritti = $dati['database']->select("iscrizioni", array ("persona"), array ("AND" => array ("corso" => $view, "stato" => 0)));
             echo '
                 <div class="level">
                     <strong class="level-title">Iscritti<span class="text-green pull-right"><span id="number">' . count($iscritti) .
@@ -256,7 +255,7 @@ else if (isset($view)) {
             if ($iscritti != null) {
                 $presenze = $dati['database']->select("registro", "*", array ("corso" => $data["id"], "ORDER" => "persona"));
                 $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-                $studenti = $dati['database']->select("studenti", "*",
+                $studenti = $dati['database']->select("studenti", "*", 
                         array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
                 $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
                 foreach ($iscritti as $iscritto) {
@@ -272,7 +271,7 @@ else if (isset($view)) {
             echo '
                     </tbody>
                 </table>';
-            if ($data["controllore"] == $dati["user"] && ($dati['database']->count("autogestioni",
+            if ($data["controllore"] == $dati["user"] && ($dati['database']->count("autogestioni", 
                     array ("AND" => array ("id" => $dati["autogestione"], "#data" => "NOW()"))) != 0)) echo '
                 <a href="' . $dati['info']['root'] .
                      'presenze" class="btn btn-success btn-block">Controlla le presenze</a>';
@@ -294,7 +293,7 @@ else if (isset($view)) {
                         echo '
                         <tr>
                             <td><a href="' . $dati['info']['root'] . 'squadra/' . $result["id"] . '">' . $result["nome"] . '</a></td>
-                            <td>' . $dati['database']->count("giocatori",
+                            <td>' . $dati['database']->count("giocatori", 
                                 array ("squadra" => $result["id"])) . '</a></td>
                         </tr>';
                     }
@@ -310,7 +309,8 @@ else if (isset($view)) {
                     <span class="hidden" id="value">' . $data["id"] . '</span>
                     <span class="hidden" id="page">corsi</span>
                     <span class="hidden" id="orario">' . orario($data["quando"]) . '</span>';
-                if (!$iscritto && !occupato($dati['database'], $data["id"], $dati["user"]) && count($iscritti) < $data["max"]) {
+                if (!$iscritto && !occupato($dati['database'], $dati["autogestione"], $data["id"], $dati["user"]) &&
+                         count($iscritti) < $data["max"]) {
                     echo '
                                 <a ';
                     if (modo()) echo 'id="iscriviti"';
@@ -351,7 +351,7 @@ else if (isset($presenze)) {
         $pageTitle = "Controllo presenze";
         $datatable = true;
         require_once 'shared/header.php';
-        $datas = $dati['database']->select("corsi", "*",
+        $datas = $dati['database']->select("corsi", "*", 
                 array ("AND" => array ("autogestione" => $dati["autogestione"], "controllore" => $dati["user"])));
         if ($datas != null) {
             foreach ($datas as $data) {
@@ -371,14 +371,13 @@ else if (isset($presenze)) {
                         </tr>
                     </thead>
                     <tbody>';
-                if (isAdminUserAutenticate()) $iscritti = $dati['database']->select("iscrizioni", array ("persona"),
-                        array ("stato" => 0));
-                else $iscritti = $dati['database']->select("iscrizioni", array ("persona"),
+                if (isAdminUserAutenticate()) $iscritti = $dati['database']->select("iscrizioni", array ("persona"), array ("stato" => 0));
+                else $iscritti = $dati['database']->select("iscrizioni", array ("persona"), 
                         array ("AND" => array ("corso" => $data["id"], "stato" => 0)));
                 if ($iscritti != null) {
                     $presenze = $dati['database']->select("registro", "*", array ("corso" => $data["id"], "ORDER" => "persona"));
                     $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-                    $studenti = $dati['database']->select("studenti", "*",
+                    $studenti = $dati['database']->select("studenti", "*", 
                             array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
                     $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
                     foreach ($iscritti as $iscritto) {
@@ -422,17 +421,18 @@ else if (isset($presenze)) {
         require_once 'shared/404.php';
 }
 else if (isset($id) && stessauto($dati['database'], $dati["autogestione"], $id) && classe($dati['database'], $dati["user"]) &&
-         !iscritto($dati['database'], $id, $dati["user"]) && !occupato($dati['database'], $id, $dati["user"]) &&
+         !iscritto($dati['database'], $id, $dati["user"]) && !occupato($dati['database'], $dati["autogestione"], $id, $dati["user"]) &&
          !pieno($dati['database'], $id) && scuolagiusta($dati['database'], $id, $dati["user"]) && tempo($dati['database'])) {
-    if (interessato($dati['database'], $id, $dati["user"])) $dati['database']->update("iscrizioni", array ("stato" => 0),
+    if (interessato($dati['database'], $id, $dati["user"])) $dati['database']->update("iscrizioni", array ("stato" => 0), 
             array ("persona" => $dati["user"], "corso" => $id));
-    else $dati['database']->insert("iscrizioni", array ("persona" => $dati["user"], "corso" => $id, "stato" => 0));
+    else $dati['database']->insert("iscrizioni", 
+            array ("autogestione" => $dati["autogestione"], "persona" => $dati["user"], "corso" => $id, "stato" => 0));
     echo 1;
 }
 else if (isset($id) && stessauto($dati['database'], $dati["autogestione"], $id) && classe($dati['database'], $dati["user"]) &&
-         iscritto($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $dati["user"]) &&
-         tempo($dati['database'])) {
-    $dati['database']->delete("iscrizioni", array ("AND" => array ("persona" => $dati["user"], "corso" => $id)));
+         iscritto($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $dati["user"]) && tempo($dati['database'])) {
+    $dati['database']->delete("iscrizioni", 
+            array ("AND" => array ("autogestione" => $dati["autogestione"], "persona" => $dati["user"], "corso" => $id)));
     $xp = squadra($dati['database'], $dati["user"]);
     $dati['database']->delete("squadre", array ("id" => $xp));
     $dati['database']->delete("giocatori", array ("squadra" => $xp));
@@ -444,13 +444,13 @@ else {
     $readmore = true;
     require_once 'shared/header.php';
     $scuola = scuola($dati['database'], $dati["user"]);
-    if (isAdminUserAutenticate()) $results = $dati['database']->select("corsi", "*",
+    if (isAdminUserAutenticate()) $results = $dati['database']->select("corsi", "*", 
             array ("AND" => array ("autogestione" => $dati["autogestione"], "quando[!]" => null)));
-    else $results = $dati['database']->select("corsi", "*",
+    else $results = $dati['database']->select("corsi", "*", 
             array ("AND" => array ("autogestione" => $dati["autogestione"], "scuola" => $scuola, "quando[!]" => null, "stato" => 0)));
     $scuole = $dati['database']->select("scuole", "*", array ("ORDER" => "id"));
     $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-    $iscritti = $dati['database']->select("iscrizioni", "*", array ("ORDER" => "corso"));
+    $iscritti = $dati['database']->select("iscrizioni", "*", array ("autogestione" => $dati["autogestione"], "ORDER" => "corso"));
     $numero = pieni($iscritti);
     $iscrizioni = io($iscritti, $dati["user"], 0);
     $interessato = io($iscritti, $dati["user"], 1);

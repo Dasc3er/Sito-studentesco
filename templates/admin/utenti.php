@@ -8,8 +8,8 @@ if (isAdminUserAutenticate() && isset($reset) && !isAdmin($dati['database'], $re
     while (!isUserFree($dati['database'], $username, $reset)) {
         $username .= rand(0, 999);
     }
-    $dati['database']->update('persone', 
-            array ('username' => $username, 'password' => $password, 'email' => '', 'stato' => 0, 'verificata' => 0), 
+    $dati['database']->update('persone',
+            array ('username' => $username, 'password' => $password, 'email' => '', 'stato' => 0, 'verificata' => 0),
             array ('AND' => array ('id' => $reset, 'stato[!]' => 0)));
     echo 'Username: ' . $username . ' - Password: ' . $password;
 }
@@ -32,7 +32,7 @@ else {
             <div class="jumbotron">
                 <div class="container">
                 <p>Elenco utenti registrati</p>
-                <table class="table table-hover scroll">
+                <table class="table table-hover scroll no-truncate">
                         <thead>
                             <tr>
                                 <th>Cognome e nome</th>

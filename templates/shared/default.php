@@ -46,7 +46,7 @@ function id($database) {
  * @param medoo $database Database
  * @param string $username Username da controllare
  * @param int $user Identificativo utente
- * @return boolean
+ * @return boolean Username libero
  */
 function isUserFree($database, $username, $user) {
     return ($database->count("persone", array ("AND" => array ("username" => $username, "id[!]" => $user))) == 0);
@@ -58,7 +58,7 @@ function isUserFree($database, $username, $user) {
  * @param medoo $database Connessione con il database
  * @param string $email Email da controllare
  * @param int $user Identificativo utente
- * @return boolean
+ * @return boolean Email libera
  */
 function isEmailFree($database, $email, $user) {
     return ($database->count("persone", array ("AND" => array ("email" => $email, "id[!]" => $user))) == 0);
@@ -67,8 +67,8 @@ function isEmailFree($database, $email, $user) {
 /**
  * Pulisce il testo inserito
  * 
- * @param mixed $input
- * @return mixed
+ * @param mixed $input Testo da pulire
+ * @return mixed Testo pulito
  */
 function cleanInput($input) {
     $search = array ('@<script[^>]*?>.*?</script>@si',/*   // Strip out javascript
@@ -80,10 +80,10 @@ function cleanInput($input) {
 }
 
 /**
- * Pulisce il testo inserito
+ * Sanitarizza il testo inserito
  * 
- * @param mixed $input
- * @return mixed
+ * @param mixed $input testo da sanitarizzare
+ * @return mixed Testo pulito e sanitarizzato
  */
 function sanitize($input) {
     if (is_array($input)) {
@@ -103,6 +103,8 @@ function sanitize($input) {
 
 /**
  * Controlla se è stato effettuato l'accesso (utente normale)
+ * 
+ * @return boolean
  */
 function isUserAutenticate() {
     return (isset($_SESSION['loggedin']) && strlen($_SESSION['loggedin']) > 2);
@@ -110,6 +112,8 @@ function isUserAutenticate() {
 
 /**
  * Controlla se è stato effettuato l'accesso (amministratore)
+ * 
+ * @return boolean
  */
 function isAdminUserAutenticate() {
     return (isUserAutenticate() && isset($_SESSION['loggedAsAdmin']) && $_SESSION['loggedAsAdmin'] == "true");
@@ -377,14 +381,15 @@ function interessato($database, $id, $user) {
 }
 
 /**
- * Controlla se $userè iscritto ad un'altro corso durante il tempo del corso $id
+ * Controlla se $user è iscritto ad un'altro corso durante il tempo del corso $id
  * 
  * @param medoo $database Connessione con il database
+ * @param String $autogestione Autogestione in corso
  * @param int $id
  * @param int $user
  * @return boolean
  */
-function occupato($database, $id, $user) {
+function occupato($database, $autogestione, $id, $user) {
     $when = $database->get("corsi", "quando", array ("AND" => array ("id" => $id, "stato" => 0)));
     if (strpos($when, ",") != false) $when = explode(",", $when);
     else $when = array ($when);
@@ -392,7 +397,8 @@ function occupato($database, $id, $user) {
     $datas = $database->select("iscrizioni", "*", array ("AND" => array ("persona" => $user, "stato" => 0)));
     if ($datas != null) {
         foreach ($datas as $data) {
-            $quando = $database->get("corsi", "quando", array ("AND" => array ("id" => $data["corso"], "stato" => 0)));
+            $quando = $database->get("corsi", "quando", 
+                    array ("AND" => array ("id" => $data["corso"], "autogestione" => $autogestione, "stato" => 0)));
             if ($quando != null) {
                 foreach ($when as $hour)
                     foreach (explode(",", $quando) as $what)

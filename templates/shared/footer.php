@@ -103,7 +103,7 @@ if (isset($wait) && $wait) echo '
         </script>';
 echo '
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>';
-if ($dati["snow"]) echo '
+if ($dati['opzioni']['snow']) echo '
         <script async type="text/javascript" src="' . $dati['info']['path'] . 'js/jquery.let_it_snow.js"></script>
         <script async>
             $("canvas.snow").let_it_snow({

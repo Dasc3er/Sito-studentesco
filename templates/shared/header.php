@@ -66,7 +66,7 @@ if (isUserAutenticate() && !$dati["first"]) {
                         <li';
             if ($pageTitle == "Proposte" || $pageTitle == "Nuova proposta") echo ' class="active"';
             echo '><a href="' . $dati['info']['root'] . 'proposte">Proposte';
-            if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("corsi", 
+            if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("corsi",
                     array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
             echo '</a></li>';
         }
@@ -82,7 +82,7 @@ if (isUserAutenticate() && !$dati["first"]) {
       <li';
         if ($pageTitle == "Aule studio") echo ' class="active"';
         echo '><a href="' . $dati['info']['root'] . 'aule">Aule studio';
-        if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("aule", 
+        if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("aule",
                 array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
         echo '</a></li>';
     }
@@ -91,7 +91,7 @@ if (isUserAutenticate() && !$dati["first"]) {
                         <li';
         if ($pageTitle == "Citazioni") echo ' class="active"';
         echo '><a href="' . $dati['info']['root'] . 'citazioni">Citazioni';
-        if (isAdminUserAutenticate()) echo ' <span class="badge" id="change">' . $dati['database']->count("citazioni", 
+        if (isAdminUserAutenticate()) echo ' <span class="badge" id="change">' . $dati['database']->count("citazioni",
                 array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
         echo '</a></li>';
     }
@@ -162,11 +162,10 @@ echo '
             </div>
         </nav>
         <div class="page-wrap">';
-if ($dati["percorso"]) echo '<ol class="breadcrumb text-center">
-            <li><a href="' . $dati['info']['root'] . '">' .
-         $dati['info']['sito'] . '</a></li>
-            <li class="active">' . $pageTitle . '</li>
-        </ol>';
+// if (isset($percorso) && $percorso) echo '<ol class="breadcrumb text-center">
+//             <li><a href="' . $dati['info']['root'] . '">' . $dati['info']['sito'] . '</a></li>
+//             <li class="active">' . $pageTitle . '</li>
+//         </ol>';
 if (isUserAutenticate()) {
     if ($dati["first"]) {
         if ($pageTitle != "Modifica credenziali") echo '

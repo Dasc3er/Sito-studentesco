@@ -27,14 +27,14 @@ if (isset($edit) || isset($new)) {
         $editor = true;
         require_once 'templates/shared/header.php';
         if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
-            $dati['database']->insert("autogestioni", 
-                    array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"], 
+            $dati['database']->insert("autogestioni",
+                    array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"],
                         "proposte" => $_POST["proposte"], "random" => 0, "newsletter" => 0));
             salva();
         }
         else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-            $dati['database']->update("autogestioni", 
-                    array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"], 
+            $dati['database']->update("autogestioni",
+                    array ("nome" => strip_tags($_POST["name"]), "data" => $_POST["data"], "ultima" => $_POST["ultima"],
                         "proposte" => $_POST["proposte"], "random" => 0, "newsletter" => 0), array ("id" => $edit));
             salva();
         }
@@ -109,9 +109,9 @@ if (isset($edit) || isset($new)) {
 else if (isset($random)) {
     set_time_limit(60 * 50);
     echo "asas";
-    $corsi = $dati['database']->select("corsi", "*", 
+    $corsi = $dati['database']->select("corsi", "*",
             array (
-                "AND" => array ("autogestione" => $dati['database']->max("autogestioni", "id"), "quando[!]" => null, 
+                "AND" => array ("autogestione" => $dati['database']->max("autogestioni", "id"), "quando[!]" => null,
                     "quando[!]" => "1,2,3,4,5", "stato" => 0), "ORDER" => "id"));
     $array = array ();
     if ($corsi != null) {
@@ -129,7 +129,7 @@ else if (isset($random)) {
     sort($array);
     $d = 0;
     $persone = array ();
-    $studenti = $dati['database']->select("studenti", "*", 
+    $studenti = $dati['database']->select("studenti", "*",
             array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
     $iscritti = $dati['database']->select("iscrizioni", "*", array ("ORDER" => "corso"));
     $results = $dati['database']->select("persone", "*");
@@ -199,11 +199,11 @@ else if (isset($random)) {
             }
             $i = 0;
             while (!pieno($dati['database'], $corso["id"]) && $i < count($persone)) {
-                if (isset($persone[$i]) && !occupato($dati['database'], $corso["id"], $persone[$i]["id"]) &&
+                if (isset($persone[$i]) && !occupato($dati['database'],$dati["autogestione"], $corso["id"], $persone[$i]["id"]) &&
                          scuolagiusta($dati['database'], $corso["id"], $persone[$i]["id"])) {
                     // echo $persone[$i]["nome"] . " " . $corso["id"] . "<br>";
                     $dati['database']->update("persone", array ("random" => 1), array ("id" => $persone[$i]["id"]));
-                    $dati['database']->insert("iscrizioni", 
+                    $dati['database']->insert("iscrizioni",
                             array ("persona" => $persone[$i]["id"], "corso" => $corso["id"], "stato" => 0));
                 }
                 $i ++;
@@ -214,12 +214,12 @@ else if (isset($random)) {
 }
 else if (isset($newsletter)) {
     set_time_limit(60 * 50);
-    $corsi = $dati['database']->select("corsi", "*", 
+    $corsi = $dati['database']->select("corsi", "*",
             array (
-                "AND" => array ("autogestione" => $dati['database']->max("autogestioni", "id"), "quando[!]" => null, 
+                "AND" => array ("autogestione" => $dati['database']->max("autogestioni", "id"), "quando[!]" => null,
                     "stato" => 0), "ORDER" => "id"));
     $iscritti = $dati['database']->select("iscrizioni", "*", array ("ORDER" => "corso"));
-    $studenti = $dati['database']->select("studenti", "*", 
+    $studenti = $dati['database']->select("studenti", "*",
             array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
     $results = $dati['database']->select("persone", "*");
     if ($results != null) {
