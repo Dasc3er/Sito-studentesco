@@ -40,11 +40,13 @@ if (isset($readmore) && $readmore) echo '
         </script>';
 if (isset($datatable) && $datatable) {
     echo '
-        <script src="' . $dati['info']['root'] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
-        <script src="' . $dati['info']['root'] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
-        <script async src="' . $dati['info']['path'] . 'js/minified.js" type="text/javascript"></script>';
-    if (isMobile()) echo '
-        <script async src="' . $dati['info']['path'] . 'js/jquery.tap.min.js" type="text/javascript"></script>';
+        <script src="' .
+             $dati['info']['root'] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
+        <script src="' .
+             $dati['info']['root'] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
+        <script async src="' . $dati['info']['path'] . 'js/minified.js" type="text/javascript"></script>
+        <script async src="' . $dati['info']['path'] .
+             'js/jquery.tap.min.js" type="text/javascript"></script>';
 }
 if (isset($complexify) && $complexify) echo '
         <script src="' . $dati['info']['path'] . 'js/jquery.complexify.min.js" type="text/javascript"></script>
@@ -86,7 +88,8 @@ if (isset($style) && $style) echo '
                     $(\'<link id="css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">\').prependTo("#font");
                 }
                 else {
-                    $(\'<link id="css" href="' . $dati['info']['root'] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
+                    $(\'<link id="css" href="' .
+         $dati['info']['root'] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
                 }
             });
         </script>';

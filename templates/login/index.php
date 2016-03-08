@@ -5,7 +5,7 @@ else $pageTitle = "Accedi";
 $wait = true;
 require_once 'templates/shared/header.php';
 if (isset($recupero)) {
-    if (isset($_POST['username']) && isset($_POST['email'])) {
+    if (isset($_POST['email'])) {
         $email = encode($_POST['email']);
         $number = rand(2, 1000000000);
         if ($dati['database']->count("persone", array ("AND" => array ("email" => $email, "stato[!]" => 0))) != 0) {
@@ -92,8 +92,7 @@ else {
             <div class="jumbotron yellow">
                 <div class="container">
                     <h2>Attenzione!</h2>
-                    <p>Adesso devi attendere ' .
-                 floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
+                    <p>Adesso devi attendere ' . floor($time / 60) . ' minuti e ' . floor($time % 60) . ' secondi prima di poter provare di nuovo ad accedere!!! :(</p>
                     <p>Fai pi&ugrave; attenzione la prossima volta!</p>
                 </div>
             </div>
@@ -107,8 +106,7 @@ else {
             <div class="jumbotron blue">
                 <div class="container">
                     <h2>Buona fortuna!</h2>
-                    <p>Hai ' .
-             (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
+                    <p>Hai ' . (3 - intval($_SESSION["try"]) % 3) . ' tentativi prima di dover aspettare ancora... :(</p>
                     <p>Fai attenzione!!!</p>
                 </div>
             </div>';
@@ -141,8 +139,7 @@ else {
     if (intval($_SESSION["try"]) % 3 == 0) echo ' hidden';
     echo '" type="submit" id="button">Accedi</button>
                         <p><span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span>Password dimenticata?</p>
-                        <p><a href="' .
-             $dati['info']['root'] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
+                        <p><a href="' . $dati['info']['root'] . 'recupero">Esegui la procedura di recupero</a> oppure chiedi ai Rappresentanti d\'Istituto!!! ;)</p>
                     </div>
                 </div>
             </form>';

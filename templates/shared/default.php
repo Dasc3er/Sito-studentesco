@@ -166,8 +166,7 @@ function stile($root) {
     if ($nome == "bootstrap") echo '
         <link id="css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">';
     else echo '
-        <link id="css" rel="stylesheet" href="' . $root .
-             'vendor/thomaspark/bootswatch/' . $nome . '/bootstrap.min.css">';
+        <link id="css" rel="stylesheet" href="' . $root . 'vendor/thomaspark/bootswatch/' . $nome . '/bootstrap.min.css">';
 }
 
 /**
@@ -252,8 +251,7 @@ function send($destinatario, $sito, $titolo, $msg, $nome = "") {
     $text = '<html>
     <body>
         <table width="100%" cellspacing="0" cellpadding="10" bgcolor="#4caf50">
-            <tr><td align="center"><font face="verdana" color="white"><h1>' .
-             $titolo . ' - ' . $sito . '</h1><br></td></font></tr>
+            <tr><td align="center"><font face="verdana" color="white"><h1>' . $titolo . ' - ' . $sito . '</h1><br></td></font></tr>
         </table>
         <table width="100%" cellspacing="15" cellpadding="10" bgcolor="#f3f3f3">
             <tr>
@@ -264,8 +262,7 @@ function send($destinatario, $sito, $titolo, $msg, $nome = "") {
     if ($nome != "") $text .= '
                                 <p>Caro ' . $nome . ',</p>';
     $text .= '
-                                ' .
-             str_replace('<p>', '<p  style="padding-bottom:7px">', $msg);
+                                ' . str_replace('<p>', '<p  style="padding-bottom:7px">', $msg);
     if ($nome != "") $text .= '
                                 <p align="right">Cordiali saluti, i <b>Rappresentanti d\'Istituto</b></p>';
     $text .= '
@@ -706,14 +703,5 @@ function ricerca($array, $elemento, $where = "id") {
         }
     }
     return -1;
-}
-
-/**
- * Individua se il browser utilizzato è da un dispositivo mobile.
- */
-function isMobile() {
-    return preg_match(
-            "/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", 
-            $_SERVER["HTTP_USER_AGENT"]);
 }
 ?>

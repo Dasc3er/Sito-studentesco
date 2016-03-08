@@ -16,10 +16,10 @@ if (isset($datatable) && $datatable) echo '
         <link href="' . $dati['info']['path'] .
          'css/datatable.min.css" media="screen" rel="stylesheet" type="text/css">';
 if ($dati['opzioni']['snow']) echo '
-        <link href="' . $dati['info']['path'] . 'css/snow.min.css" rel="stylesheet" type="text/css">';
-echo '
         <link href="' . $dati['info']['path'] .
-         'css/style.min.css" rel="stylesheet" type="text/css">';
+         'css/snow.min.css" rel="stylesheet" type="text/css">';
+echo '
+        <link href="' . $dati['info']['path'] . 'css/style.min.css" rel="stylesheet" type="text/css">';
 if ($dati['opzioni']['cookie-policy']) echo '
         <link href="' . $dati['info']['path'] . 'css/cookies.min.css" rel="stylesheet" type="text/css">
         <script type="text/javascript">
@@ -52,108 +52,121 @@ echo '
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a href="' . $dati['info']['root'] . '" class="navbar-brand">' . $dati['info']['sito'] . '</a>
+                    <a href="' . $dati['info']['root'] .
+         '" class="navbar-brand">' . $dati['info']['sito'] . '</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">';
-if (isUserAutenticate() && !$dati["first"]) {
-    if ($dati["autogestione"] != null) {
-        if ($dati['sezioni']['corsi']) {
+if (!$dati['debug'] || isAdminUserAutenticate()) {
+    if (isUserAutenticate() && !$dati["first"]) {
+        if ($dati["autogestione"] != null) {
+            if ($dati['sezioni']['corsi']) {
+                echo '
+                        <li';
+                if ($pageTitle == "Corsi disponibili") echo ' class="active"';
+                echo '><a href="' . $dati['info']['root'] . 'corsi">Corsi disponibili</a></li>
+                        <li';
+                if ($pageTitle == "Proposte" || $pageTitle == "Nuova proposta") echo ' class="active"';
+                echo '><a href="' . $dati['info']['root'] . 'proposte">Proposte';
+                if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("corsi", 
+                        array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
+                echo '</a></li>';
+            }
+        }
+        else if (isAdminUserAutenticate()) {
             echo '
                         <li';
-            if ($pageTitle == "Corsi disponibili") echo ' class="active"';
-            echo '><a href="' . $dati['info']['root'] . 'corsi">Corsi disponibili</a></li>
-                        <li';
-            if ($pageTitle == "Proposte" || $pageTitle == "Nuova proposta") echo ' class="active"';
-            echo '><a href="' . $dati['info']['root'] . 'proposte">Proposte';
-            if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("corsi",
+            if ($pageTitle == "Nuova autogestione") echo ' class="active"';
+            echo '><a href="' . $dati['info']['root'] . 'autogestione">Nuova autogestione</a></li>';
+        }
+        if ($dati['sezioni']['aule']) {
+            echo '
+      <li';
+            if ($pageTitle == "Aule studio") echo ' class="active"';
+            echo '><a href="' . $dati['info']['root'] . 'aule">Aule studio';
+            if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("aule", 
                     array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
             echo '</a></li>';
         }
+        if ($dati['sezioni']['citazioni']) {
+            echo '
+                        <li';
+            if ($pageTitle == "Citazioni") echo ' class="active"';
+            echo '><a href="' . $dati['info']['root'] . 'citazioni">Citazioni';
+            if (isAdminUserAutenticate()) echo ' <span class="badge" id="change">' . $dati['database']->count("citazioni", 
+                    array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
+            echo '</a></li>';
+        }
+        if ($dati['sezioni']['forum']) {
+            echo '
+                        <li';
+            if ($pageTitle == "Forum") echo ' class="active"';
+            echo '><a href="' . $dati['info']['root'] . 'forum">Forum</a></li>';
+        }
     }
-    else if (isAdminUserAutenticate()) {
+    else if (isUserAutenticate() && $dati["first"]) {
         echo '
                         <li';
-        if ($pageTitle == "Nuova autogestione") echo ' class="active"';
-        echo '><a href="' . $dati['info']['root'] . 'autogestione">Nuova autogestione</a></li>';
-    }
-    if ($dati['sezioni']['aule']) {
-        echo '
-      <li';
-        if ($pageTitle == "Aule studio") echo ' class="active"';
-        echo '><a href="' . $dati['info']['root'] . 'aule">Aule studio';
-        if (isAdminUserAutenticate()) echo ' <span class="badge">' . $dati['database']->count("aule",
-                array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
-        echo '</a></li>';
-    }
-    if ($dati['sezioni']['citazioni']) {
-        echo '
-                        <li';
-        if ($pageTitle == "Citazioni") echo ' class="active"';
-        echo '><a href="' . $dati['info']['root'] . 'citazioni">Citazioni';
-        if (isAdminUserAutenticate()) echo ' <span class="badge" id="change">' . $dati['database']->count("citazioni",
-                array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
-        echo '</a></li>';
-    }
-    if ($dati['sezioni']['forum']) {
-        echo '
-                        <li';
-        if ($pageTitle == "Forum") echo ' class="active"';
-        echo '><a href="' . $dati['info']['root'] . 'forum">Forum</a></li>';
+        if ($pageTitle == "Modifica") echo ' class="active"';
+        echo '><a href="' . $dati['info']['root'] . 'modifica">Modifica credenziali</a></li>';
     }
 }
-else if (isUserAutenticate() && $dati["first"]) {
+else
     echo '
-                        <li';
-    if ($pageTitle == "Modifica") echo ' class="active"';
-    echo '><a href="' . $dati['info']['root'] . 'modifica">Modifica credenziali</a></li>';
-}
+                        <li>Manutenzione in corso.</li>';
 echo '
                         <li><a href="http://www.sg26685.scuolanext.info/">Argo ScuolaNEXT</a></li>';
 
 echo '
                     </ul>
                     <ul class="nav navbar-nav navbar-right">';
-if (isUserAutenticate()) {
-    echo '
+if (!$dati['debug'] || isAdminUserAutenticate()) {
+    if (isUserAutenticate()) {
+        echo '
                     <li class="dropdown';
-    if (strpos($pageTitle, "Profilo") !== false || $pageTitle == "Amministrazione" || $pageTitle == "Contattaci") echo ' active';
-    echo '">
+        if (strpos($pageTitle, "Profilo") !== false || $pageTitle == "Amministrazione" || $pageTitle == "Contattaci") echo ' active';
+        echo '">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span id="user">';
-    if ($dati["first"]) echo $_SESSION["username"];
-    else echo decode($_SESSION["username"]);
-    echo '</span> <i class="fa fa-chevron-down"></i></a>
+        if ($dati["first"]) echo $_SESSION["username"];
+        else echo decode($_SESSION["username"]);
+        echo '</span> <i class="fa fa-chevron-down"></i></a>
                             <ul class="dropdown-menu">
                                 <li';
-    if (strpos($pageTitle, "Profilo") !== false) echo ' class="active"';
-    echo '><a href="' . $dati['info']['root'] . 'profilo">Profilo</a></li>
+        if (strpos($pageTitle, "Profilo") !== false) echo ' class="active"';
+        echo '><a href="' . $dati['info']['root'] . 'profilo">Profilo</a></li>
                                 <li';
-    if ($pageTitle == "Contattaci") echo ' class="active"';
-    echo '><a href="' . $dati['info']['root'] . 'contattaci">Contattaci</a></li>';
-    if (isAdminUserAutenticate()) {
-        echo '
+        if ($pageTitle == "Contattaci") echo ' class="active"';
+        echo '><a href="' . $dati['info']['root'] . 'contattaci">Contattaci</a></li>';
+        if (isAdminUserAutenticate()) {
+            echo '
                                 <li role="separator" class="divider"></li>
                                 <li';
-        if ($pageTitle == "Amministrazione") echo ' class="active"';
-        echo '><a href="' . $dati['info']['root'] . 'admin">Amministrazione</a></li>';
-    }
-    echo '
+            if ($pageTitle == "Amministrazione") echo ' class="active"';
+            echo '><a href="' . $dati['info']['root'] . 'admin">Amministrazione</a></li>';
+        }
+        echo '
                                 <li role="separator" class="divider"></li>
                                 <li><a href="' . $dati['info']['root'] . 'logout">Logout</a></li>
                             </ul>
                         </li>';
+    }
+    else {
+        echo '
+                        <li';
+        if ($pageTitle == "Contattaci") echo ' class="active"';
+        echo '><a href="' . $dati['info']['root'] . 'contattaci">Contattaci</a></li>';
+        if (!$dati["debug"]) {
+            echo '
+                        <li';
+            if ($pageTitle == "Accedi") echo ' class="active"';
+            echo '><a href="' . $dati['info']['root'] . 'login">Accedi</a></li>';
+        }
+    }
 }
 else {
     echo '
-                        <li';
-    if ($pageTitle == "Contattaci") echo ' class="active"';
-    echo '><a href="' . $dati['info']['root'] . 'contattaci">Contattaci</a></li>';
-    if (!$dati["debug"]) {
-        echo '
-                        <li';
-        if ($pageTitle == "Accedi") echo ' class="active"';
-        echo '><a href="' . $dati['info']['root'] . 'login">Accedi</a></li>';
-    }
+                        <li>Manutenzione in corso.</li>';
+    if (isUserAutenticate()) echo '<li><a href="' . $dati['info']['root'] . 'logout">Logout</a></li>';
 }
 echo '
                     </ul>';
@@ -174,15 +187,15 @@ if (isUserAutenticate()) {
                     <h1><i class="fa fa-unlock"></i> </h1>
                     <p>Per motivi di sicurezza &egrave; necessario modificare le credenziali.</p>
                     <p>Dopo questa rapida operazione ti sar&agrave; possibile proseguire normalmente e continuare con l\'esplorazione del sito.</p>
-                    <a href="' .
-                 $dati['info']['root'] . 'modifica" class="btn btn-warning">Modifica credenziali</a>
+                    <a href="' . $dati['info']['root'] . 'modifica" class="btn btn-warning">Modifica credenziali</a>
                 </div>
             </div>';
     }
     else if (!verificata($dati['database'], $dati["user"])) echo '
             <div class="jumbotron orange">
                 <div class="container text-center">
-                    <p><i class="fa fa-bell"></i> Email ancora non verificata... <a href="' . $dati['info']['root'] . 'check">Invia nuovamente il messaggio</a></p>
+                    <p><i class="fa fa-bell"></i> Email ancora non verificata... <a href="' .
+             $dati['info']['root'] . 'check">Invia nuovamente il messaggio</a></p>
                 </div>
             </div>';
 }

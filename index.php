@@ -30,7 +30,13 @@ $app->get('/guida/:id',
             $app->render('index.php', array ('dati' => $dati, 'guida' => $id));
         });
 
-if (!$dati['debug']) {
+$app->get('/logout', 
+        function () use($dati, $app) {
+            $app->render('login/logout.php', array ('dati' => $dati));
+            $app->redirect($app->urlFor('index'));
+        });
+
+if (!$dati['debug'] || isAdminUserAutenticate()) {
     $app->map('/login', 
             function () use($dati, $app) {
                 $app->render('login/index.php', array ('dati' => $dati));
@@ -38,12 +44,6 @@ if (!$dati['debug']) {
                     $app->redirect($app->urlFor('index'));
                 }
             })->via('GET', 'POST');
-    
-    $app->get('/logout', 
-            function () use($dati, $app) {
-                $app->render('login/logout.php', array ('dati' => $dati));
-                $app->redirect($app->urlFor('index'));
-            });
     
     $app->map('/verifica/:id', 
             function ($id) use($dati, $app) {
