@@ -336,13 +336,15 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
             $app->get('/aggiungi/:id/:add', 
                     function ($id, $add) use($dati, $app) {
                         $app->render('squadra.php', array ('dati' => $dati, 'gioca' => $id, 'add' => $add));
-                        $app->redirect($app->urlFor('index') . 'giocatori/' . squadra($dati['database'], $dati['user']));
+                        $app->redirect(
+                                $app->urlFor('index') . 'giocatori/' . squadra($dati['database'], $dati['autogestione'], $dati['user']));
                     });
             
             $app->get('/rimuovi/:id/:remove', 
                     function ($id, $remove) use($dati, $app) {
                         $app->render('squadra.php', array ('dati' => $dati, 'gioca' => $id, 'remove' => $remove));
-                        $app->redirect($app->urlFor('index') . 'giocatori/' . squadra($dati['database'], $dati['user']));
+                        $app->redirect(
+                                $app->urlFor('index') . 'giocatori/' . squadra($dati['database'], $dati['autogestione'], $dati['user']));
                     });
             
             /* Proposte */

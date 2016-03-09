@@ -166,7 +166,8 @@ function stile($root) {
     if ($nome == "bootstrap") echo '
         <link id="css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">';
     else echo '
-        <link id="css" rel="stylesheet" href="' . $root . 'vendor/thomaspark/bootswatch/' . $nome . '/bootstrap.min.css">';
+        <link id="css" rel="stylesheet" href="' . $root .
+             'vendor/thomaspark/bootswatch/' . $nome . '/bootstrap.min.css">';
 }
 
 /**
@@ -251,7 +252,8 @@ function send($destinatario, $sito, $titolo, $msg, $nome = "") {
     $text = '<html>
     <body>
         <table width="100%" cellspacing="0" cellpadding="10" bgcolor="#4caf50">
-            <tr><td align="center"><font face="verdana" color="white"><h1>' . $titolo . ' - ' . $sito . '</h1><br></td></font></tr>
+            <tr><td align="center"><font face="verdana" color="white"><h1>' .
+             $titolo . ' - ' . $sito . '</h1><br></td></font></tr>
         </table>
         <table width="100%" cellspacing="15" cellpadding="10" bgcolor="#f3f3f3">
             <tr>
@@ -262,7 +264,8 @@ function send($destinatario, $sito, $titolo, $msg, $nome = "") {
     if ($nome != "") $text .= '
                                 <p>Caro ' . $nome . ',</p>';
     $text .= '
-                                ' . str_replace('<p>', '<p  style="padding-bottom:7px">', $msg);
+                                ' .
+             str_replace('<p>', '<p  style="padding-bottom:7px">', $msg);
     if ($nome != "") $text .= '
                                 <p align="right">Cordiali saluti, i <b>Rappresentanti d\'Istituto</b></p>';
     $text .= '
@@ -433,10 +436,18 @@ function tempo($database) {
  * Restituisce l'identificativo della squadra in cui è iscritto l'utente
  * 
  * @param medoo $database Connessione con il database
+ * @param int $autogestione
  * @param int $user
  */
-function squadra($database, $user) {
-    return $database->get("giocatori", "squadra", array ("persona" => $user));
+function squadra($database, $autogestione, $user) {
+    $results = $database->select("giocatori", array ("squadra"), array ("persona" => $user));
+    if ($results != null) {
+        $squadre = $database->select("squadre", array ("id"), array ("torneo" => ntorneo($database, $autogestione, $user)));
+        foreach ($results as $result) {
+            if (ricerca($squadre, $result["squadra"]) != -1) return $result["squadra"];
+        }
+    }
+    return null;
 }
 
 /**
@@ -455,13 +466,18 @@ function creatore($database, $id, $user) {
  * Restituisce l'identificativo del torneo a cui è iscritto l'utente
  * 
  * @param medoo $database Connessione con il database
+ * @param int $autogestione
  * @param int $user
  */
-function ntorneo($database, $user) {
-    return ($database->get("corsi", "id", 
-            array (
-                "AND" => array ("quando" => "1,2,3,4,5", 
-                    "id" => $database->get("iscrizioni", "corso", array ("AND" => array ("persona" => $user, "stato" => 0)))))));
+function ntorneo($database, $autogestione, $user) {
+    $results = $database->select("iscrizioni", array ("corso"), array ("AND" => array ("persona" => $user, "stato" => 0)));
+    if ($results != null) {
+        $corsi = $database->select("corsi", array ("id"), array ("AND" => array ("quando" => "1,2,3,4,5", "autogestione" => $autogestione)));
+        foreach ($results as $result) {
+            if (ricerca($corsi, $result["corso"]) != -1) return $result["corso"];
+        }
+    }
+    return null;
 }
 
 /**

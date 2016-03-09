@@ -263,7 +263,7 @@ $(document).ready(function() {
                     }
                     else if (orario == t3) {
                         row = switch_row(parent, third, terzo);
-                        $(row).find(".links").append('<li><a id="sqaud" href=indirizzo + "/squadra" class="btn btn-primary btn-lg">Crea squadra</a></li>');
+                        $(row).find(".links").append('<li><a id="sqaud" href="'+indirizzo + '/squadra" class="btn btn-primary btn-lg">Crea squadra</a></li>');
                         $("#first").find("#iscriviti").parent().remove();
                         $("#second").find("#iscriviti").parent().remove();
                         $("#third").find("#iscriviti").parent().remove();
@@ -271,7 +271,7 @@ $(document).ready(function() {
                     else row = switch_row(parent, good, sub);
                     $(row).find("#orario").parent().parent().removeClass("hidden");
                 }
-                else if (orario == t3) $(row).find(".links").append('<li><a id="sqaud" href=indirizzo + "/squadra" class="btn btn-primary btn-lg">Crea squadra</a></li>');
+                else if (orario == t3) $(row).find(".links").append('<li><a id="sqaud" href="'+indirizzo + '/squadra" class="btn btn-primary btn-lg">Crea squadra</a></li>');
                 if (!isnull($(row).find("#iscriviti").html())) $(row).find("#iscriviti").removeClass("btn-success").addClass("btn-danger").html('<i class="fa fa-close"></i> Elimina iscrizione');
                 else $(row).find(".links").prepend('<li><a id="iscriviti" class="btn btn-success"><i class="fa fa-close"> Elimina iscrizione</a></li>');
                 $(row).find("#number").text(parseInt(parent.find("#number").text()) + 1);

@@ -44,7 +44,7 @@ if (isset($datatable) && $datatable) {
              $dati['info']['root'] . 'vendor/datatables/datatables/media/js/jquery.dataTables.min.js"></script>
         <script src="' .
              $dati['info']['root'] . 'vendor/datatables/datatables/media/js/dataTables.bootstrap.min.js"></script>
-        <script async src="' . $dati['info']['path'] . 'js/minified.js" type="text/javascript"></script>
+        <script async src="' . $dati['info']['path'] . 'js/min.js" type="text/javascript"></script>
         <script async src="' . $dati['info']['path'] .
              'js/jquery.tap.min.js" type="text/javascript"></script>';
 }

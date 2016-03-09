@@ -1,12 +1,12 @@
 <?php
 if (!isset($dati)) require_once 'utility.php';
-if (isset($gioca) && creatore($dati['database'], $gioca)) {
+if (isset($gioca) && creatore($dati['database'], $gioca, $dati['user'])) {
     $spazio = $dati['database']->count("giocatori", array ("squadra" => $gioca)) < $dati['database']->get("max", "max", 
-            array ("torneo" => ntorneo($dati['database'], $dati["user"])));
-    if (isset($add) && squadra($dati['database'], $add) == null && $add != $dati["user"] && $spazio) {
+            array ("torneo" => ntorneo($dati['database'], $dati['autogestione'], $dati["user"])));
+    if (isset($add) && squadra($dati['database'], $dati['autogestione'], $add) == null && $add != $dati["user"] && $spazio) {
         $dati['database']->insert("giocatori", array ("persona" => $add, "squadra" => $gioca));
     }
-    if (isset($remove) && squadra($dati['database'], $remove) == gioca && $remove != $dati["user"]) {
+    if (isset($remove) && squadra($dati['database'], $dati['autogestione'], $remove) == $gioca && $remove != $dati["user"]) {
         $dati['database']->delete("giocatori", array ("AND" => array ("persona" => $remove, "squadra" => $gioca)));
     }
     $torneo = "";
@@ -45,7 +45,7 @@ if (isset($gioca) && creatore($dati['database'], $gioca)) {
             $results = $dati['database']->select("persone", "*", array ("id" => $data["persona"]));
             if ($results != null) {
                 foreach ($results as $result) {
-                    if (squadra($dati['database'], $result["id"]) == $gioca) {
+                    if (squadra($dati['database'], $dati['autogestione'], $result["id"]) == $gioca) {
                         echo '
                             <tr>
                                 <td>' . $result["nome"] . '</td>
@@ -80,7 +80,7 @@ if (isset($gioca) && creatore($dati['database'], $gioca)) {
             $results = $dati['database']->select("persone", "*", array ("id" => $data["persona"]));
             if ($results != null) {
                 foreach ($results as $result) {
-                    if (squadra($dati['database'], $result["id"]) == null) {
+                    if (squadra($dati['database'], $dati['autogestione'], $result["id"]) == null) {
                         echo '
                             <tr>
                                 <td>' . $result["nome"] . '</td>
@@ -102,7 +102,7 @@ if (isset($gioca) && creatore($dati['database'], $gioca)) {
     require_once 'shared/footer.php';
 }
 else if ((isset($edit) && creatore($dati['database'], $edit, $dati["user"])) ||
-         (isset($new) && !squadra($dati['database'], $dati["user"]))) {
+         (isset($new) && !squadra($dati['database'], $dati['autogestione'], $dati["user"]))) {
     if (isset($edit)) {
         $pageTitle = "Modifica squadra";
         $results = $dati['database']->select("squadre", "*", array ("id" => $edit));
@@ -123,14 +123,14 @@ else if ((isset($edit) && creatore($dati['database'], $edit, $dati["user"])) ||
     require_once 'shared/header.php';
     if (isset($_POST['name']) && strlen($_POST['name']) > 0 && isset($new)) {
         $id = $dati['database']->insert("squadre", 
-                array ("nome" => $_POST["name"], "torneo" => ntorneo($dati['database'], $dati["user"]), 
+                array ("nome" => $_POST["name"], "torneo" => ntorneo($dati['database'], $dati['autogestione'], $dati["user"]), 
                     "by" => $dati["user"]));
         $dati['database']->insert("giocatori", array ("squadra" => $id, "persona" => $dati["user"]));
         salva();
     }
     else if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
         $dati['database']->update("squadre", 
-                array ("nome" => $_POST["name"], "torneo" => ntorneo($dati['database'], $dati["user"]), 
+                array ("nome" => $_POST["name"], "torneo" => ntorneo($dati['database'], $dati['autogestione'], $dati["user"]), 
                     "by" => $dati["user"]), array ("id" => $edit));
         salva();
     }
@@ -170,11 +170,11 @@ else if ((isset($edit) && creatore($dati['database'], $edit, $dati["user"])) ||
     require_once 'shared/footer.php';
 }
 else {
-    if (isset($delete) && $delete == "yes" && creatore($dati['database'], $id)) {
+    if (!isset($id)) $id = squadra($dati['database'], $dati['autogestione'], $dati["user"]);
+    if (isset($delete) && $delete == "yes" && creatore($dati['database'], $id, $dati['user'])) {
         $dati['database']->delete("squadre", array ("id" => $id));
         $dati['database']->delete("giocatori", array ("squadra" => $id));
     }
-    if (!isset($id)) $id = squadra($dati['database'], $dati["user"]);
     $datas = $dati['database']->select("squadre", "*", array ("id" => $id));
     if ($datas != null) {
         foreach ($datas as $data) {
@@ -202,8 +202,7 @@ else {
             $max = $dati['database']->get("max", "max", array ("torneo" => $data["torneo"]));
             echo '
                     <div class="level">
-                        <p class="level-title">Iscritti<span class="pull-right">' . $cont . '/' . $max .
-                     '</span></p>
+                        <p class="level-title">Iscritti<span class="pull-right">' . $cont . '/' . $max . '</span></p>
                         <div class="progress">
                             <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="' .
                      $cont * 100 / $max . '" aria-valuemin="0" aria-valuemax="100" style="width: ' . $cont * 100 / $max . '%"></div>
