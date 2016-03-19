@@ -7,14 +7,17 @@ require_once 'templates/shared/header.php';
 if (isset($recupero)) {
     if (isset($_POST['email'])) {
         $email = encode($_POST['email']);
-        $number = rand(2, 1000000000);
+        do {
+            $number = rand(2, 1000000000);
+        }
+        while ($dati['database']->count("persone", array ("stato" => $number)) != 0);
         if ($dati['database']->count("persone", array ("AND" => array ("email" => $email, "stato[!]" => 0))) != 0) {
             $dati['database']->update("persone", array ("stato" => $number), array ("email" => $email));
             send(decode($email), $dati['info']['sito'], "Recupero credenziali", 
-                    "<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell'autogestione.</p>
-                    <p>Clicca sul link seguente o copialo nella barra del browser per completare l'operazione.</p>
-                    <p><center><a href=\"http://itiseuganeo.altervista.org/recupero/" . $number .
-                             "\">http://itiseuganeo.altervista.org/recupero/" . $number . "<a></center></p>", 
+                    '<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell\'autogestione.</p>
+                    <p>Clicca sul link seguente o copialo nella barra del browser per completare l\'operazione.</p>
+                    <p><center><a href="http://itiseuganeo.altervista.org/recupero/' . $number .
+                             '">http://itiseuganeo.altervista.org/recupero/' . $number . '</a></center></p>', 
                             $dati['database']->get("persone", "nome", array ("AND" => array ("username" => $username, "email" => $email))));
             salva();
         }
@@ -69,14 +72,14 @@ else {
         if (isset($_SESSION['username']) && $_SESSION['username'] != "") {
             $_SESSION['loggedin'] = "loggedin";
             $id = id($dati['database']);
-            if ($dati['database']->count("admins", array ("id" => $id)) != 0) {
-                $_SESSION['loggedAsAdmin'] = "true";
-            }
             $_SESSION['mode'] = $dati['database']->get("opzioni", "mode", array ("id" => $id));
             $_SESSION['style'] = $dati['database']->get("opzioni", "style", array ("id" => $id));
-            $dati['database']->query(
-                    "INSERT INTO accessi (id, tipo_browser, indirizzo, data) VALUES ('" . $id . "', '" . getenv('HTTP_USER_AGENT') . "', '" .
-                             getenv('REMOTE_ADDR') . "', '" . date("Y-m-d H:i:s") . "')");
+            $dati['database']->insert('accessi', 
+                    array ('id' => $id, 'tipo_browser' => getenv('HTTP_USER_AGENT'), 'indirizzo' => getenv('REMOTE_ADDR'), 
+                        '#data' => 'NOW()'));
+            session_regenerate_id();
+            if (isAdmin($dati['database'], $id)) $_SESSION['loggedAsAdmin'] = "true";
+            else if ($dati['debug']) logout();
         }
         else {
             $errore = true;

@@ -5,11 +5,12 @@ if (isAdminUserAutenticate() && isset($reset) && !isAdmin($dati['database'], $re
     $password = random(5);
     $name = $dati['database']->get('persone', 'nome', array ('id' => $reset));
     $username = str_replace(" ", "", strtolower($name));
+    if (strlen($username) > 200) $username = substr($username, 0, 200);
     while (!isUserFree($dati['database'], $username, $reset)) {
         $username .= rand(0, 999);
     }
-    $dati['database']->update('persone',
-            array ('username' => $username, 'password' => $password, 'email' => '', 'stato' => 0, 'verificata' => 0),
+    $dati['database']->update('persone', 
+            array ('username' => $username, 'password' => $password, 'email' => '', 'stato' => 0, 'verificata' => 0), 
             array ('AND' => array ('id' => $reset, 'stato[!]' => 0)));
     echo 'Username: ' . $username . ' - Password: ' . $password;
 }
@@ -79,7 +80,9 @@ else {
                         echo '
                                 <td id="cred">
                                     <span class="hidden" id="value">' . $result['id'] . '</span>
-                                    <a class="btn btn-danger" id="reset">Reset credenziali</a>
+                                    <a class="btn btn-danger" id="reset">Reset credenziali';
+                        if ($result['stato'] != 1) echo '(recupero effettuato)';
+                        echo '</a>
                                 </td>';
                     }
                     else {

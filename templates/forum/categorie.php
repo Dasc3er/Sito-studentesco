@@ -20,7 +20,8 @@ else if (isset($id)) {
         echo '<div class="jumbotron">
                 <div class="container text-center">
                     <h1><i class="fa fa-list-ul fa-1x"></i> ' . $pageTitle . '</h1>
-                    <a href="' . $dati['info']['root'] . 'nuovo/articolo/' . $id . '" class="btn btn-primary">Nuovo articolo</a>
+                    <a href="' .
+                 $dati['info']['root'] . 'nuovo/articolo/' . $id . '" class="btn btn-primary">Nuovo articolo</a>
                 </div>
             </div>
             <hr>
@@ -37,10 +38,11 @@ else if (isset($id)) {
                     }
                 }
                 echo '
-                    <a href="' . $dati['info']['root'] . 'articolo/' . $result["id"] .
-                         '" class="list-group-item"><span class="badge">Aperto da ' . $username . '</span><span class="badge">' . $dati['database']->count(
-                                "posts", array ("AND" => array ("articolo" => $result["id"], "number[!]" => 0))) . ' risposte</span>' .
-                         $result["nome"] . '</a>';
+                    <a href="' . $dati['info']['root'] . 'articolo/' .
+                         $result["id"] . '" class="list-group-item"><span class="badge">Aperto da ' . $username .
+                         '</span><span class="badge">' . $dati['database']->count("posts", 
+                                array ("AND" => array ("articolo" => $result["id"], "number[!]" => 0))) . ' risposte</span>' . $result["nome"] .
+                         '</a>';
             }
             echo '
                 </div>';
@@ -126,7 +128,7 @@ else if (isset($edit) || isset($new)) {
                             <button tipo="submit" class="btn btn-primary">Salva</button>
                         </div>
                         <div class="col-sm-5">
-                            <a href="' . $dati['info']['root'] . 'categoria" class="btn btn-default">Annulla</a>
+                            <a href="' . $dati['info']['root'] . 'categorie" class="btn btn-default">Annulla</a>
                         </div>
                     </div>
                 </form>
@@ -172,13 +174,13 @@ else {
                                 <tr>
                                     <td>
                                         <span class="hidden" id="value">' . $result["id"] . '</span>
-                                        <a href="' . $dati['info']['root'] . 'categoria/' . $result["id"] . '">' .
-                         $result["nome"] . '</a>
+                                        <a href="' . $dati['info']['root'] .
+                         'categoria/' . $result["id"] . '">' . $result["nome"] . '</a>
                                         <span class="badge">' . $cont . ' articoli</span>';
                 if (isAdminUserAutenticate()) {
                     echo '
-                                        <span class="label label-info pull-right"><a href="' . $dati['info']['root'] .
-                             'modifica/categoria/' . $result["id"] . '">Modifica</a></span>
+                                        <span class="label label-info pull-right"><a href="' .
+                             $dati['info']['root'] . 'modifica/categoria/' . $result["id"] . '">Modifica</a></span>
                                         <span><span><span class="label label-warning pull-right"><a ';
                     if (modo()) echo 'id="stato"';
                     else echo 'href="' . $dati['info']['root'] . 'cambia/categoria/' . $result["id"] . '"';
@@ -236,12 +238,13 @@ else {
                             <tr>
                                 <td>
                                     <span class="hidden" id="value">' . $result["id"] . '</span>
-                                    <a href="' . $dati['info']['root'] . 'categoria/' . $result["id"] . '">' . $result["nome"] . '</a>
+                                    <a href="' .
+                             $dati['info']['root'] . 'categoria/' . $result["id"] . '">' . $result["nome"] . '</a>
                                     <span class="badge">' . $cont . ' articoli</span>';
                     if (isAdminUserAutenticate()) {
                         echo '
-                                        <span class="label label-info pull-right"><a href="' . $dati['info']['root'] .
-                                 'modifica/categoria/' . $result["id"] . '">Modifica</a></span>
+                                        <span class="label label-info pull-right"><a href="' .
+                                 $dati['info']['root'] . 'modifica/categoria/' . $result["id"] . '">Modifica</a></span>
                                         <span><span><span class="label label-success pull-right"><a ';
                         if (modo()) echo 'id="stato"';
                         else echo 'href="' . $dati['info']['root'] . 'cambia/categoria/' . $result["id"] . '"';

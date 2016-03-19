@@ -81,10 +81,9 @@ if (isset($info)) {
     $array = glob("vendor/thomaspark/bootswatch/*", GLOB_ONLYDIR);
     if ($array != null) {
         foreach ($array as $result) {
-            if (basename($result) != "2" && basename($result) != "tests" && basename($result) != "api" &&
-                     basename($result) != "assets" && basename($result) != "bower_components" && basename($result) != "custom" &&
-                     basename($result) != "help" && basename($result) != "global" && basename($result) != "fonts" &&
-                     basename($result) != "default") {
+            if (basename($result) != "2" && basename($result) != "tests" && basename($result) != "api" && basename($result) != "assets" &&
+                     basename($result) != "bower_components" && basename($result) != "custom" && basename($result) != "help" &&
+                     basename($result) != "global" && basename($result) != "fonts" && basename($result) != "default") {
                 echo '<option value="' . basename($result) . '"';
                 if ($stile == basename($result)) echo ' selected';
                 echo '>' . ucfirst(basename($result)) . '</option>';
@@ -112,8 +111,7 @@ else if (isset($email)) {
         $email = encode($_POST['email']);
         if (isEmailFree($dati['database'], $email, $dati["user"])) {
             $number = rand(1, 1000000000);
-            $dati['database']->update("persone", array ("email" => $email, "verificata" => $number), 
-                    array ("id" => $dati["user"]));
+            $dati['database']->update("persone", array ("email" => $email, "verificata" => $number), array ("id" => $dati["user"]));
             salva();
         }
         else
@@ -136,7 +134,7 @@ else if (isset($email)) {
             </div>
             <div class="jumbotron">
                 <div class="container">
-                    <p>Inserire le credenziali dell\'account:</p>
+                    <p>Inserire il nuovo indirizzo email dell\'account:</p>
                     <form action="" method="post" class="form-horizontal" role="form">
                         <div class="form-group">
                             <label for="email" class="col-xs-12 col-sm-2 control-label">Email</label>
@@ -162,11 +160,13 @@ else {
     $complexify = true;
     if (isset($_POST['username']) && isset($_POST['Password'])) {
         $username = encode(strip_tags($_POST['username']));
-        if ($dati["first"]) $email = encode($_POST['email']);
         $password = $_POST['Password'];
         if (isset($rand)) $dati["user"] = $dati['database']->get("persone", "id", array ("stato" => $rand));
         $userFree = isUserFree($dati['database'], $username, $dati["user"]);
-        if ($dati["first"]) $emailFree = isEmailFree($dati['database'], $email, $dati["user"]);
+        if ($dati["first"]) {
+            $email = encode($_POST['email']);
+            $emailFree = isEmailFree($dati['database'], $email, $dati["user"]);
+        }
         if ($password != $_POST['RipPassword']) $msg = "Le password devono corrispondere!!!";
         else if ($userFree && (!$dati["first"] || $emailFree)) {
             $control = hashpassword($password);
@@ -177,18 +177,19 @@ else {
             else if (isset($dati["first"]) && $dati["first"]) {
                 $number = rand(2, 1000000000);
                 $dati['database']->update("persone", 
-                        array ("username" => $username, "email" => $email, "verificata" => $number, "password" => $control, 
-                            "stato" => 1), array ("id" => $dati["user"]));
+                        array ("username" => $username, "email" => $email, "verificata" => $number, "password" => $control, "stato" => 1), 
+                        array ("id" => $dati["user"]));
             }
             else
                 $dati['database']->update("persone", array ("username" => $username, "password" => $control, "stato" => 1), 
                         array ("id" => $dati["user"]));
             $_SESSION["username"] = $username;
+            session_regenerate_id();
             salva();
         }
-        else if ($dati["first"] && $emailFree) $msg = "L'email inserita &egrave; gi&agrave; utilizzata da un altro utente.";
-        else if ($userFree) $msg = "L'username inserito &egrave; gi&agrave; utilizzata da un altro utente.";
-        else $msg = "Username e/p email inseriti sono gi&agrave; utilizzati da altri utenti.";
+        else if ($dati["first"] && !$emailFree && $userFree) $msg = "L'email inserita &egrave; gi&agrave; utilizzata da un altro utente.";
+        else if ((!$dati["first"] || !$emailFree) && !$userFree) $msg = "L'username inserito &egrave; gi&agrave; utilizzata da un altro utente.";
+        else $msg = "Username e email inseriti sono gi&agrave; utilizzati da altri utenti.";
     }
     if (isset($msg)) echo '
             <div class="jumbotron red">

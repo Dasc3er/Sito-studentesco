@@ -38,11 +38,12 @@ echo '
                             <div class="panel-body">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li><a href="' . $dati['info']['root'] . 'mostra/credenziali" target="_blank">Credenziali</a></li>
-                                    <li><a href="' . $dati['info']['root'] . 'mostra/credenziali-totali" target="_blank">Credenziali totali</a></li>
+                                    <li><a href="' . $dati['info']['root'] . 'mostra/felpe" target="_blank">Sommario felpe</a></li>
                                     <hr>';
 if ($dati["autogestione"] != null) echo '
-                                    <li><a href="' . $dati['info']['root'] . 'mostra/corsi" target="_blank">Schede corsi</a></li>
-                                    <li><a href="' . $dati['info']['root'] . 'mostra/classi" target="_blank">Schede classi</a></li>
+                                    <li><a href="' . $dati['info']['root'] . 'mostra/corsi" target="_blank">Sommario corsi</a></li>
+                                    <li><a href="' . $dati['info']['root'] . 'mostra/classi" target="_blank">Sommario classi</a></li>
+                                    <li><a href="' . $dati['info']['root'] . 'mostra/squadre" target="_blank">Sommario squadre</a></li>
                                     <li><a href="' . $dati['info']['root'] . 'mostra/random" target="_blank">Assegnati a random</a></li>
                                     <hr>';
 echo '
@@ -54,7 +55,7 @@ echo '
                         </div>
                     </div>
                 </div>
-                <a href="' . $dati['info']['root'] . 'aggiorna" class="btn btn-warning btn-block btn-lg disabled" target="_blank">Aggiornamento studenti</a>
+                <a href="' . $dati['info']['root'] . 'aggiorna" class="btn btn-warning btn-block btn-lg" target="_blank">Aggiornamento studenti</a>
             </div>';
 require_once 'templates/shared/footer.php';
 ?>

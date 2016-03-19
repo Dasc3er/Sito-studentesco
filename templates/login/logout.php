@@ -1,3 +1,3 @@
 <?php
-if (isUserAutenticate()) LogoutUser();
+logout();
 ?>

@@ -381,16 +381,16 @@
         },
         {
             "name": "tinymce/tinymce",
-            "version": "4.3.4",
+            "version": "4.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tinymce/tinymce-dist.git",
-                "reference": "4db115aff381c7e881193eede8cb8d8172d01963"
+                "reference": "19611cd875c27eed9a96c7734952bc34a41ba397"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/4db115aff381c7e881193eede8cb8d8172d01963",
-                "reference": "4db115aff381c7e881193eede8cb8d8172d01963",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/19611cd875c27eed9a96c7734952bc34a41ba397",
+                "reference": "19611cd875c27eed9a96c7734952bc34a41ba397",
                 "shasum": ""
             },
             "type": "component",
@@ -423,7 +423,7 @@
                 "tinymce",
                 "wysiwyg"
             ],
-            "time": "2016-02-11 08:05:42"
+            "time": "2016-03-02 13:02:17"
         }
     ],
     "packages-dev": [],

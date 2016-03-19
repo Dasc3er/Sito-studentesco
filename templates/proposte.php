@@ -1,11 +1,12 @@
 <?php
 if (!isset($dati)) require_once 'utility.php';
-$tempo = tempoproposte($dati['database']);
-if (isset($rifiuta) && $tempo && stessauto($dati['database'], $dati["autogestione"], $rifiuta)) {
+if (!isset($autogestione) || $autogestione > $dati["autogestione"]) $autogestione = $dati["autogestione"];
+$tempo = tempoproposte($dati['database'], $autogestione);
+if (isset($rifiuta) && $tempo && stessauto($dati['database'], $autogestione, $rifiuta)) {
     $dati['database']->update("corsi", array ("da" => $dati["user"]), array ("id" => $rifiuta));
     echo 1;
 }
-else if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
+else if (isset($stato) && $tempo && stessauto($dati['database'], $autogestione, $stato)) {
     if ($dati['database']->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
         $dati['database']->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
         $dati['database']->update("corsi", array ("stato" => 1, "da" => $dati["user"]), array ("id" => $stato));
@@ -16,10 +17,10 @@ else if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogest
         echo 0;
     }
 }
-else if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"])) {
+else if (isset($new) && $tempo && proposta($dati['database'], $autogestione, $dati["user"])) {
     if (isset($_POST['name']) && strlen($_POST['name']) > 0) {
-        $dati['database']->insert("corsi", 
-                array ("autogestione" => $dati["autogestione"], "nome" => strip_tags($_POST["name"]), "descrizione" => $_POST['txtEditor'], 
+        $dati['database']->insert("corsi",
+                array ("autogestione" => $autogestione, "nome" => strip_tags($_POST["name"]), "descrizione" => $_POST['txtEditor'],
                     "creatore" => $dati["user"], "stato" => 1, "scuola" => scuola($dati['database'], $dati["user"]), "#data" => "NOW()"));
         salva();
         finito("proposta");
@@ -54,8 +55,7 @@ else if (isset($new) && $tempo && proposta($dati['database'], $dati["autogestion
                                 <button type="submit" class="btn btn-primary btn-block">Salva</button>
                             </div>
                             <div class="col-xs-6">
-                                <a href="' .
-             $dati['info']['root'] . 'proposte" class="btn btn-default btn-block">Annulla</a>
+                                <a href="' . $dati['info']['root'] . 'proposte" class="btn btn-default btn-block">Annulla</a>
                             </div>
                         </div>
                     </form>
@@ -81,9 +81,10 @@ else {
     require_once 'shared/header.php';
     $scuola = scuola($dati['database'], $dati["user"]);
     $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
-    if (isAdminUserAutenticate()) $results = $dati['database']->select("corsi", "*", 
-            array ("AND" => array ("autogestione" => $dati["autogestione"], "quando" => null)));
-    else $results = $dati['database']->select("corsi", "*", array ("AND" => array ("quando" => null, "scuola" => $scuola, "stato" => 0)));
+    if (isAdminUserAutenticate()) $results = $dati['database']->select("corsi", "*",
+            array ("AND" => array ("autogestione" => $autogestione, "quando" => null)));
+    else $results = $dati['database']->select("corsi", "*",
+            array ("AND" => array ("quando" => null, "scuola" => $scuola, "autogestione" => $autogestione, "stato" => 0)));
     $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
     $like = $dati['database']->select("like", "*");
     $numero = pieni($like);
@@ -93,9 +94,8 @@ else {
                 <div class="container text-center">
                     <h1><i class="fa fa-list fa-1x"></i> Proposte disponibili</h1>
                     <p>Le proposte degli studenti per i corsi dell\'autogestione</p>';
-    if ($tempo && proposta($dati['database'], $dati["autogestione"], $dati["user"]) && $dati["autogestione"] != null) echo '
-                    <a href="' . $dati['info']['root'] .
-             'proposta" class="btn btn-primary">Nuova proposta</a>';
+    if ($tempo && proposta($dati['database'], $autogestione, $dati["user"]) && $autogestione != null) echo '
+                    <a href="' . $dati['info']['root'] . 'proposta" class="btn btn-primary">Nuova proposta</a>';
     echo '
                     <p>Puoi creare solo tre <span id="page">proposte</span>...</p>
                 </div>
@@ -142,7 +142,7 @@ else {
                             echo 'btn-success"><span id="text"><i class="fa fa-thumbs-o-up"></i></span>';
                         }
                         else {
-                            
+
                             echo 'btn-danger"><span id="text"><i class="fa fa-thumbs-up"></i></span>';
                         }
                         echo '<span id="cont">' . $cont . '</span></a></li>';
@@ -215,8 +215,8 @@ else {
                                             <span class="hidden" id="value">' . $result["id"] . '</span>
                                             <p id="descrizione">' . $result["descrizione"] . '</p>';
                     if (isAdminUserAutenticate()) echo '
-                                            <p><strong>Creato da ' .
-                             $utenti[ricerca($utenti, $result["creatore"])]["nome"] . '</strong></p>';
+                                            <p><strong>Creato da ' . $utenti[ricerca($utenti, $result["creatore"])]["nome"] .
+                             '</strong></p>';
                     if ($tempo) {
                         echo '
                                             <ul class="links">

@@ -270,12 +270,38 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                     });
         }
         
+        if ($dati['sezioni']['felpa']) {
+            $app->get('/elimina/felpa', 
+                    function () use($dati, $app) {
+                        $app->render('felpa.php', array ('dati' => $dati, 'elimina' => true));
+                        $app->redirect($app->urlFor('felpa'));
+                    });
+            
+            $app->get('/felpa', 
+                    function () use($dati, $app) {
+                        $app->render('felpa.php', array ('dati' => $dati));
+                    })->name('felpa');
+            
+            $app->post('/felpa', 
+                    function () use($dati, $app) {
+                        $app->render('felpa.php', array ('dati' => $dati));
+                        if (fatto()) {
+                            $app->redirect($app->urlFor('felpa'));
+                        }
+                    });
+        }
+        
         if ($dati['sezioni']['corsi']) {
             /* Corsi */
             $app->get('/corsi', 
                     function () use($dati, $app) {
                         $app->render('corsi.php', array ('dati' => $dati));
                     })->name('corsi');
+            
+            $app->get('/:autogestione/corsi', 
+                    function ($autogestione) use($dati, $app) {
+                        $app->render('corsi.php', array ('dati' => $dati, 'autogestione' => $autogestione));
+                    });
             
             $app->get('/corsi/:id', 
                     function ($id) use($dati, $app) {
@@ -353,6 +379,10 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                         $app->render('proposte.php', array ('dati' => $dati));
                     })->name('proposte');
             
+            $app->get('/:autogestione/proposte', 
+                    function ($autogestione) use($dati, $app) {
+                        $app->render('proposte.php', array ('dati' => $dati, 'autogestione' => $autogestione));
+                    });
             $app->get('/proposte/:id', 
                     function ($id) use($dati, $app) {
                         $app->render('proposte.php', array ('dati' => $dati, 'id' => $id));
@@ -566,30 +596,31 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                         $app->get('/credenziali', 
                                 function () use($dati, $app) {
                                     $app->response->headers->set('Content-Type', 'application/pdf');
-                                    $app->render('pdf/users.php', array ('dati' => $dati));
+                                    $app->render('pdf/credenziali.php', array ('dati' => $dati));
                                 });
                         
-                        $app->get('/credenziali-totali', 
+                        $app->get('/felpe', 
                                 function () use($dati, $app) {
                                     $app->response->headers->set('Content-Type', 'application/pdf');
-                                    $app->render('pdf/usersall.php', array ('dati' => $dati));
+                                    $app->render('pdf/sommarioFelpe.php', array ('dati' => $dati));
                                 });
                         
                         $app->get('/barcodes', 
                                 function () use($dati, $app) {
                                     $app->response->headers->set('Content-Type', 'application/pdf');
-                                    $app->render('admin/barcodes.php', array ('dati' => $dati));
+                                    $app->render('pdf/barcodes.php', array ('dati' => $dati));
                                 });
+                        
                         $app->get('/corsi', 
                                 function () use($dati, $app) {
                                     $app->response->headers->set('Content-Type', 'application/pdf');
-                                    $app->render('pdf/courses.php', array ('dati' => $dati));
+                                    $app->render('pdf/sommarioCorsi.php', array ('dati' => $dati));
                                 });
                         
                         $app->get('/classi', 
                                 function () use($dati, $app) {
                                     $app->response->headers->set('Content-Type', 'application/pdf');
-                                    $app->render('pdf/classes.php', array ('dati' => $dati));
+                                    $app->render('pdf/sommarioClassi.php', array ('dati' => $dati));
                                 });
                         
                         $app->get('/random', 
@@ -607,7 +638,7 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
             
             $app->get('/download/barcodes', 
                     function () use($dati, $app) {
-                        $app->render('admin/barcodes.php', array ('dati' => $dati, 'download' => true));
+                        $app->render('pdf/barcodes.php', array ('dati' => $dati, 'download' => true));
                         $file = 'barcode.txt';
                         $res = $app->response();
                         $res['Content-Description'] = 'File Transfer';

@@ -36,13 +36,13 @@ Cambiare il percorso del server:
  * `var indizzo` in "templates/js/minified.js"
  * `RewriteBase` in ".htaccess"
 
-Cambiare le impostazioni di accesso al database ("parameters.php"):
+Cambiare le impostazioni di accesso al database ("parameteri.php"):
  * `$tipo`  - tipo del server database utilizzato (mysql, ...)
  * `$tabella` - nome della tabella del sito
  * `$username` - username di accesso al server del database
  * `$password` - password di accesso al server del database
  
-Cambiare le impostazioni grafiche del sito (array`$dati` in "utility.php"):
+Cambiare le impostazioni grafiche del sito (array `$dati` in "utility.php"):
  * `snow`  - se abilitato, inserisce un effetto di neve cascante in tutte le pagine
  * `sito`  - nome del sito
  * `email`  - email a cui inviare i messaggi della sezione di contatto
@@ -61,8 +61,8 @@ Per un'altra versione fare richiesta.
 
 ## Sicurezza
 Non si assicura nessun tipo di protezione automatica.
-Le impostazioni di protezione dei dati archiviati devono essere garantite al momento dell'implementazione del sito, tramire l'adattamento dele seguenti funzioni:
- * `function encode($string)`, `function decode($string)`  per la protezione di username ed email degli utenti (Attenzione: i dati devono essere decodificabili)
+Le impostazioni di protezione dei dati archiviati devono essere garantite al momento dell'implementazione del sito, tramire l'adattamento dele seguenti funzioni (`crypt.php`):
+ * `function encode($string)`, `function decode($string)`  per la protezione di username ed email degli utenti (Attenzione: i dati devono essere decodificabili);
  * `function hashpassword($password)` per la protezione delle password degli utenti.
 
 Attenzione: le funzioni già implementate sono da modificare, poichè non garantiscono obbligatoriamente un elevato grado di protezione. Gli algoritmi pubblicati non corrispondono a quelli utilizzati nel sito già in uso ;).

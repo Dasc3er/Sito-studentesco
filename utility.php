@@ -2,12 +2,14 @@
 session_cache_limiter(false);
 session_start();
 
-require_once __DIR__ . '/parameters.php';
+require_once __DIR__ . '/parameteri.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/vendor/setasign/fpdf/fpdf.php';
 require_once __DIR__ . '/vendor/ircmaxell/password-compat/lib/password.php';
 
-// Impostazioni
+// IMPOSTAZIONI
+
+
 // Accesso di default al database
 // $mysql = new mysqli('localhost', $username, $password);
 // if ($mysql->connect_error) {
@@ -25,7 +27,7 @@ $dati = array (
 
     'opzioni' => array ('snow' => false, 'time' => false, 'cookie-policy' => false, 'percorso' => false), 
     
-    'sezioni' => array ('corsi' => true, 'citazioni' => true, 'aule' => false, 'forum' => true), 
+    'sezioni' => array ('corsi' => true, 'citazioni' => true, 'aule' => false, 'forum' => true, "felpa" => true), 
     
     'database' => database($username, $password, $tipo, $tabella), 'debug' => false);
 
@@ -33,6 +35,16 @@ if (isUserAutenticate()) {
     $dati['user'] = id($dati['database']);
     $dati['first'] = first($dati['database'], $dati['user']);
     $dati['autogestione'] = $dati['database']->max('autogestioni', 'id');
+    
+    // Controlli sull'identità della sessione
+    $scadenza = 10 * 60;
+    $test = md5($segreto . $_SERVER['HTTP_USER_AGENT']);
+    if (isUserAutenticate() && (isset($_SESSION['attivo']) && (time() > ($_SESSION['attivo'] + $scadenza))) ||
+             (isset($_SESSION['test']) && $_SESSION['test'] != $test)) {
+        logout();
+    }
+    $_SESSION['attivo'] = time();
+    $_SESSION['test'] = $test;
 }
 
 if ($dati['opzioni']['time']) {
@@ -76,7 +88,6 @@ unset($password);
 // $dati['database']->query(
 //         'CREATE TABLE IF NOT EXISTS squadre (id int AUTO_INCREMENT PRIMARY KEY, nome varchar(255), torneo int, by int)');
 // $dati['database']->query('CREATE TABLE IF NOT EXISTS giocatori (squadra int, persona int)');
-//
 // $dati['database']->query('CREATE TABLE IF NOT EXISTS like (corso int, persona int)');
 // $dati['database']->query('CREATE TABLE IF NOT EXISTS registro (corso int, persona int, da int)');
 // $dati['database']->query('CREATE TABLE IF NOT EXISTS max (torneo int, max int)');
@@ -107,8 +118,12 @@ unset($password);
 //         'CREATE TABLE IF NOT EXISTS tipi (id int AUTO_INCREMENT PRIMARY KEY, nome varchar(255), stato int(1), creatore int, da int, data datetime)');
 
 
+// Felpe
+// $dati['database']->query('CREATE TABLE IF NOT EXISTS felpe (id int, colore int, taglia int, data datetime)');
+
+
 // Completamento tabelle di opzioni e codice a barre
-// $results = $dati['database']->select('persone', '');
+// $results = $dati['database']->select('persone', '*');
 // $dati['database']->query(
 //         'CREATE TABLE IF NOT EXISTS opzioni (id int, newsletter int(1), mode int(1), rap int(1), news int(1), style varchar(255))');
 // if ($results != null) {
@@ -117,19 +132,23 @@ unset($password);
 //                 array ('newsletter' => 1, 'mode' => 1, 'rap' => 1, 'news' => 1, 'style' => 'bootstrap', 'id' => $result['id']));
 //     }
 // }
-// $results = $dati['database']->select('persone', '');
+//
+// $results = $dati['database']->select('persone', array ('id'));
+// $ean = $dati['database']->select('ean', '*', array ('ORDER' => 'persona'));
 // $number = 123456789012;
 // if ($results != null) {
 //     foreach ($results as $result) {
-//         $dati['database']->insert('ean', array ('persona' => $result['id'], 'ean' => $number));
+//         if (ricerca($ean, $result["id"], 'persona') == -1) $dati['database']->insert('ean',
+//                 array ('persona' => $result['id'], 'ean' => $number));
 //         $number ++;
 //     }
 // }
 
 
-if (!isset($_SESSION['counter'])) {
-    $dati['database']->insert('sessioni', 
-            array ('tipo_browser' => getenv('HTTP_USER_AGENT'), 'indirizzo' => getenv('REMOTE_ADDR'), '#data' => 'NOW()'));
-    $_SESSION['counter'] = 'ok';
-}
+// Registratore delle visite
+// if (!isset($_SESSION['counter'])) {
+//     $dati['database']->insert('sessioni',
+//             array ('tipo_browser' => getenv('HTTP_USER_AGENT'), 'indirizzo' => getenv('REMOTE_ADDR'), '#data' => 'NOW()'));
+//     $_SESSION['counter'] = 'ok';
+// }
 ?>

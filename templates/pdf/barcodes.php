@@ -1,5 +1,5 @@
 <?php
-if (!isset($dati)) require_once 'utility.php';
+if (!isset($dati)) require_once '../admin/utility.php';
 require_once 'templates/barcode/barcode.php';
 if (isset($download)) {
     $fontSize = 10; // GD1 in px ; GD2 in point

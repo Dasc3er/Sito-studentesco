@@ -1,7 +1,8 @@
 <?php
 if (!isset($dati)) require_once 'utility.php';
-$tempo = tempo($dati['database']);
-if (isset($presente) && stessauto($dati['database'], $dati["autogestione"], $corso)) {
+if (!isset($autogestione) || $autogestione > $dati["autogestione"]) $autogestione = $dati["autogestione"];
+$tempo = tempo($dati['database'], $autogestione);
+if (isset($presente) && stessauto($dati['database'], $autogestione, $corso)) {
     if ($dati['database']->count("registro", array ("AND" => array ("corso" => $corso, "persona" => $persona))) != 0) {
         $dati['database']->delete("registro", array ("AND" => array ("corso" => $corso, "persona" => $persona)));
         echo 0;
@@ -11,7 +12,7 @@ if (isset($presente) && stessauto($dati['database'], $dati["autogestione"], $cor
         echo 1;
     }
 }
-else if (isset($stato) && $tempo && stessauto($dati['database'], $dati["autogestione"], $stato)) {
+else if (isset($stato) && $tempo && stessauto($dati['database'], $autogestione, $stato)) {
     if ($dati['database']->count("corsi", array ("AND" => array ("id" => $stato, "stato" => 0))) != 0) {
         $dati['database']->update("iscrizioni", array ("stato" => 1), array ("corso" => $stato));
         $dati['database']->update("corsi", array ("stato" => 1, "da" => $dati["user"]), array ("id" => $stato));
@@ -56,23 +57,23 @@ else if ((isset($edit) || isset($new)) && $tempo) {
             if (isset($_POST['first'])) $dati['database']->insert("corsi", 
                     array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
                         "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"], 
-                        "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
+                        "autogestione" => $autogestione, "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
             if (isset($_POST['second'])) $dati['database']->insert("corsi", 
                     array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
                         "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"], 
-                        "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
+                        "autogestione" => $autogestione, "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
         }
         else if (isset($_POST['all'])) {
             $xp = $dati['database']->insert("corsi", 
                     array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, 
                         "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2,3,4,5", "scuola" => $_POST["scuola"], 
-                        "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
+                        "autogestione" => $autogestione, "creatore" => $dati["user"], "stato" => 0, "#data" => "NOW()"));
             /*
              * $dati['database']->insert("corsi",
-             * array ("nome" => strip_tags("Osservazione del " . $_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"], "autogestione" => $dati["autogestione"],
+             * array ("nome" => strip_tags("Osservazione del " . $_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, "descrizione" => sanitize($_POST['txtEditor']), "quando" => "1,2", "scuola" => $_POST["scuola"], "autogestione" => $autogestione,
              * "creatore" => $dati["user"], "stato" => 0));
              * $dati['database']->insert("corsi",
-             * array ("nome" => strip_tags("Osservazione del " . $_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"], "autogestione" => $dati["autogestione"],
+             * array ("nome" => strip_tags("Osservazione del " . $_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max, "descrizione" => sanitize($_POST['txtEditor']), "quando" => "3,4", "scuola" => $_POST["scuola"], "autogestione" => $autogestione,
              * "creatore" => $dati["user"], "stato" => 0));
              */
             $dati['database']->insert("max", array ("torneo" => $xp, "max" => $_POST["number"]));
@@ -90,7 +91,7 @@ else if ((isset($edit) || isset($new)) && $tempo) {
         //             $dati['database']->update("corsi",
         //                     array ("nome" => strip_tags($_POST["name"]), "aule" => strip_tags($_POST["aule"]), "max" => $max,
         //                         "descrizione" => sanitize($_POST['txtEditor']), "quando" => $_POST["quando"], "scuola" => $_POST["scuola"],
-        //                         "autogestione" => $dati["autogestione"], "creatore" => $dati["user"], "stato" => 0), array ("id" => $edit));
+        //                         "autogestione" => $autogestione, "creatore" => $dati["user"], "stato" => 0), array ("id" => $edit));
         //         }
         salva();
         finito("corso");
@@ -264,7 +265,12 @@ else if (isset($view)) {
                         <tr>
                             <td>' . $utenti[$id]["nome"] . '</td>
                             <td>' .
-                             $classi[ricerca($classi, $studenti[ricerca($studenti, $utenti[$id]["id"], "persona")]["classe"])]["nome"] . '</td>
+                             $classi[ricerca($classi, $studenti[ricerca($studenti, $utenti[$id]["id"], "persona")]["classe"])]["nome"];
+                    if ($data["quando"] == "1,2,3,4,5") {
+                        if (squadra($dati['database'], $dati['autogestione'], $utenti[$id]["id"]) != null) echo ', iscritto in squadra';
+                        else echo ', non iscritto in squadra';
+                    }
+                    echo '</td>
                         </tr>';
                 }
             }
@@ -272,7 +278,7 @@ else if (isset($view)) {
                     </tbody>
                 </table>';
             if ($data["controllore"] == $dati["user"] && ($dati['database']->count("autogestioni", 
-                    array ("AND" => array ("id" => $dati["autogestione"], "#data" => "NOW()"))) != 0)) echo '
+                    array ("AND" => array ("id" => $autogestione, "#data" => "NOW()"))) != 0)) echo '
                 <a href="' . $dati['info']['root'] .
                      'presenze" class="btn btn-success btn-block">Controlla le presenze</a>';
             if ($data["quando"] == "1,2,3,4,5") {
@@ -309,8 +315,7 @@ else if (isset($view)) {
                     <span class="hidden" id="value">' . $data["id"] . '</span>
                     <span class="hidden" id="page">corsi</span>
                     <span class="hidden" id="orario">' . orario($data["quando"]) . '</span>';
-                if (!$iscritto && !occupato($dati['database'], $dati["autogestione"], $data["id"], $dati["user"]) &&
-                         count($iscritti) < $data["max"]) {
+                if (!$iscritto && !occupato($dati['database'], $autogestione, $data["id"], $dati["user"]) && count($iscritti) < $data["max"]) {
                     echo '
                                 <a ';
                     if (modo()) echo 'id="iscriviti"';
@@ -346,13 +351,13 @@ else if (isset($view)) {
         require_once 'shared/404.php';
 }
 else if (isset($presenze)) {
-    if (($dati['database']->count("autogestioni", array ("AND" => array ("id" => $dati["autogestione"], "#data" => "NOW()"))) != 0) && (isAdminUserAutenticate() && $dati['database']->count(
-            "corsi", array ("AND" => array ("autogestione" => $dati["autogestione"], "controllore" => $dati["user"]))) != 0)) {
+    if (($dati['database']->count("autogestioni", array ("AND" => array ("id" => $autogestione, "#data" => "NOW()"))) != 0) && (isAdminUserAutenticate() && $dati['database']->count(
+            "corsi", array ("AND" => array ("autogestione" => $autogestione, "controllore" => $dati["user"]))) != 0)) {
         $pageTitle = "Controllo presenze";
         $datatable = true;
         require_once 'shared/header.php';
         $datas = $dati['database']->select("corsi", "*", 
-                array ("AND" => array ("autogestione" => $dati["autogestione"], "controllore" => $dati["user"])));
+                array ("AND" => array ("autogestione" => $autogestione, "controllore" => $dati["user"])));
         if ($datas != null) {
             foreach ($datas as $data) {
                 echo '
@@ -420,16 +425,16 @@ else if (isset($presenze)) {
     else
         require_once 'shared/404.php';
 }
-else if (isset($id) && stessauto($dati['database'], $dati["autogestione"], $id) && classe($dati['database'], $dati["user"]) &&
-         !iscritto($dati['database'], $id, $dati["user"]) && !occupato($dati['database'], $dati["autogestione"], $id, $dati["user"]) &&
-         !pieno($dati['database'], $id) && scuolagiusta($dati['database'], $id, $dati["user"]) && tempo($dati['database'])) {
+else if (isset($id) && stessauto($dati['database'], $autogestione, $id) && classe($dati['database'], $dati["user"]) &&
+         !iscritto($dati['database'], $id, $dati["user"]) && !occupato($dati['database'], $autogestione, $id, $dati["user"]) &&
+         !pieno($dati['database'], $id) && scuolagiusta($dati['database'], $id, $dati["user"]) && $tempo) {
     if (interessato($dati['database'], $id, $dati["user"])) $dati['database']->update("iscrizioni", array ("stato" => 0), 
             array ("AND" => array ("persona" => $dati["user"], "corso" => $id)));
     else $dati['database']->insert("iscrizioni", array ("persona" => $dati["user"], "corso" => $id, "stato" => 0));
     echo 1;
 }
-else if (isset($id) && stessauto($dati['database'], $dati["autogestione"], $id) && classe($dati['database'], $dati["user"]) &&
-         iscritto($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $dati["user"]) && tempo($dati['database'])) {
+else if (isset($id) && stessauto($dati['database'], $autogestione, $id) && classe($dati['database'], $dati["user"]) &&
+         iscritto($dati['database'], $id, $dati["user"]) && scuolagiusta($dati['database'], $id, $dati["user"]) && $tempo) {
     $dati['database']->delete("iscrizioni", array ("AND" => array ("persona" => $dati["user"], "corso" => $id)));
     $xp = squadra($dati['database'], $dati['autogestione'], $dati["user"]);
     $dati['database']->delete("squadre", array ("id" => $xp));
@@ -443,9 +448,9 @@ else {
     require_once 'shared/header.php';
     $scuola = scuola($dati['database'], $dati["user"]);
     if (isAdminUserAutenticate()) $results = $dati['database']->select("corsi", "*", 
-            array ("AND" => array ("autogestione" => $dati["autogestione"], "quando[!]" => null)));
+            array ("AND" => array ("autogestione" => $autogestione, "quando[!]" => null)));
     else $results = $dati['database']->select("corsi", "*", 
-            array ("AND" => array ("autogestione" => $dati["autogestione"], "scuola" => $scuola, "quando[!]" => null, "stato" => 0)));
+            array ("AND" => array ("autogestione" => $autogestione, "scuola" => $scuola, "quando[!]" => null, "stato" => 0)));
     $scuole = $dati['database']->select("scuole", "*", array ("ORDER" => "id"));
     $utenti = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
     $iscritti = $dati['database']->select("iscrizioni", "*", array ("ORDER" => "corso"));
@@ -461,7 +466,7 @@ else {
             }
         }
     }
-    $infos = $dati['database']->select("autogestioni", "*", array ("id" => $dati["autogestione"], "LIMIT" => 1));
+    $infos = $dati['database']->select("autogestioni", "*", array ("id" => $autogestione, "LIMIT" => 1));
     echo '
              <div class="jumbotron">
                 <div class="container text-center">

@@ -1,9 +1,11 @@
 <?php
 
 /**
+ * Funzioni varie
  * @author Thomas Zilio
  * @link http://itiseuganeo.altervista.org/
  */
+require_once 'crypt.php';
 
 /* --- Funzioni generiche --- */
 /**
@@ -45,7 +47,7 @@ function id($database) {
  * 
  * @param medoo $database Database
  * @param string $username Username da controllare
- * @param int $user Identificativo utente
+ * @param int $user Identificativo dell'utente da considerare Identificativo utente
  * @return boolean Username libero
  */
 function isUserFree($database, $username, $user) {
@@ -57,7 +59,7 @@ function isUserFree($database, $username, $user) {
  * 
  * @param medoo $database Connessione con il database
  * @param string $email Email da controllare
- * @param int $user Identificativo utente
+ * @param int $user Identificativo dell'utente da considerare Identificativo utente
  * @return boolean Email libera
  */
 function isEmailFree($database, $email, $user) {
@@ -120,28 +122,32 @@ function isAdminUserAutenticate() {
 }
 
 /**
- * Esegue il logout
- */
-function LogoutUser() {
-    if (isAdminUserAutenticate()) {
-        $_SESSION['loggedAsAdmin'] = "";
-        unset($_SESSION['loggedAsAdmin']);
-    }
-    $_SESSION['username'] = "";
-    $_SESSION['loggedin'] = "";
-    unset($_SESSION['loggedin']);
-    unset($_SESSION['username']);
-}
-
-/**
  * Controlla se l'utente con l'indetificativo fornito è amministratore
  * 
  * @param medoo $database Connessione con il database
- * @param int $id
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
-function isAdmin($database, $id) {
-    return ($database->count("admins", array ("id" => $id)) != 0);
+function isAdmin($database, $user) {
+    return ($database->count("admins", array ("id" => $user)) != 0);
+}
+
+/**
+ * Esegue il logout.
+ */
+function logout() {
+    if (isUserAutenticate()) {
+        if (isAdminUserAutenticate()) {
+            $_SESSION['loggedAsAdmin'] = "";
+            unset($_SESSION['loggedAsAdmin']);
+        }
+        $_SESSION['username'] = "";
+        $_SESSION['loggedin'] = "";
+        unset($_SESSION['loggedin']);
+        unset($_SESSION['username']);
+        session_unset();
+        session_destroy();
+    }
 }
 
 /**
@@ -214,7 +220,7 @@ function salvato() {
  * Controlla che l'email dell'utente sia stata verificata
  * 
  * @param medoo $database Connessione con il database
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function verificata($database, $user) {
@@ -225,7 +231,7 @@ function verificata($database, $user) {
  * Controlla se questo è il primo accesso dell'utente
  * 
  * @param medoo $database Connessione con il database
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function first($database, $user) {
@@ -303,37 +309,6 @@ function send($destinatario, $sito, $titolo, $msg, $nome = "") {
     }
 }
 
-/* --- Funzioni di criptaggio --- */
-/**
- * Restituisce la password criptata
- * 
- * @param string $password
- * @return string
- */
-function hashpassword($password) {
-    return password_hash($password, PASSWORD_DEFAULT);
-}
-
-/**
- * Codifica username e password
- * 
- * @param string $string
- * @return string
- */
-function encode($string) {
-    return $string;
-}
-
-/**
- * Decodifica username e password
- * 
- * @param string $string
- * @return string
- */
-function decode($string) {
-    return $string;
-}
-
 /**
  * Crea password casuale
  * 
@@ -361,7 +336,7 @@ function random($length) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function iscritto($database, $id, $user) {
@@ -373,7 +348,7 @@ function iscritto($database, $id, $user) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function interessato($database, $id, $user) {
@@ -386,7 +361,7 @@ function interessato($database, $id, $user) {
  * @param medoo $database Connessione con il database
  * @param String $autogestione Autogestione in corso
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function occupato($database, $autogestione, $id, $user) {
@@ -424,20 +399,20 @@ function pieno($database, $id) {
 /**
  * Controlla se c'è ancora tempo per iscriversi ai corsi
  * 
- * @param medoo $database Connessione con il database
+ * @param medoo $databaseC onnessione con il database
+ * @param int $autogestione Indetificativo dell'autogestione da considerare
  * @return boolean
  */
-function tempo($database) {
-    return ($database->count("autogestioni", 
-            array ("AND" => array ("id" => $database->max("autogestioni", "id"), "#ultima[>=]" => "NOW()"))) != 0);
+function tempo($database, $autogestione) {
+    return ($database->count("autogestioni", array ("AND" => array ("id" => $autogestione, "#ultima[>=]" => "NOW()"))) != 0);
 }
 
 /**
  * Restituisce l'identificativo della squadra in cui è iscritto l'utente
  * 
  * @param medoo $database Connessione con il database
- * @param int $autogestione
- * @param int $user
+ * @param int $autogestione Indetificativo dell'autogestione da considerare
+ * @param int $user Identificativo dell'utente da considerare
  */
 function squadra($database, $autogestione, $user) {
     $results = $database->select("giocatori", array ("squadra"), array ("persona" => $user));
@@ -455,7 +430,7 @@ function squadra($database, $autogestione, $user) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function creatore($database, $id, $user) {
@@ -466,8 +441,8 @@ function creatore($database, $id, $user) {
  * Restituisce l'identificativo del torneo a cui è iscritto l'utente
  * 
  * @param medoo $database Connessione con il database
- * @param int $autogestione
- * @param int $user
+ * @param int $autogestione Indetificativo dell'autogestione da considerare
+ * @param int $user Identificativo dell'utente da considerare
  */
 function ntorneo($database, $autogestione, $user) {
     $results = $database->select("iscrizioni", array ("corso"), array ("AND" => array ("persona" => $user, "stato" => 0)));
@@ -498,7 +473,7 @@ function orario($name) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function voti($database, $id, $user) {
@@ -510,7 +485,7 @@ function voti($database, $id, $user) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function like($database, $id, $user) {
@@ -521,8 +496,8 @@ function like($database, $id, $user) {
  * Controlla se l'utente puè fare altre proposte
  * 
  * @param medoo $database Connessione con il database
- * @param int $autogestione
- * @param int $user
+ * @param int $autogestione Indetificativo dell'autogestione da considerare
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function proposta($database, $autogestione, $user) {
@@ -534,7 +509,7 @@ function proposta($database, $autogestione, $user) {
  * Restituisce l'identificativo della scuola dell'utente
  * 
  * @param medoo $database Connessione con il database
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  */
 function scuola($database, $user) {
     return $database->get("classi", "scuola", 
@@ -547,7 +522,7 @@ function scuola($database, $user) {
  * Controlla che l'autogestione del corso inserito sia equivalente a quella attuale
  * 
  * @param medoo $database Connessione con il database
- * @param int $autogestione
+ * @param int $autogestione Indetificativo dell'autogestione da considerare
  * @param int $corso
  * @return boolean
  */
@@ -560,7 +535,7 @@ function stessauto($database, $autogestione, $corso) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $corso
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function scuolagiusta($database, $corso, $user) {
@@ -571,7 +546,7 @@ function scuolagiusta($database, $corso, $user) {
  * Controlla se l'utente è inserito in una classe
  * 
  * @param medoo $database Connessione con il database
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function classe($database, $user) {
@@ -582,11 +557,11 @@ function classe($database, $user) {
  * Controlla se c'è ancora tempo per votare le proposte
  * 
  * @param medoo $database Connessione con il database
+ * @param int $autogestione Indetificativo dell'autogestione da considerare
  * @return boolean
  */
-function tempoproposte($database) {
-    return ($database->count("autogestioni", 
-            array ("AND" => array ("id" => $database->max("autogestioni", "id"), "#proposte[>=]" => "NOW()"))) != 0);
+function tempoproposte($database, $autogestione) {
+    return ($database->count("autogestioni", array ("AND" => array ("id" => $autogestione, "#proposte[>=]" => "NOW()"))) != 0);
 }
 
 /* Aule studio */
@@ -607,7 +582,7 @@ function full($database, $id) {
  * 
  * @param medoo $database Connessione con il database
  * @param int $id
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @return boolean
  */
 function pomeriggio($database, $id, $user) {
@@ -661,7 +636,7 @@ function inside($iscrizioni, $id) {
  * Conteggio rapido degli iscritti
  * 
  * @param string[][] $array
- * @param string $where
+ * @param string $where Campo
  * @return mixed[][]|mixed[]|NULL
  */
 function pieni($array, $where = "corso") {
@@ -681,9 +656,9 @@ function pieni($array, $where = "corso") {
  * l'utente è $user)
  * 
  * @param mixed[][] $iscrizioni
- * @param int $user
+ * @param int $user Identificativo dell'utente da considerare
  * @param int $stato
- * @param string $where
+ * @param string $where Campo
  * @return mixed[]
  */
 function io($iscrizioni, $user, $stato, $where = "corso") {
@@ -701,11 +676,10 @@ function io($iscrizioni, $user, $stato, $where = "corso") {
  * 
  * @param mixed[] $array
  * @param mixed $elemento
- * @param string $where
- * @return int
+ * @param string $where Campo di ricerca
+ * @return int Posizione dell'elemento
  */
-function ricerca($array, $elemento, $where = "id") {
-    $start = 0;
+function ricerca($array, $elemento, $where = "id", $start = 0) {
     $end = count($array) - 1;
     $centro = 0;
     while ($start <= $end) {
@@ -719,5 +693,55 @@ function ricerca($array, $elemento, $where = "id") {
         }
     }
     return -1;
+}
+
+/**
+ * Individua tutte le riccorenze di un elemento in un'array ordinato
+ * 
+ * @param mixed[] $array
+ * @param mixed $elemento
+ * @param string $where Campo di ricerca
+ */
+function ricorrenza($array, $elemento, $where = "id") {
+    $result = array ();
+    $i = 0;
+    $index = ricerca($array, $elemento, $where);
+    while ($index != -1) {
+        $result[$i ++] = $array[$index];
+        $index = ricerca($array, $elemento, $where, $index + 1);
+    }
+    return $result;
+}
+
+/**
+ * Restituisce il colore legato al numero inserito
+ * 
+ * @param int $colore
+ * @return String
+ */
+function colore($colore) {
+    if ($colore == 1) return "Nero (e bianco)";
+    else if ($colore == 2) return "Nero (e grigio)";
+    else if ($colore == 3) return "Bordeux (e grigio)";
+    else if ($colore == 4) return "Blu (e bianco)";
+    else if ($colore == 5) return "Verde (e bianco)";
+    else if ($colore == 6) return "Grigio (e bianco)";
+    return null;
+}
+
+/**
+ * Restituisce la taglia legata al numero inserito
+ * 
+ * @param int $taglia
+ * @return String
+ */
+function taglia($taglia) {
+    if ($taglia == 1) return "XS";
+    else if ($taglia == 2) return "S";
+    else if ($taglia == 3) return "M";
+    else if ($taglia == 4) return "L";
+    else if ($taglia == 5) return "XL";
+    else if ($taglia == 6) return "XXL";
+    return null;
 }
 ?>

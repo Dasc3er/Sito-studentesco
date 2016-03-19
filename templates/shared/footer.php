@@ -82,15 +82,13 @@ if (isset($complexify) && $complexify) echo '
         </script>';
 if (isset($style) && $style) echo '
         <script>
-            $("#stile").change(function(){
+             $("#stile").change(function(){
                 $("#css").remove();
-                if($("#stile :selected").text().toLowerCase() == "boostrap (default)"){
+                if($("#stile :selected").val() == "bootstrap")
                     $(\'<link id="css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">\').prependTo("#font");
-                }
-                else {
-                    $(\'<link id="css" href="' .
-         $dati['info']['root'] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css">\').prependTo("#font");
-                }
+                else
+                    $(\'<link id="css" rel="stylesheet" type="text/css" href="' .
+         $dati['info']['root'] . 'vendor/thomaspark/bootswatch/\'+$("#stile :selected").val()+\'/bootstrap.min.css" media="screen">\').prependTo("#font");
             });
         </script>';
 if (isset($wait) && $wait) echo '
@@ -104,6 +102,14 @@ if (isset($wait) && $wait) echo '
                 }
             }, 1000);
         </script>';
+if (isset($felpa) && $felpa) echo '
+        <script>
+            $(".radio").change(function(){
+                $("#felpa").attr("src", "' .
+         $dati['info']['path'] . 'images/felpa"+$(".radio:checked").val()+".jpg");
+            });
+        </script>
+        ';
 echo '
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>';
 if ($dati['opzioni']['snow']) echo '

@@ -22,7 +22,7 @@ echo '
                             </tr>
                         </thead>
                         <tbody>';
-$corsi = $dati['database']->select("corsi", "*", array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
+$corsi = $dati['database']->select("corsi", "*", array ("AND" => array ("quando[!]" => null,"autogestione"=>$dati['autogestione'], "stato" => 0), "ORDER" => "id"));
 $array = array ();
 if ($corsi != null) {
     foreach ($corsi as $data) {
@@ -38,7 +38,7 @@ if ($corsi != null) {
 }
 $scuole = $dati['database']->select("scuole", "*", array ("ORDER" => "id"));
 $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
-$studenti = $dati['database']->select("studenti", "*", 
+$studenti = $dati['database']->select("studenti", "*",
         array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
 $iscritti = $dati['database']->select("iscrizioni", "*", array ("stato" => 0, "ORDER" => "corso"));
 $results = $dati['database']->select("persone", "*");

@@ -59,8 +59,7 @@ if (!$dati['debug']) {
     
     $app->map([ 'GET', 'POST'], '/verifica/:id', 
             function ($request, $response, $args) use($dati) {
-                $dati['database']->update('persone', array ('verificata' => 1), 
-                        array ('verificata' => $args['id']));
+                $dati['database']->update('persone', array ('verificata' => 1), array ('verificata' => $args['id']));
                 $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('index'));
                 return $response;
             });
@@ -314,6 +313,27 @@ if (!$dati['debug']) {
                                         }
                                         return $response;
                                     });
+                        }
+                    });
+        }
+        
+        if ($dati['sezioni']['felpa']) {
+            $app->get('/elimina/felpa', 
+                    function ($request, $response, $args) use($dati) {
+                        $response = $this->renderer->render($response, 'felpa.php', array ('dati' => $dati, 'elimina' => true));
+                        $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('felpa'));
+                    });
+            
+            $app->get('/felpa', 
+                    function ($request, $response, $args) use($dati) {
+                        $response = $this->renderer->render($response, 'felpa.php', array ('dati' => $dati));
+                    })->setName('felpa');
+            
+            $app->post('/felpa', 
+                    function ($request, $response, $args) use($dati) {
+                        $response = $this->renderer->render($response, 'felpa.php', array ('dati' => $dati));
+                        if (fatto()) {
+                            $response = $response->withStatus(301)->withHeader('Location', $this->router->pathFor('felpa'));
                         }
                     });
         }
@@ -656,35 +676,35 @@ if (!$dati['debug']) {
                         $this->get('/credenziali', 
                                 function ($request, $response, $args) use($dati) {
                                     $response = $response->withHeader('Content-type', 'application/pdf');
-                                    $response = $this->renderer->render($response, 'pdf/users.php', array ('dati' => $dati));
+                                    $response = $this->renderer->render($response, 'pdf/credenziali.php', array ('dati' => $dati));
                                     return $response;
                                 });
                         
-                        $this->get('/credenziali-totali', 
+                        $this->get('/felpe', 
                                 function ($request, $response, $args) use($dati) {
                                     $response = $response->withHeader('Content-type', 'application/pdf');
-                                    $response = $this->renderer->render($response, 'pdf/usersall.php', array ('dati' => $dati));
+                                    $response = $this->renderer->render($response, 'pdf/sommarioFelpe.php', array ('dati' => $dati));
                                     return $response;
                                 });
                         
                         $this->get('/barcodes', 
                                 function ($request, $response, $args) use($dati) {
                                     $response = $response->withHeader('Content-type', 'application/pdf');
-                                    $response = $this->renderer->render($response, 'admin/barcodes.php', array ('dati' => $dati));
+                                    $response = $this->renderer->render($response, 'pdf/barcodes.php', array ('dati' => $dati));
                                     return $response;
                                 });
                         
                         $this->get('/corsi', 
                                 function ($request, $response, $args) use($dati) {
                                     $response = $response->withHeader('Content-type', 'application/pdf');
-                                    $response = $this->renderer->render($response, 'pdf/courses.php', array ('dati' => $dati));
+                                    $response = $this->renderer->render($response, 'pdf/sommarioCorsi.php', array ('dati' => $dati));
                                     return $response;
                                 });
                         
                         $this->get('/classi', 
                                 function ($request, $response, $args) use($dati) {
                                     $response = $response->withHeader('Content-type', 'application/pdf');
-                                    $response = $this->renderer->render($response, 'pdf/classes.php', array ('dati' => $dati));
+                                    $response = $this->renderer->render($response, 'pdf/sommarioClassi.php', array ('dati' => $dati));
                                     return $response;
                                 });
                         
@@ -705,7 +725,7 @@ if (!$dati['debug']) {
             
             $app->get('/download/barcodes', 
                     function ($request, $response, $args) use($dati) {
-                        $response = $this->renderer->render($response, 'admin/barcodes.php', array ('dati' => $dati, 'download' => true));
+                        $response = $this->renderer->render($response, 'pdf/barcodes.php', array ('dati' => $dati, 'download' => true));
                         $file = 'barcode.txt';
                         $res = $app->response();
                         $res['Content-Description'] = 'File Transfer';

@@ -1,6 +1,7 @@
 <?php
 if (!isset($dati)) require_once 'utility.php';
-if (isset($gioca) && creatore($dati['database'], $gioca, $dati['user'])) {
+$tempo = tempo($dati['database'], $dati["autogestione"]);
+if (isset($gioca) && creatore($dati['database'], $gioca, $dati['user']) && $tempo) {
     $spazio = $dati['database']->count("giocatori", array ("squadra" => $gioca)) < $dati['database']->get("max", "max", 
             array ("torneo" => ntorneo($dati['database'], $dati['autogestione'], $dati["user"])));
     if (isset($add) && squadra($dati['database'], $dati['autogestione'], $add) == null && $add != $dati["user"] && $spazio) {
@@ -101,7 +102,7 @@ if (isset($gioca) && creatore($dati['database'], $gioca, $dati['user'])) {
             </div>';
     require_once 'shared/footer.php';
 }
-else if ((isset($edit) && creatore($dati['database'], $edit, $dati["user"])) ||
+else if ((isset($edit) && creatore($dati['database'], $edit, $dati["user"]) && $tempo) ||
          (isset($new) && !squadra($dati['database'], $dati['autogestione'], $dati["user"]))) {
     if (isset($edit)) {
         $pageTitle = "Modifica squadra";
@@ -245,7 +246,7 @@ else {
             echo '
                         </tbody>
                     </table>';
-            if (creatore($dati['database'], $data["id"], $dati["user"])) echo '
+            if ($tempo && creatore($dati['database'], $data["id"], $dati["user"])) echo '
                     <p class="clear">
                         <a href="' . $dati['info']['root'] . 'edit/' . $data["id"] . '" class="btn btn-success btn-block btn-lg">Modifica nome della squadra</a>
                         <a href="' . $dati['info']['root'] . 'giocatori/' . $data["id"] . '" class="btn btn-info btn-block btn-lg">Modifica giocatori</a>
