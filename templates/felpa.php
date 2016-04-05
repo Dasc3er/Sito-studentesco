@@ -6,7 +6,7 @@ if (isset($elimina)) {
 }
 else if (isset($modifica) || isset($nuovo)) {
     if (isset($_POST['colore']) && isset($_POST['taglia'])) {
-        if ($dati['database']->count("felpe", array ("persona" => $dati["user"])) != 0) $dati['database']->update("felpe", 
+        if (isset($modifica)) $dati['database']->update("felpe", 
                 array ("nota" => $_POST['nota'], "taglia" => $_POST['taglia'], "colore" => $_POST['colore'], "#data" => "NOW()"), 
                 array ("AND" => array ("persona" => $dati["user"], "id" => $modifica)));
         else $dati['database']->insert("felpe", 
@@ -39,7 +39,8 @@ else if (isset($modifica) || isset($nuovo)) {
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12 col-md-3">
-                        <img id="felpa" class="img-thumbnail img-responsive" src="' . $dati['info']['path'] . 'images/felpa';
+                        <img id="felpa" class="img-thumbnail img-responsive" src="' .
+             $dati['info']['path'] . 'images/felpa';
     if (!isset($colore)) echo '1';
     else echo $colore;
     echo '.jpg">
@@ -52,8 +53,8 @@ else if (isset($modifica) || isset($nuovo)) {
     for ($i = 1; $i <= 10; $i ++) {
         echo '
                             <div class="form-group">
-                                <input type="radio" class="radio" name="colore" id="colore' . $i . '" value="' . $i .
-                 '"';
+                                <input type="radio" class="radio" name="colore" id="colore' . $i . '" value="' .
+                 $i . '"';
         if (isset($colore) && $colore == $i || $i == 1) echo ' checked';
         echo '>
                                 <label for="colore' . $i . '">' . colore($i) . '</label>
@@ -65,8 +66,8 @@ else if (isset($modifica) || isset($nuovo)) {
     for ($i = 1; $i <= 6; $i ++) {
         echo '
                             <div class="form-group">
-                                <input type="radio" class="radio" name="taglia" id="taglia' . $i . '" value="' . $i .
-                 '"';
+                                <input type="radio" class="radio" name="taglia" id="taglia' . $i . '" value="' .
+                 $i . '"';
         if (isset($taglia) && $taglia == $i || $i == 2) echo ' checked';
         echo '>
                                 <label for="taglia' . $i . '">' . taglia($i) . '</label>
@@ -82,8 +83,8 @@ else if (isset($modifica) || isset($nuovo)) {
                             </div>
                             <hr>';
     if (isset($taglia) && isset($colore)) echo '
-                            <a class="btn btn-danger" href="' .
-             $dati['info']['root'] . 'elimina/felpa/' . $modifica . '"><i class="fa fa-chain-broken "></i> Elimina ordine</a>';
+                            <a class="btn btn-danger" href="' . $dati['info']['root'] . 'elimina/felpa/' . $modifica .
+             '"><i class="fa fa-chain-broken "></i> Elimina ordine</a>';
     echo '
                             <button type="submit" class="btn btn-success pull-right"><i class="fa fa-heart"></i> ';
     if (isset($taglia) && isset($colore)) echo 'Modifica ordine';
@@ -117,17 +118,18 @@ else {
             echo '
                 <div class="row">
                     <div class="col-xs-12 col-md-2">
-                        <img class="img-thumbnail img-responsive" src="' . $dati['info']['path'] . 'images/felpa' . $result["colore"] . '.jpg">
+                        <img class="img-thumbnail img-responsive" src="' .
+                     $dati['info']['path'] . 'images/felpa' . $result["colore"] . '.jpg">
                     </div>
                     <div class="col-xs-12 col-md-10">
                         <p><strong>Colore: </strong>' . colore($result["colore"]) . '</p>
                         <p><strong>Taglia: </strong>' . taglia($result["taglia"]) . '</p>
                         <p><strong>Nota: </strong>' . $result["nota"] . '</p>
                         <p><strong>Costo: </strong> 20 &euro;</p>
-                        <a class="btn btn-danger" href="' . $dati['info']['root'] . 'elimina/felpa/' .
-                     $result["id"] . '"><i class="fa fa-chain-broken "></i> Elimina ordine</a>
-                        <a class="btn btn-info pull-right" href="' . $dati['info']['root'] . 'modifica/felpa/' .
-                     $result["id"] . '"><i class="fa fa-pencil"></i> Modifica ordine</a>
+                        <a class="btn btn-danger" href="' . $dati['info']['root'] .
+                     'elimina/felpa/' . $result["id"] . '"><i class="fa fa-chain-broken "></i> Elimina ordine</a>
+                        <a class="btn btn-info pull-right" href="' . $dati['info']['root'] .
+                     'modifica/felpa/' . $result["id"] . '"><i class="fa fa-pencil"></i> Modifica ordine</a>
                     </div>
                 </div>
                 <hr>';
