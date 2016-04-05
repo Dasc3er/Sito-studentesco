@@ -42,6 +42,19 @@ function id($database) {
     return $id;
 }
 
+function permesso($zona) {
+    $result = false;
+    if (isUserAutenticate()) {
+        $index = -1;
+        if ($zona == "autogestione") $index = 0;
+        else if ($zona == "citazioni") $index = 1;
+        else if ($zona == "forum") $index = 2;
+        else if ($zona == "felpa") $index = 3;
+        if ($index != -1 && substr($_SESSION["permessi"], $index, 1) == "1") $result = true;
+    }
+    return $result;
+}
+
 /**
  * Controlla che l'username inserito sia univoco
  * 
@@ -129,7 +142,7 @@ function isAdminUserAutenticate() {
  * @return boolean
  */
 function isAdmin($database, $user) {
-    return ($database->count("admins", array ("id" => $user)) != 0);
+    return ($database->count("permessi", array ("AND" => array ("persona" => $user, "admin" => 1))) != 0);
 }
 
 /**
@@ -365,7 +378,7 @@ function interessato($database, $id, $user) {
  * @return boolean
  */
 function occupato($database, $autogestione, $id, $user) {
-    $when = $database->get("corsi", "quando", array ("AND" => array ("id" => $id, "stato" => 0)));
+    $when = $database->get("corsi", "quando", array ("AND" => array ("id" => $id, "autogestione" => $autogestione, "stato" => 0)));
     if (strpos($when, ",") != false) $when = explode(",", $when);
     else $when = array ($when);
     $result = false;
@@ -720,12 +733,16 @@ function ricorrenza($array, $elemento, $where = "id") {
  * @return String
  */
 function colore($colore) {
-    if ($colore == 1) return "Nero (e bianco)";
-    else if ($colore == 2) return "Nero (e grigio)";
-    else if ($colore == 3) return "Bordeux (e grigio)";
-    else if ($colore == 4) return "Blu (e bianco)";
-    else if ($colore == 5) return "Verde (e bianco)";
-    else if ($colore == 6) return "Grigio (e bianco)";
+    if ($colore == 1) return "Nero e bianco (stampa bianca)";
+    else if ($colore == 2) return "Nero e bianco (stampa rossa)";
+    else if ($colore == 3) return "Grigio e bianco (stampa blu navy)";
+    else if ($colore == 4) return "Grigio e bianco (stampa bianca)";
+    else if ($colore == 5) return "Verde e bianco (stampa bianca)";
+    else if ($colore == 6) return "Blu e bianco (stampa bianca)";
+    else if ($colore == 7) return "Bordeaux e grigio (stampa grigia)";
+    else if ($colore == 8) return "Bordeaux e grigio (stampa bianca)";
+    else if ($colore == 9) return "Nero e grigio (stampa bianca)";
+    else if ($colore == 10) return "Nero e grigio (stampa grigia)";
     return null;
 }
 

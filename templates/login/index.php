@@ -77,9 +77,20 @@ else {
             $dati['database']->insert('accessi', 
                     array ('id' => $id, 'tipo_browser' => getenv('HTTP_USER_AGENT'), 'indirizzo' => getenv('REMOTE_ADDR'), 
                         '#data' => 'NOW()'));
+            $results = $dati['database']->select("permessi", '*', array ("persona" => $id));
+            if ($results != null) {
+                foreach ($results as $result) {
+                    $_SESSION['permessi'] = $result["autogestione"] . $result["citazioni"] . $result["forum"] . $result["felpe"];
+                }
+            }
+            
             session_regenerate_id();
+            
             if (isAdmin($dati['database'], $id)) $_SESSION['loggedAsAdmin'] = "true";
-            else if ($dati['debug']) logout();
+            else if ($dati['debug']) {
+                logout();
+                $_SESSION["try"] = -1;
+            }
         }
         else {
             $errore = true;

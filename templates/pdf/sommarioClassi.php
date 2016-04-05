@@ -1,10 +1,10 @@
 <?php
+if (!isset($dati)) require_once 'utility.php';
 if (isAdminUserAutenticate()) {
     require_once 'pdf.php';
     $pdf = new PDF();
     $iscritti = $dati['database']->select("iscrizioni", "*", array ("stato" => 0));
-    $corsi = $dati['database']->select("corsi", "*", 
-            array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
+    $corsi = $dati['database']->select("corsi", "*", array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
     $persone = $dati['database']->select("persone", array ("id", "nome"), array ("ORDER" => "id"));
     $studenti = $dati['database']->select("studenti", "*", array ("id" => $dati['database']->max("studenti", "id")));
     $datas = $dati['database']->select("classi", "*");

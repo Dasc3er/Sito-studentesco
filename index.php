@@ -270,28 +270,36 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                     });
         }
         
-        if ($dati['sezioni']['felpa']) {
-            $app->get('/elimina/felpa', 
-                    function () use($dati, $app) {
-                        $app->render('felpa.php', array ('dati' => $dati, 'elimina' => true));
+        if ($dati['sezioni']['felpa'] && permesso("felpa")) {
+            $app->get('/elimina/felpa/:id', 
+                    function ($id) use($dati, $app) {
+                        $app->render('felpa.php', array ('dati' => $dati, 'elimina' => $id));
                         $app->redirect($app->urlFor('felpa'));
                     });
+            
+            $app->map('/modifica/felpa/:id', 
+                    function ($id) use($dati, $app) {
+                        $app->render('felpa.php', array ('dati' => $dati, 'modifica' => $id));
+                        if (fatto()) {
+                            $app->redirect($app->urlFor('felpa'));
+                        }
+                    })->via('GET', 'POST');
+            
+            $app->map('/nuovo/felpa', 
+                    function () use($dati, $app) {
+                        $app->render('felpa.php', array ('dati' => $dati, 'nuovo' => true));
+                        if (fatto()) {
+                            $app->redirect($app->urlFor('felpa'));
+                        }
+                    })->via('GET', 'POST');
             
             $app->get('/felpa', 
                     function () use($dati, $app) {
                         $app->render('felpa.php', array ('dati' => $dati));
                     })->name('felpa');
-            
-            $app->post('/felpa', 
-                    function () use($dati, $app) {
-                        $app->render('felpa.php', array ('dati' => $dati));
-                        if (fatto()) {
-                            $app->redirect($app->urlFor('felpa'));
-                        }
-                    });
         }
         
-        if ($dati['sezioni']['corsi']) {
+        if ($dati['sezioni']['corsi'] && permesso("autogestione")) {
             /* Corsi */
             $app->get('/corsi', 
                     function () use($dati, $app) {
@@ -400,7 +408,7 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                     })->via('GET', 'POST');
         }
         
-        if ($dati['sezioni']['citazioni']) {
+        if ($dati['sezioni']['citazioni'] && permesso("citazioni")) {
             /* Citazioni */
             $app->get('/citazioni', 
                     function () use($dati, $app) {
@@ -469,6 +477,11 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                     $app->render('admin/utenti.php', array ('dati' => $dati));
                 })->name('utenti');
         
+        $app->get('/felpe', 
+                function () use($dati, $app) {
+                    $app->render('admin/felpe.php', array ('dati' => $dati));
+                })->name('felpe');
+        
         $app->get('/barcode', 
                 function () use($dati, $app) {
                     $app->response->headers->set('Content-Type', 'image/gif');
@@ -488,7 +501,7 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                 });
         
         if (isAdminUserAutenticate()) {
-            if ($dati['sezioni']['forum']) {
+            if ($dati['sezioni']['forum'] && permesso("forum")) {
                 /* Forum */
                 $app->get('/post', 
                         function () use($dati, $app) {

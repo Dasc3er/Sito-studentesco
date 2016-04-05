@@ -60,7 +60,7 @@ echo '
 if (!$dati['debug'] || isAdminUserAutenticate()) {
     if (isUserAutenticate() && !$dati["first"]) {
         if ($dati["autogestione"] != null) {
-            if ($dati['sezioni']['corsi']) {
+            if ($dati['sezioni']['corsi'] && permesso("autogestione")) {
                 echo '
                         <li';
                 if ($pageTitle == "Corsi disponibili") echo ' class="active"';
@@ -79,7 +79,7 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
             if ($pageTitle == "Nuova autogestione") echo ' class="active"';
             echo '><a href="' . $dati['info']['root'] . 'autogestione">Nuova autogestione</a></li>';
         }
-        if ($dati['sezioni']['aule']) {
+        if ($dati['sezioni']['aule'] && permesso("aule")) {
             echo '
       <li';
             if ($pageTitle == "Aule studio") echo ' class="active"';
@@ -88,7 +88,7 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                     array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
             echo '</a></li>';
         }
-        if ($dati['sezioni']['citazioni']) {
+        if ($dati['sezioni']['citazioni'] && permesso("citazioni")) {
             echo '
                         <li';
             if ($pageTitle == "Citazioni") echo ' class="active"';
@@ -97,16 +97,16 @@ if (!$dati['debug'] || isAdminUserAutenticate()) {
                     array ("AND" => array ("da" => null, "stato" => 1))) . '</span>';
             echo '</a></li>';
         }
-        if ($dati['sezioni']['forum']) {
+        if ($dati['sezioni']['forum'] && permesso("forum")) {
             echo '
                         <li';
             if ($pageTitle == "Forum") echo ' class="active"';
             echo '><a href="' . $dati['info']['root'] . 'forum">Forum</a></li>';
         }
-        if ($dati['sezioni']['felpa']) {
+        if ($dati['sezioni']['felpa'] && permesso("felpa")) {
             echo '
                         <li';
-            if ($pageTitle == "Felpa di Istituto") echo ' class="active"';
+            if ($pageTitle == "Felpa di Istituto" || $pageTitle == "Carrello") echo ' class="active"';
             echo '><a href="' . $dati['info']['root'] . 'felpa">Felpa di Istituto</a></li>';
         }
     }

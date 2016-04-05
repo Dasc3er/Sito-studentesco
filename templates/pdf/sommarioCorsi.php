@@ -1,19 +1,17 @@
 <?php
+if (!isset($dati)) require_once 'utility.php';
 if (isAdminUserAutenticate()) {
     require 'pdf.php';
     $pdf = new PDF();
-    $studenti = $dati['database']->select("studenti", "*", 
-            array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+    $studenti = $dati['database']->select("studenti", "*", array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
     $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
     $utenti = $dati['database']->select("persone", "*", array ("ORDER" => "id"));
-    $datas = $dati['database']->select("corsi", "*", 
-            array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
+    $datas = $dati['database']->select("corsi", "*", array ("AND" => array ("quando[!]" => null, "stato" => 0), "ORDER" => "id"));
     if ($datas != null) {
         foreach ($datas as $data) {
             $cont = 0;
             $text = "";
-            $results = $dati['database']->select("iscrizioni", "*", 
-                    array ("AND" => array ("corso" => $data["id"], "stato" => 0)));
+            $results = $dati['database']->select("iscrizioni", "*", array ("AND" => array ("corso" => $data["id"], "stato" => 0)));
             if ($results != null) {
                 foreach ($results as $result) {
                     $utente = ricerca($utenti, $result["persona"]);

@@ -63,7 +63,8 @@ unset($password);
 
 
 // Identificazione e funzionamento
-// $dati['database']->query('CREATE TABLE IF NOT EXISTS admins (id int)');
+// $dati['database']->query(
+//         'CREATE TABLE IF NOT EXISTS permessi (persona int, admin int, autogestione int, citazioni int, forum int, felpe int)');
 // $dati['database']->query(
 //         'CREATE TABLE IF NOT EXISTS persone (id int AUTO_INCREMENT PRIMARY KEY, username varchar(255), nome varchar(255), password varchar(255), email varchar(255), stato int, verificata int, random int, inviata int)');
 // $dati['database']->query(
@@ -119,7 +120,8 @@ unset($password);
 
 
 // Felpe
-// $dati['database']->query('CREATE TABLE IF NOT EXISTS felpe (id int, colore int, taglia int, data datetime)');
+// $dati['database']->query(
+//         'CREATE TABLE IF NOT EXISTS felpe (id int AUTO_INCREMENT PRIMARY KEY, persona int, nota varchar(255), colore int, taglia int, data datetime)');
 
 
 // Completamento tabelle di opzioni e codice a barre
@@ -141,6 +143,15 @@ unset($password);
 //         if (ricerca($ean, $result["id"], 'persona') == -1) $dati['database']->insert('ean',
 //                 array ('persona' => $result['id'], 'ean' => $number));
 //         $number ++;
+//     }
+// }
+//
+// $results = $dati['database']->select('persone', array ('id'));
+// $permessi = $dati['database']->select('permessi', '*', array ('ORDER' => 'persona'));
+// if ($results != null) {
+//     foreach ($results as $result) {
+//         if (ricerca($permessi, $result["id"], 'persona') == -1) $dati['database']->insert('permessi',
+//                 array ('persona' => $result['id'], "admin" => 0, "autogestione" => 1, "citazioni" => 1, "forum" => 1, "felpe" => 1));
 //     }
 // }
 

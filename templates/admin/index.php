@@ -19,6 +19,7 @@ echo '
                                 <ul class="nav nav-pills nav-stacked">
                                     <li><a href="' . $dati['info']['root'] . 'utenti">Utenti</a></li>
                                     <li><a href="' . $dati['info']['root'] . 'notizie">Notizie</a></li>
+                                    <li><a href="' . $dati['info']['root'] . 'felpe">Ordini felpe</a></li>
                                     <hr>
                                     <li><a href="' . $dati['info']['root'] . 'autogestioni">Autogestioni</a></li>
                                     <li><a href="' . $dati['info']['root'] . 'scuole">Scuole</a></li>';

@@ -1,5 +1,5 @@
 <?php
-if (!isset($dati)) require_once '../admin/utility.php';
+if (!isset($dati)) require_once 'utility.php';
 require_once 'templates/barcode/barcode.php';
 if (isset($download)) {
     $fontSize = 10; // GD1 in px ; GD2 in point
@@ -37,8 +37,7 @@ if (isset($download)) {
     file_put_contents("barcode.txt", "", LOCK_EX);
     $eans = $dati['database']->select("ean", "*", array ("ORDER" => "persona"));
     $classi = $dati['database']->select("classi", "*", array ("ORDER" => "id"));
-    $studenti = $dati['database']->select("studenti", "*", 
-            array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+    $studenti = $dati['database']->select("studenti", "*", array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
     $results = $dati['database']->select("persone", "*");
     if ($results != null) {
         foreach ($results as $result) {
@@ -67,17 +66,21 @@ else {
     class BarcodeFPDF extends FPDF {
         public $h;
         public $k;
+
         public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4') {
             parent::__construct($orientation, $unit, $size);
             $this->h = parent::GetPageHeight();
             $this->k = 1;
         }
+
         public function GetPageHeight() {
             return $this->h;
         }
+
         public function GetK() {
             return $this->k;
         }
+
         public function _out($s) {
             // Add a line to the document
             if ($this->state == 2) $this->pages[$this->page] .= $s . "\n";
@@ -85,6 +88,7 @@ else {
             elseif ($this->state == 0) $this->Error('No page has been added yet');
             elseif ($this->state == 3) $this->Error('The document is closed');
         }
+
         public function TextWithRotation($x, $y, $txt, $txt_angle, $font_angle = 0) {
             $font_angle += 90 + $txt_angle;
             $txt_angle *= M_PI / 180;
@@ -133,10 +137,8 @@ else {
     // BARCODE
     // -------------------------------------------------- //
     $eans = $dati['database']->select("ean", "*", array ("ORDER" => "persona"));
-    $persone = $dati['database']->select("persone", array ("id", "nome", "username", "password", "stato"), 
-            array ("ORDER" => "id"));
-    $studenti = $dati['database']->select("studenti", "*", 
-            array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
+    $persone = $dati['database']->select("persone", array ("id", "nome", "username", "password", "stato"), array ("ORDER" => "id"));
+    $studenti = $dati['database']->select("studenti", "*", array ("id" => $dati['database']->max("studenti", "id"), "ORDER" => "persona"));
     $datas = $dati['database']->select("classi", "*");
     if ($datas != null) {
         foreach ($datas as $data) {

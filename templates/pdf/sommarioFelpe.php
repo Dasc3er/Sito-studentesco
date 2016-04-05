@@ -1,4 +1,5 @@
 <?php
+if (!isset($dati)) require_once 'utility.php';
 if (isAdminUserAutenticate()) {
     require_once 'pdf.php';
     $pdf = new PDF();

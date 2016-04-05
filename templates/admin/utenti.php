@@ -65,9 +65,8 @@ else {
                 $classe = 'Nessuna classe';
             }
             $cont = 0;
-            if ($result['id'] - $numero[0] >= 0 && $numero[1] - $result['id'] >= 0 && $numero[2][$result['id'] - $numero[0]] != '') {
-                $cont = $numero[2][$result['id'] - $numero[0]];
-            }
+            if (isset($numero[$result["id"]]) && $numero[$result["id"]] != null) $cont = $numero[$result["id"]];
+            else $cont = 0;
             echo '
                             <tr>
                                 <td>' . $result['nome'] . '</td>
@@ -96,7 +95,7 @@ else {
                 }
             }
             echo '
-                                <td><a class="btn btn-success" href="' . $dati['root'] . 'profilo/' . $result['id'] . '">Profilo</a></td>
+                                <td><a class="btn btn-success" href="' . $dati['info']['root'] . 'profilo/' . $result['id'] . '">Profilo</a></td>
                             </tr>';
         }
     }
