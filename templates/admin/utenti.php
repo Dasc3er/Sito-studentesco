@@ -18,7 +18,7 @@ else {
     $scuole = $dati['database']->select('scuole', '*', array ('ORDER' => 'id'));
     $accessi = $dati['database']->select('accessi', '*');
     $numero = pieni($accessi, 'id');
-    $admins = $dati['database']->select('admins', '*', array ('ORDER' => 'id'));
+    $permessi = $dati['database']->select('permessi', '*', array ('ORDER' => 'persona'));
     $studenti = $dati['database']->select('studenti', '*', array ('id' => $dati['database']->max('studenti', 'id'), 'ORDER' => 'persona'));
     $classi = $dati['database']->select('classi', '*', array ('ORDER' => 'id'));
     $results = $dati['database']->select('persone', '*', array ('ORDER' => 'nome'));
@@ -74,28 +74,33 @@ else {
                                 <td>' . $scuola . '</td>
                                 <td>' . $cont . '</td>';
             if (isAdminUserAutenticate()) {
-                if (ricerca($admins, $result['id']) == -1) {
-                    if ($result['stato'] != 0) {
-                        echo '
+                $ricerca = ricerca($permessi, $result['id'], "persona");
+                if ($ricerca != -1) {
+                    if ($permessi[$ricerca]["admin"] == 0) {
+                        if ($result['stato'] != 0) {
+                            echo '
                                 <td id="cred">
                                     <span class="hidden" id="value">' . $result['id'] . '</span>
                                     <a class="btn btn-danger" id="reset">Reset credenziali';
-                        if ($result['stato'] != 1) echo '(recupero effettuato)';
-                        echo '</a>
+                            if ($result['stato'] != 1) echo '(recupero effettuato)';
+                            echo '</a>
                                 </td>';
+                        }
+                        else {
+                            echo '
+                                <td>Username: ' .
+                                     $result['username'] . ' - Password: ' . strtolower($result['password']) . '</td>';
+                        }
                     }
                     else {
                         echo '
-                                <td>Username: ' . $result['username'] . ' - Password: ' . strtolower($result['password']) . '</td>';
-                    }
-                }
-                else {
-                    echo '
                                 <td>Amministratore!!!</td>';
+                    }
                 }
             }
             echo '
-                                <td><a class="btn btn-success" href="' . $dati['info']['root'] . 'profilo/' . $result['id'] . '">Profilo</a></td>
+                                <td><a class="btn btn-success" href="' .
+                     $dati['info']['root'] . 'profilo/' . $result['id'] . '">Profilo</a></td>
                             </tr>';
         }
     }

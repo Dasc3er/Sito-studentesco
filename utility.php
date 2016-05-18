@@ -1,6 +1,4 @@
 <?php
-session_cache_limiter(false);
-session_start();
 
 require_once __DIR__ . '/parameteri.php';
 require_once __DIR__ . '/vendor/autoload.php';
@@ -35,7 +33,7 @@ if (isUserAutenticate()) {
     $dati['user'] = id($dati['database']);
     $dati['first'] = first($dati['database'], $dati['user']);
     $dati['autogestione'] = $dati['database']->max('autogestioni', 'id');
-    
+
     // Controlli sull'identità della sessione
     $scadenza = 10 * 60;
     $test = md5($segreto . $_SERVER['HTTP_USER_AGENT']);
