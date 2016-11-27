@@ -13,37 +13,20 @@ local.properties
 .settings/
 .loadpath
 .vendor
-
-## External tool builders
 .externalToolBuilders/
-
-## Locally stored "Eclipse launch configurations"
 *.launch
-
-## CDT-specific
 .cproject
-
-## PDT-specific
 .buildpath
 
-
 # SublimeText
-## cache files for sublime text
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.cache
-
-## workspace files are user-specific
 *.sublime-workspace
-
 ## project files should be checked into the repository, unless a significant
 ## proportion of contributors will probably not be using SublimeText
 ## *.sublime-project
-
-## sftp configuration file
 sftp-config.json
-
-## Package control specific files
 Package Control.last-run
 Package Control.ca-list
 Package Control.ca-bundle
@@ -53,12 +36,10 @@ Package Control.ca-certs/
 bh_unicode_properties.cache
 GitHub.sublime-settings
 
-
 # Visual Studio
 *.suo
 *.user
 *.sln.docstates
-
 
 # Visual Studio Code
 .vscode/*
@@ -66,19 +47,19 @@ GitHub.sublime-settings
 !.vscode/tasks.json
 !.vscode/launch.json
 
-
 # Bower
 bower_components/
 
+# Yarn
+yarn.lock
 
 # Composer
 composer.phar
+composer.lock
 vendor/
-
 
 # Node
 node_modules/
-
 
 # OS or Editor folders
 ._*
@@ -95,4 +76,8 @@ nbproject
 Thumbs.db
 ehthumbs.db
 $RECYCLE.BIN
-Desktop.ini
+desktop.ini
+
+# Custom
+cache/
+tests/_output/*
