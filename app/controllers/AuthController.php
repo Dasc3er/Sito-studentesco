@@ -1,0 +1,195 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Models;
+
+class AuthController extends \App\Core\BaseContainer
+{
+    public function login($request, $response, $args)
+    {
+        if (empty($_SESSION['try'])) {
+            $_SESSION['try'] = 0;
+        }
+
+        if (intval($_SESSION['try']) != 0 && intval($_SESSION['try']) % 3 == 0) {
+            $time = 180 + (30 * (intval($_SESSION['try']) / 3 - 1));
+
+            $args['minutes'] = floor($time / 60);
+            $args['seconds'] = floor($time % 60);
+            $args['time'] = $time;
+
+            $_SESSION['time'] = strtotime('+'.floor($time / 60).' Minutes +'.floor($time % 60).' Seconds', strtotime('now'));
+        }
+
+        $response = $this->view->render($response, 'auth/login.twig', $args);
+
+        return $response;
+    }
+
+    public function loginPost($request, $response, $args)
+    {
+        if (!$this->validator->hasErrors()) {
+            $email = $this->filter->email;
+            $password = $this->filter->password;
+
+            if (!empty($email) && !empty($password) && (empty($_SESSION['time']) || $_SESSION['time'] < strtotime('now'))) {
+                $auth = $this->auth->attempt($email, $password);
+
+                if ($auth) {
+                    $this->flash->addMessage('infos', $this->translator->translate('login.success'));
+                    $this->router->redirectTo();
+
+                    session_regenerate_id();
+                } else {
+                    $this->flash->addMessage('errors', $this->translator->translate('login.error'));
+
+                    if (!empty($_SESSION['try'])) {
+                        $_SESSION['try'] = intval($_SESSION['try']) + 1;
+                    }
+
+                    $this->router->redirectTo('login');
+                }
+            }
+        } else {
+            $this->router->redirectTo('login');
+        }
+
+        return $response;
+    }
+
+    public function logout($request, $response, $args)
+    {
+        $this->auth->logout();
+        $this->flash->addMessage('infos', $this->translator->translate('logout.success'));
+
+        $this->router->redirectTo();
+
+        return $response;
+    }
+
+    public function register($request, $response, $args)
+    {
+        $response = $this->view->render($response, 'auth/registration.twig', $args);
+
+        return $response;
+    }
+
+    public function registerPost($request, $response, $args)
+    {
+        if (!$this->validator->hasErrors()) {
+            $name = $this->filter->name;
+            $username = $this->filter->username;
+            $email = $this->filter->email;
+            $password = $this->filter->password;
+            $rep_password = $this->filter->rep_password;
+
+            $userFree = \Utils::isUsernameFree($username);
+            $emailFree = \Utils::isEmailFree($email);
+
+            if ($userFree && $emailFree && $password == $rep_password) {
+                $user = new Models\User();
+
+                $user->name = $name;
+                $user->username = $username;
+                $user->email = $email;
+                $user->password = $password;
+                $user->email_token = \Utils::createKey();
+                $user->role = 0;
+                $user->state = 1;
+
+                $user->save();
+
+                \Utils::sendEmail($email, 'verification', [':path' => 'http://'.$request->getUri()->getHost().''.pathFor('verifica-email', ['code' => $key])]);
+
+                $this->flash->addMessage('infos', $this->translator->translate('register.success'));
+                $this->router->redirectTo();
+
+                session_regenerate_id();
+            } else {
+                if ($password != $rep_password) {
+                    $this->flash->addMessage('errors', $this->translator->translate('base.errorPassword'));
+                }
+                if ($userFree) {
+                    $this->flash->addMessage('errors', $this->translator->translate('base.errorEmail'));
+                }
+                if ($emailFree) {
+                    $this->flash->addMessage('errors', $this->translator->translate('base.errorUsername'));
+                }
+
+                $this->router->redirectTo('registration');
+            }
+        }
+
+        return $response;
+    }
+
+    public function retrieve($request, $response, $args)
+    {
+        $response = $this->view->render($response, 'auth/retrieve.twig', $args);
+
+        return $response;
+    }
+
+    public function retrievePost($request, $response, $args)
+    {
+        if (!$this->validator->hasErrors()) {
+            $email = $this->filter->email;
+
+            $result = Models\User::where(['email' => \Crypt::encode($email), 'state' => 1])->first();
+            if (!empty($result)) {
+                $token = \Utils::createKey();
+
+                $result->reset_token = $token;
+                $result->save();
+
+                \Utils::sendEmail($email, 'reset', ['PATH' => 'http://'.$request->getUri()->getHost().''.pathFor('verifica-email', ['token' => $token])]);
+
+                $body = '<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell\'autogestione.</p>
+				<p>Clicca sul link seguente o copialo nella barra del browser per completare l\'operazione.</p>
+				<p><center><a href="http://itiseuganeo.altervista.org/recupero/' .$token.'">http://itiseuganeo.altervista.org/recupero/'.$token.'</a></center></p>';
+
+                $this->flash->addMessage('infos', $this->translator->translate('retrieve.success'));
+                $this->router->redirectTo();
+            } else {
+                $this->router->redirectTo('retrieve');
+            }
+
+            return $response;
+        }
+    }
+
+    public function retrieveToken($request, $response, $args)
+    {
+        $response = $this->view->render($response, 'auth/credentials.twig', $args);
+
+        return $response;
+    }
+
+    public function retrieveTokenPost($request, $response, $args)
+    {
+        $password = $this->filter->password;
+        $rep_password = $this->filter->rep_password;
+
+        if (!$this->validator->hasErrors() && $password == $rep_password) {
+            $result = Models\User::where(['email_token' => $args['token']])->first();
+            $result->password = $password;
+            $result->reset_token = '';
+            $result->save();
+
+            $this->flash->addMessage('infos', $this->translator->translate('credentials.success'));
+            $this->router->redirectTo();
+            session_regenerate_id();
+        } else {
+            if ($password != $rep_password) {
+                $this->flash->addMessage('errors', $this->translator->translate('errorPassword'));
+            } else {
+                $this->flash->addMessage('errors', $this->translator->translate('credentials.error'));
+            }
+
+            $this->router->redirectTo('recupero', ['token' => $args['token']]);
+        }
+
+        return $response;
+    }
+}

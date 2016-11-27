@@ -81,3 +81,4 @@ desktop.ini
 # Custom
 cache/
 tests/_output/*
+public/assets/

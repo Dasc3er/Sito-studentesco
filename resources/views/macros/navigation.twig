@@ -1,0 +1,29 @@
+{% macro menu(list) %}
+    {% import _self as self %}
+
+	{%- for item in list %}
+
+						<li
+						{%- if item.state or item.children|length != 0 %} class="
+							{%- if item.state %}active{%- endif -%}
+							{%- if item.children|length != 0 %} dropdown{%- endif -%}
+						"{%- endif %}>
+							<a href="{{ item.path }}"{% if item.children|length != 0 %} class="dropdown-toggle" data-toggle="dropdown"{% endif %}>
+								{{ item.title }}
+								{%- if item.children|length != 0 %} <b class="caret"></b>{% endif %}
+
+							</a>
+		{%- if item.children|length != 0 %}
+
+							<ul class="dropdown-menu">
+								{{ self.menu(item.children) }}
+							</ul>
+
+		{% endif %}
+
+						</li>
+		{% if item.divider %}
+						<li class="divider"></li>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}

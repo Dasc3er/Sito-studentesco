@@ -1,0 +1,77 @@
+## Slim settings
+determineRouteBeforeAppMiddleware: true
+displayErrorDetails: false
+addContentLengthHeader: false
+
+## Application config
+app:
+    aliveTimeout: 600
+    maintenance: false
+    functions:
+        visits: true
+        registration: true
+    menu:
+        left:
+            - index
+        right:
+            - auth
+        footer:
+        user:
+            - profile
+            - credentials
+
+## Debug
+debug:
+    enable: false
+    enableWhoops: false
+    whoopsEditor:
+
+## Database settings
+database:
+    migrations_path: database/migrations
+    seeds_path: database/seeds
+
+### Database connections
+connections:
+    default:
+        driver:
+        host:
+        database:
+        username:
+        password:
+        charset: utf8
+        collation: utf8_unicode_ci
+        prefix:
+        port: 3306
+
+## Language config
+lang:
+    routing: true
+    include_filename: true
+    path: resources/lang
+    default_locale: en
+    fallback_locales:
+        - en
+
+## Views
+views:
+    assets: public/assets
+    templates: resources/views
+    config:
+        cache: false
+
+## Mail
+mail:
+    default_email:
+    auth: false
+    host:
+    secure:
+    port:
+    username:
+    password:
+
+## Monolog settings
+logger:
+    name: Monolog
+    path: logs/app.log
+    level: DEBUG

@@ -1,0 +1,58 @@
+{%- macro field(options = { name: null, type: 'text', value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false, form_horizontal: false, label: null, sr_only: false }) -%}
+    {% import _self as self %}
+    {% set options = options|merge({name: options.name|replace({' ': '_'})}) %}
+    {% set options = options|merge({value: options.value|default('')}) %}
+    {% if not options.label %}{% set options = options|merge({label: options.placeholder, sr_only: true}) %}{% endif %}
+    {%- if not options.id %}{% set options = options|merge({id: options.name|replace({'[': '', ']': ''})}) %}{% endif %}
+
+			<div class="form-group">
+                <label class="{% if options.sr_only %}sr-only{% else %}control-label{% if options.form_horizontal %} col-xs-12 col-sm-2{% endif %}{% endif %}" for="{{ options.id }}">{{ options.label }}</label>
+	{%- if options.form_horizontal %}
+
+
+                <div class="col-xs-12 col-sm-10">
+	{%- endif %}
+
+	{%- if options.type == 'select' %}
+
+				{{ self.select(options) }}
+	{%- elseif options.type == 'textarea' %}
+
+				{{ self.textarea(options) }}
+	{%- else %}
+
+				{{ self.input(options) }}
+	{%- endif %}
+
+	{%- if options.form_horizontal %}
+                </div>
+{% endif %}
+            </div>
+{% endmacro %}
+
+
+{% macro input(options = { name: null, type: 'text', value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false }) %}
+<input class="form-control {{ options.class }}" type="{{ options.type }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" value="{{ options.value }}"{% if options.disabled %} disabled{% endif %}{% if options.autofocus %} autofocus{% endif %}{% if options.required %} required{% endif %}>
+{% endmacro %}
+
+
+{% macro textarea(options = { name: null, value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false }) %}
+            <textarea class="form-control {{ options.class }}" type="{{ options.type }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}"{% if options.disabled %} disabled{% endif %}{% if options.autofocus %} autofocus{% endif %}{% if options.required %} required{% endif %}>{{ options.value }}</textarea>
+{% endmacro %}
+
+
+{%- macro csrf_field(csrf) -%}
+<input type="hidden" name="{{csrf.keys.name}}" value="{{csrf.name}}"><input type="hidden" name="{{csrf.keys.value}}" value="{{csrf.value}}">
+{%- endmacro -%}
+
+
+{% macro input_select(options = { name: null, value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false, multiple: false, values: {} }) %}
+            <select class="form-control {{ options.class }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" {%- if options.disabled %} disabled{% endif %} {%- if options.autofocus %} autofocus{% endif %} {%- if options.required %} required{% endif %} {%- if options.multiple %} multiple{% endif %}>
+                {% if options.include_blank %}
+                    <option disabled selected></option>
+                {% endif %}
+                {% for item in values %}
+                    <option {%- if item == value %} selected{% endif %}>{{ item }}</option>
+                {% endfor %}
+            </select>
+{% endmacro %}

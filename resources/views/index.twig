@@ -1,0 +1,53 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'index.title'|trans }}{% endblock %}
+{% block content %}
+			<div id="myCarousel" class="carousel slide margin-top" data-ride="carousel">
+				<!-- Indicators -->
+				<ol class="carousel-indicators">
+{% for img in carousel %}
+					<li data-target="#myCarousel" data-slide-to="{{ loop.index - 1 }}"{% if loop.index == 1 %} class="active"{% endif %}></li>
+{% endfor %}
+				</ol>
+
+				<!-- Wrapper for slides -->
+				<div class="carousel-inner" role="listbox">
+{% for img in carousel %}
+					<div class="item{% if loop.index == 1 %} active{% endif %}">
+						<img src="{{ base_url() }}{{ paths.img }}{{ img.image }}">
+{% if img.title or img.description %}
+
+						<div class="carousel-caption">
+							<h3>{{ img.title }}</h3>
+							<p>{{ img.description }}</p>
+						</div>
+{% endif %}
+					</div>
+{% endfor %}
+				</div>
+
+				<!-- Left and right controls -->
+				<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+					<span class="icon-prev" aria-hidden="true"></span>
+					<span class="sr-only">{{ 'previous'|trans }}</span>
+				</a>
+				<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+					<span class="icon-next" aria-hidden="true"></span>
+					<span class="sr-only">{{ 'next'|trans }}</span>
+				</a>
+			</div>
+			<hr>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-6"></div>
+					<div class="col-xs-12 col-md-6"></div>
+				</div>
+			</div>
+{% endblock %}
+{% block scripts %}
+		<script>
+			$('.carousel .item').each(function() {
+				$(this).css('background-image','url('+$(this).find('img').attr('src')+')').css('background-repeat','repeat').find('img').css('visibility','hidden');
+			});
+		</script>
+{% endblock %}

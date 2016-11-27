@@ -1,0 +1,25 @@
+## Application config
+app:
+    maintenance: false
+
+### Database connections
+connections:
+    default:
+        driver: 
+        host: 
+        database: 
+        username: 
+        password:
+
+## Language config
+lang:
+    default_locale: it
+
+mail:
+    default_email: 
+
+## Debug
+debug:
+    enable: true
+    enableWhoops: true
+    whoopsEditor:

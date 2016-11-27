@@ -1,0 +1,30 @@
+{
+    "name": "slim-skeleton",
+    "version": "",
+    "private": true,
+    "main": "gulpfile.js",
+    "dependencies": {},
+    "devDependencies": {
+        "bower-main": "^0.2.14",
+        "cwd": "^0.10.0",
+        "del": "^2.2.0",
+        "gulp": "^3.9.1",
+        "gulp-concat": "^2.6.0",
+        "gulp-concat-css": "^2.3.0",
+        "gulp-flatten": "^0.2.0",
+        "gulp-json-minify": "^1.0.5",
+        "gulp-rename": "^1.2.2",
+        "gulp-uglify": "^1.5.3",
+        "gulp-uglifycss": "^1.0.6",
+        "main-bower-files": "^2.13.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "init": "npm install -g bower && npm install -g gulp && npm run-script develop",
+        "develop": "npm install && bower install && npm run-script install",
+        "install": "composer install && php vendor/robmorgan/phinx/bin/phinx migrate",
+        "update": "npm update && composer update && npm run-script assets",
+        "assets": "bower update && npm run-script build",
+        "build": "gulp"
+    }
+}

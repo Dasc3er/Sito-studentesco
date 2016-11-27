@@ -1,0 +1,29 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'administration.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-wrench"></i> {{ 'administration.header'|trans }}</h1>
+					<p>{{ 'administration.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-12">
+						<div class="panel panel-success text-center">
+							<div class="panel-heading"><i class="fa fa-cog fa-2x"></i> {{ 'base.infos'|trans }}</div>
+							<div class="panel-body">
+								<ul class="nav nav-pills nav-stacked">
+									<li><a href="{{ path_for('accessi', {'locale': locale }) }}">{{ 'logins.title'|trans }}</a></li>
+{% if functions.visits %}
+									<li><a href="{{ path_for('visite', {'locale': locale }) }}">{{ 'visits.title'|trans }}</a></li>
+{% endif %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+{% endblock %}

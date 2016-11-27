@@ -1,0 +1,76 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'upload.title'|trans }}{% endblock %}
+{% block styles %}
+		<link href="{{ base_url() }}{{ paths.css }}dropzone.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-upload"></i> {{ 'upload.header'|trans }}</h1>
+					<p>{{ 'upload.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<div class="col-xs-12">
+					{{ form.csrf_field(csrf) }}
+					<input type="hidden" name="product_id" value="{{ id }}">
+
+					<div class="dropzone needsclick" id="upload">
+						<div class="dz-message needsclick">
+							<p>{{ 'upload-drop'|trans }}</p>
+							<span class="note needsclick">{{ 'upload-todo'|trans }}</span>
+						</div>
+						<div class="fallback">
+							<input name="file" type="file" multiple />
+						</div>
+					</div>
+				</div>
+
+				<div class="clearfix"></div>
+				<hr>
+
+				<div id="actions" class="pull-right">
+					<button type="submit" class="btn btn-primary" id="start">
+						<i class="fa fa-upload"></i> {{ 'start-upload'|trans }}
+					</button>
+					<button type="reset" class="btn btn-warning" id="cancel">
+						<i class="fa fa-stop-circle-o "></i> {{ 'stop-upload'|trans }}
+					</button>
+				</div>
+			</div>
+{% endblock %}
+{% block scripts %}
+		<script src="{{ base_url() }}{{ paths.js }}dropzone.min.js"></script>
+		<script>
+		Dropzone.options.upload = {
+			url: "{{ path_for('salva-upload') }}",
+			acceptedFiles: "image/*",
+    		parallelUploads: 1,
+			uploadMultiple: false,
+			autoQueue: false, // Make sure the files aren't queued until manually added
+			init: function() {
+				var myDropzone = this;
+
+				myDropzone.on('sending', function(data, xhr, formData){
+					$('input[name!="file"]').each(function(){
+						formData.append($(this).attr('name'), $(this).val());
+					});
+				});
+
+				$("#actions #start").click(function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+					myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+				});
+
+				$("#actions #cancel").click(function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+					myDropzone.removeAllFiles(true);
+				});
+			}
+		};
+		</script>
+{% endblock %}
