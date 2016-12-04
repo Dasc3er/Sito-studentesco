@@ -2,7 +2,8 @@
     {% import _self as self %}
     {% set options = options|merge({name: options.name|replace({' ': '_'})}) %}
     {% set options = options|merge({value: options.value|default('')}) %}
-    {% if not options.label %}{% set options = options|merge({label: options.placeholder, sr_only: true}) %}{% endif %}
+    {% if not options.label %}{% set options = options|merge({label: options.placeholder}) %}{% endif %}
+    {% if not options.form_horizontal %}{% set options = options|merge({sr_only: true}) %}{% endif %}
     {%- if not options.id %}{% set options = options|merge({id: options.name|replace({'[': '', ']': ''})}) %}{% endif %}
 
 			<div class="form-group">
@@ -46,13 +47,13 @@
 {%- endmacro -%}
 
 
-{% macro input_select(options = { name: null, value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false, multiple: false, values: {} }) %}
+{% macro select(options = { name: null, value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false, multiple: false, values: {} }) %}
             <select class="form-control {{ options.class }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" {%- if options.disabled %} disabled{% endif %} {%- if options.autofocus %} autofocus{% endif %} {%- if options.required %} required{% endif %} {%- if options.multiple %} multiple{% endif %}>
                 {% if options.include_blank %}
                     <option disabled selected></option>
                 {% endif %}
-                {% for item in values %}
-                    <option {%- if item == value %} selected{% endif %}>{{ item }}</option>
+                {% for item in options.values %}
+                    <option {%- if item.id == options.value %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
                 {% endfor %}
             </select>
 {% endmacro %}

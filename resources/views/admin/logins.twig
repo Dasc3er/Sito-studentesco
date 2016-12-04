@@ -31,6 +31,6 @@
 				</table>
                 {{ results.links()|raw }}
 				<p>{{ 'logins.total'|trans }}: {{ count }}</p>
-				<p><a href="{{ path_for('reset-accessi', {'locale': locale }) }}" class="btn btn-danger">{{ 'logins.reset'|trans }}</a></p>
+				<p><a href="{{ path_for('reset-accessi', {'locale': locale}) }}" class="btn btn-danger">{{ 'logins.reset'|trans }}</a></p>
 			</div>
 {% endblock %}

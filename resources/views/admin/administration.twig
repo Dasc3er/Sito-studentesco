@@ -11,14 +11,26 @@
 			<hr>
 			<div class="container">
 				<div class="row">
+                    <div class="col-xs-12 col-md-12">
+						<div class="panel panel-info text-center">
+							<div class="panel-heading"><i class="fa fa-eye fa-2x"></i> {{ 'base.options'|trans }}</div>
+							<div class="panel-body">
+								<ul class="nav nav-pills nav-stacked">
+									<li><a href="{{ path_for('schools', {'locale': locale}) }}">{{ 'schools.title'|trans }}</a></li>
+									<li><a href="{{ path_for('events', {'locale': locale}) }}">{{ 'events.title'|trans }}</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
 					<div class="col-xs-12 col-md-12">
 						<div class="panel panel-success text-center">
 							<div class="panel-heading"><i class="fa fa-cog fa-2x"></i> {{ 'base.infos'|trans }}</div>
 							<div class="panel-body">
 								<ul class="nav nav-pills nav-stacked">
-									<li><a href="{{ path_for('accessi', {'locale': locale }) }}">{{ 'logins.title'|trans }}</a></li>
+									<li><a href="{{ path_for('logins', {'locale': locale}) }}">{{ 'logins.title'|trans }}</a></li>
 {% if functions.visits %}
-									<li><a href="{{ path_for('visite', {'locale': locale }) }}">{{ 'visits.title'|trans }}</a></li>
+									<li><a href="{{ path_for('visits', {'locale': locale}) }}">{{ 'visits.title'|trans }}</a></li>
 {% endif %}
 								</ul>
 							</div>

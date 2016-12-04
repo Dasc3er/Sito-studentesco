@@ -2,29 +2,36 @@
 
 {% block title %}{{ 'index.title'|trans }}{% endblock %}
 {% block content %}
-			<div id="myCarousel" class="carousel slide margin-top" data-ride="carousel">
-				<!-- Indicators -->
-				<ol class="carousel-indicators">
-{% for img in carousel %}
-					<li data-target="#myCarousel" data-slide-to="{{ loop.index - 1 }}"{% if loop.index == 1 %} class="active"{% endif %}></li>
-{% endfor %}
-				</ol>
-
-				<!-- Wrapper for slides -->
-				<div class="carousel-inner" role="listbox">
-{% for img in carousel %}
-					<div class="item{% if loop.index == 1 %} active{% endif %}">
-						<img src="{{ base_url() }}{{ paths.img }}{{ img.image }}">
-{% if img.title or img.description %}
-
-						<div class="carousel-caption">
-							<h3>{{ img.title }}</h3>
-							<p>{{ img.description }}</p>
-						</div>
-{% endif %}
-					</div>
-{% endfor %}
+            <div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-graduation-cap"></i> {{ 'index.header'|trans }}</h1>
+					<p>{{ 'index.text'|trans }}</p>
 				</div>
+
+                <div id="myCarousel" class="carousel slide margin-top" data-ride="carousel">
+                    <!-- Indicators -->
+                    <ol class="carousel-indicators">
+    {% for img in carousel %}
+                        <li data-target="#myCarousel" data-slide-to="{{ loop.index - 1 }}"{% if loop.index == 1 %} class="active"{% endif %}></li>
+    {% endfor %}
+                    </ol>
+
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner" role="listbox">
+    {% for img in carousel %}
+                        <div class="item{% if loop.index == 1 %} active{% endif %}">
+                            <img src="{{ base_url() }}{{ paths.img }}{{ img.image }}">
+    {% if img.title or img.description %}
+
+                            <div class="carousel-caption">
+                                <h3>{{ img.title }}</h3>
+                                <p>{{ img.description }}</p>
+                            </div>
+    {% endif %}
+                        </div>
+    {% endfor %}
+                    </div>
+                </div>
 
 				<!-- Left and right controls -->
 				<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
@@ -42,6 +49,8 @@
 					<div class="col-xs-12 col-md-6"></div>
 					<div class="col-xs-12 col-md-6"></div>
 				</div>
+
+                <h3 class="text-center">Vivi l'evoluzione tecnologica del tuo Istituto!!!</h3>
 			</div>
 {% endblock %}
 {% block scripts %}

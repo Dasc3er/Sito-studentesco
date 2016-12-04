@@ -29,6 +29,6 @@
 				</table>
                 {{ results.links()|raw }}
 				<p>{{ 'visits.total'|trans }}: {{ count }}</p>
-				<p><a href="{{ path_for('reset-visite', {'locale': locale }) }}" class="btn btn-danger">{{ 'visits.reset'|trans }}</a></p>
+				<p><a href="{{ path_for('reset-visite', {'locale': locale}) }}" class="btn btn-danger">{{ 'visits.reset'|trans }}</a></p>
 			</div>
 {% endblock %}
