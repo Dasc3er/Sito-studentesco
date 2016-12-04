@@ -1,0 +1,29 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'events.form.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-edit"></i> {{ 'events.form.header'|trans }}</h1>
+					<p>{{ 'events.form.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<form action="{% if result %}{{ path_for('edit-event', {'locale': locale, 'id': result.id}) }}{% else %}{{ path_for('new-event', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form">
+					{{ form.csrf_field(csrf) }}
+
+                    {{ form.field({name: 'name', placeholder: 'base.name'|trans, value: result.name, required: true, autofocus: true, form_horizontal: true}) }}
+
+                    {{ form.field({type: 'date', name: 'date', placeholder: 'base.date'|trans, value: result.date, required: true, form_horizontal: true}) }}
+
+                    {{ form.field({type: 'date', name: 'subscription_end', placeholder: 'base.subscription_end'|trans, value: result.subscription_end, required: true, form_horizontal: true}) }}
+
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-success" type="submit" id="button"><i class="fa fa-check"></i> {{ 'base.save'|trans }}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+{% endblock %}
