@@ -13,29 +13,19 @@ class DataMiddleware extends \App\Core\BaseContainer
         }
 
         $settings = $this->settings['app']['menu'];
-        $settings['user'] = (array) $settings['user'];
+
+        if ($this->auth->admin()) {
+            $menus = $settings['admin'];
+        } elseif ($this->auth->check()) {
+            $menus = $settings['user'];
+        } else {
+            $menus = $settings['guest'];
+        }
 
         $menu = [];
-        $menu['left'] = (array) $settings['left'];
-        $menu['right'] = (array) $settings['right'];
-        $menu['footer'] = (array) $settings['footer'];
-
-        foreach ($menu as $key => $value) {
-            if (in_array('auth', $value)) {
-                if ($this->auth->check()) {
-                    if ($this->auth->admin()) {
-                        array_push($menu[$key], 'administration');
-                    }
-
-                    array_push($settings['user'], 'logout');
-                    $menu[$key]['user'] = $settings['user'];
-                } else {
-                    array_push($menu[$key], 'login');
-                }
-
-                unset($menu[$key][array_search('auth', $value)]);
-            }
-        }
+        $menu['left'] = (array) $menus['left'];
+        $menu['right'] = (array) $menus['right'];
+        $menu['footer'] = (array) $menus['footer'];
 
         // Creazione dei link di navigazione
         $route = $request->getAttribute('route');
@@ -60,11 +50,16 @@ class DataMiddleware extends \App\Core\BaseContainer
         $menu = [];
 
         foreach ($list as $key => $value) {
+            $state = false;
             $result = [];
 
             if (is_array($value)) {
+                $key = key($value);
+                $value = $value[$key];
+
                 $submenu = $this->menu($value, $state);
                 $result['children'] = $submenu[0];
+
                 $element = $key;
             } else {
                 $element = $value;
@@ -84,8 +79,8 @@ class DataMiddleware extends \App\Core\BaseContainer
             }
 
             $result['title'] = $this->translator->translate($title);
-            if(strpos($result['title'], ':username') !== false){
-                $result['title'] = $this->translator->translate($title, array(':username' => $this->auth->user()->username));
+            if (strpos($result['title'], ':username') !== false) {
+                $result['title'] = $this->translator->translate($title, [':username' => $this->auth->user()->username]);
             }
             $result['path'] = $path;
             $result['state'] = $state;

@@ -61,6 +61,7 @@ $container['view'] = function ($container) {
     $view->offsetSet('js', new PathPackage($assets.'/js', new StaticVersionStrategy('v1')));
     $view->offsetSet('img', new PathPackage($assets.'/img', new StaticVersionStrategy('v1')));
 
+    $view->offsetSet('auth', $container['auth']);
     $view->offsetSet('flash', $container['flash']);
     $view->offsetSet('translator', $container['translator']);
     $view->offsetSet('router', $container['router']);

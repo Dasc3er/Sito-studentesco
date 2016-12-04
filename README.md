@@ -8,7 +8,7 @@ Per dare una rapida occhiata al risultato, il sito dell'IIS Euganeo è online al
 
 **Funzioni principali**:
 
-- gestione delle proposte per i corsi, effettuare dagli studenti e da approvare dai Rappresentanti d'Istituto;
+- gestione delle proposte per i corsi, effettuate dagli studenti e da approvare dai Rappresentanti d'Istituto;
 - gestione delle iscrizioni ai corsi, completa di assegnazione casuale in caso di mancata iscrizione;
 - gestione delle citazioni, suddivise per professore;
 - gestione delle utenze degli studenti per anni differenti.
@@ -50,9 +50,9 @@ Per procedere all'installazione è necessario seguire i seguenti punti:
 4. ritoccare i valori interni al file `config.yml` per la connessione al database e le impostazioni basilari.
 5. eseguire da riga di comando la seguente istruzione per completare l'installazione del database.
 
-    ```bash
-    php vendor/robmorgan/phinx/bin/phinx migrate
-    ```
+```bash
+php vendor/robmorgan/phinx/bin/phinx migrate
+```
 
 #### Versioni
 

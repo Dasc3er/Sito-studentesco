@@ -1,14 +1,28 @@
 ## Application config
 app:
     maintenance: false
+    functions:
+        visits: false
+        registration: false
+    menu:
+        user:
+            left:
+                - index
+                - courses
+                - quotes
+        admin:
+            left:
+                - index
+                - courses
+                - quotes
 
 ### Database connections
 connections:
     default:
-        driver: 
-        host: 
-        database: 
-        username: 
+        driver:
+        host:
+        database:
+        username:
         password:
 
 ## Language config
@@ -16,7 +30,7 @@ lang:
     default_locale: it
 
 mail:
-    default_email: 
+    default_email:
 
 ## Debug
 debug:

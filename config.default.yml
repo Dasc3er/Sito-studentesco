@@ -11,14 +11,32 @@ app:
         visits: true
         registration: true
     menu:
-        left:
-            - index
-        right:
-            - auth
-        footer:
+        guest:
+            left:
+                - index
+            right:
+                - contacts
+                - login
+            footer:
         user:
-            - profile
-            - credentials
+            left:
+                - index
+            right:
+                - user:
+                    - profile
+                    - credentials
+                    - logout
+            footer:
+        admin:
+            left:
+                - index
+            right:
+                - administration
+                - user:
+                    - profile
+                    - credentials
+                    - logout
+            footer:
 
 ## Debug
 debug:

@@ -14,7 +14,8 @@
     "jquery.complexify": "danpalmer/jquery.complexify.js#^0.5.1",
     "dropzone": "^4.3.0",
     "font-awesome": "^4.6.3",
-    "php-debugbar": "maximebf/php-debugbar#^1.13.0"
+    "php-debugbar": "maximebf/php-debugbar#^1.13.0",
+    "cookieconsent": "^3.0.3"
   },
   "overrides": {
     "bootstrap": {

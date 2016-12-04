@@ -23,8 +23,10 @@
         "init": "npm install -g bower && npm install -g gulp && npm run-script develop",
         "develop": "npm install && bower install && npm run-script install",
         "install": "composer install && php vendor/robmorgan/phinx/bin/phinx migrate",
+        "upgrade": "composer update && php vendor/robmorgan/phinx/bin/phinx migrate",
         "update": "npm update && composer update && npm run-script assets",
         "assets": "bower update && npm run-script build",
-        "build": "gulp"
+        "build": "gulp",
+        "reset": "php vendor/robmorgan/phinx/bin/phinx rollback -t 0 && php vendor/robmorgan/phinx/bin/phinx migrate"
     }
 }

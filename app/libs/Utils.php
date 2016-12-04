@@ -69,7 +69,7 @@ class Utils
             $mail->Port = $settings['port'];
         }
 
-        $mail->Subject = $title.' - '.\App\Core\Translator::translate('email.site');
+        $mail->Subject = $title.' - '.\App\Core\Translator::translate('base.site');
         $mail->isHTML(true); // Set email format to HTML
 
         $mail->setFrom($settings['email']['default_email'], \App\Core\Translator::translate('base.site'));

@@ -8,13 +8,18 @@ class AdminController extends \App\Core\BaseContainer
 {
     public function index($request, $response, $args)
     {
-        $response = $this->view->render($response, 'admin/admin.twig', $args);
+        $response = $this->view->render($response, 'admin/administration.twig', $args);
 
         return $response;
     }
 
     public function logins($request, $response, $args)
     {
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
+            $container = \App\Core\AppContainer::container();
+            return $container['filter']->page;;
+        });
+
         $args['results'] = Models\Login::orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
@@ -35,6 +40,11 @@ class AdminController extends \App\Core\BaseContainer
 
     public function visits($request, $response, $args)
     {
+        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
+            $container = \App\Core\AppContainer::container();
+            return $container['filter']->page;;
+        });
+
         $args['results'] = Models\Visit::orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 

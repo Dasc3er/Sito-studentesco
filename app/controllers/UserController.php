@@ -2,13 +2,15 @@
 
 namespace App\Controllers;
 
+use App\Models;
+
 class UserController extends \App\Core\BaseContainer
 {
     public function credentials($request, $response, $args)
     {
-        $args = array_merge($args, $this->auth->user()->toArray());
+        $args['result'] = $this->auth->user()->toArray();
 
-        $response = $this->view->render($response, 'auth/credentials.twig', $args);
+        $response = $this->view->render($response, 'user/credentials.twig', $args);
 
         return $response;
     }
@@ -62,7 +64,7 @@ class UserController extends \App\Core\BaseContainer
 
     public function verifyEmail($request, $response, $args)
     {
-        $this->database->delete('keys', array('AND' => array('value' => $args['code'], 'name' => 'email_code')));
+        Models\User::where(['email_token' => $args['code'], 'state' => 1])->update(['email_token' => null]);
         $this->router->redirectTo();
 
         return $response;
@@ -84,7 +86,13 @@ class UserController extends \App\Core\BaseContainer
 
     public function profile($request, $response, $args)
     {
-        $response = $this->view->render($response, 'profile.twig', $args);
+        if (!empty($args['id'])) {
+            $args['result'] = Models\User::findOrFail($args['id']);
+        } elseif ($this->auth->check()) {
+            $args['result'] = $this->auth->user();
+        }
+
+        $response = $this->view->render($response, 'user/profile.twig', $args);
 
         return $response;
     }

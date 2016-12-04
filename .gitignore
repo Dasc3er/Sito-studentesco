@@ -82,3 +82,7 @@ desktop.ini
 cache/
 tests/_output/*
 public/assets/
+
+# Project
+config.yml
+npm-debug.log
