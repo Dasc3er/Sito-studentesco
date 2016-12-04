@@ -1,0 +1,25 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'schools.form.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-edit"></i> {{ 'schools.form.header'|trans }}</h1>
+					<p>{{ 'schools.form.text'|trans }}</p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<form action="{% if result %}{{ path_for('edit-school', {'locale': locale, 'id': result.id}) }}{% else %}{{ path_for('new-school', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form">
+					{{ form.csrf_field(csrf) }}
+
+                    {{ form.field({name: 'name', placeholder: 'base.name'|trans, value: result.name, required: true, autofocus: true, form_horizontal: true}) }}
+
+					<div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-success" type="submit" id="button"><i class="fa fa-check"></i> {{ 'base.save'|trans }}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+{% endblock %}

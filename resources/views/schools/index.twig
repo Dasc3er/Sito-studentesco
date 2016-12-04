@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'schools.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-list"></i> {{ 'schools.header'|trans }}</h1>
+					<p>{{ 'schools.text'|trans }}</p>
+                    <p><a class="btn btn-success" href="{{ path_for('new-school', {'locale': locale}) }}"><i class="fa fa-plus"></i> {{ 'base.new'|trans }}</a></p>
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+{% if results is not empty %}
+                <table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th>{{ 'base.name'|trans }}</th>
+							<th>{{ 'base.options'|trans }}</th>
+						</tr>
+					</thead>
+					<tbody>
+{% for result in results %}
+						<tr>
+							<td>{{ result.name }}</td>
+							<td>
+                                <a class="btn btn-info" href="{{ path_for('edit-school', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                                <a class="btn btn-danger" href="{{ path_for('delete-school', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                            </td>
+						</tr>
+{% endfor %}
+{% else %}
+        				<p>{{ 'base.no-result'|trans }}</p>
+{% endif %}
+					</tbody>
+				</table>
+
+                {{ results.links()|raw }}
+
+			</div>
+{% endblock %}
