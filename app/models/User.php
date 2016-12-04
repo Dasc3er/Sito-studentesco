@@ -14,6 +14,16 @@ class User extends Model
         return $this->hasMany('App\Models\Login');
     }
 
+    public function quotes()
+    {
+        return $this->hasMany('App\Models\Quotes');
+    }
+
+    public function quotesLikes()
+    {
+        return $this->hasManyThrough('App\Models\Quotes', 'App\Models\Like');
+    }
+
     public function options()
     {
         return $this->hasMany('App\Models\UserOption');
