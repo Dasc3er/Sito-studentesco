@@ -25,6 +25,11 @@ class Course extends Model
 
     public function users()
     {
-        return $this->hasManyThrough('App\Models\Users', 'App\Models\UserCourse');
+        return $this->belongsToMany('App\Models\Users');
+    }
+
+    public function times()
+    {
+        return $this->belongsToMany('App\Models\Time');
     }
 }

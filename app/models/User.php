@@ -16,17 +16,27 @@ class User extends Model
 
     public function quotes()
     {
-        return $this->hasMany('App\Models\Quotes');
+        return $this->hasMany('App\Models\Quote');
     }
 
     public function quotesLikes()
     {
-        return $this->hasManyThrough('App\Models\Quotes', 'App\Models\Like');
+        return $this->belongsToMany('App\Models\Quote');
     }
 
     public function options()
     {
-        return $this->hasMany('App\Models\UserOption');
+        return $this->hasMany('App\Models\OptionUser');
+    }
+
+    public function courses()
+    {
+        return $this->belongsToMany('App\Models\Course');
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany('App\Models\Course');
     }
 
     /**
