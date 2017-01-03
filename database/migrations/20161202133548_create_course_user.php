@@ -2,11 +2,11 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateUserCourses extends AbstractMigration
+class CreateCourseUser extends AbstractMigration
 {
     public function change()
     {
-        $table = $this->table('user_courses');
+        $table = $this->table('course_user');
         $table->addColumn('course_id', 'integer')
             ->addColumn('user_id', 'integer')
             ->addTimestamps(null, null)

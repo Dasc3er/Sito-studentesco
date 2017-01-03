@@ -12,7 +12,6 @@ class CreateCourses extends AbstractMigration
             ->addColumn('name', 'string')
             ->addColumn('description', 'string')
             ->addColumn('place', 'string')
-            ->addColumn('time', 'string')
             ->addColumn('capacity', 'integer')
             ->addColumn('team_capacity', 'integer')
             ->addTimestamps(null, null)

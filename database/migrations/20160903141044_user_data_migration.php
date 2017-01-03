@@ -7,6 +7,7 @@ class UserDataMigration extends AbstractMigration
     protected $data = [
         [
             'name' => 'Admin',
+            'username' => 'admin',
             'password' => 'admin',
             'email' => 'admin@gmail.com',
             'role' => 1,
@@ -14,6 +15,7 @@ class UserDataMigration extends AbstractMigration
         ],
         [
             'name' => 'User',
+            'username' => 'user',
             'password' => 'user',
             'email' => 'user@gmail.com',
             'role' => 0,

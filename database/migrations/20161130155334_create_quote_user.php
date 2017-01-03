@@ -2,11 +2,11 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateLikes extends AbstractMigration
+class CreateQuoteUser extends AbstractMigration
 {
     public function change()
     {
-        $table = $this->table('likes');
+        $table = $this->table('quote_user');
         $table->addColumn('user_id', 'integer')
             ->addColumn('quote_id', 'integer')
             ->addTimestamps(null, null)

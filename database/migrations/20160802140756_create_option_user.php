@@ -2,11 +2,11 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateUserOptions extends AbstractMigration
+class CreateOptionUser extends AbstractMigration
 {
     public function change()
     {
-        $table = $this->table('user_options');
+        $table = $this->table('option_user');
         $table->addColumn('user_id', 'integer')
             ->addColumn('option_id', 'integer')
             ->addColumn('value', 'string')

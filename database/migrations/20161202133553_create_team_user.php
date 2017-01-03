@@ -2,11 +2,11 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateUserTeams extends AbstractMigration
+class CreateTeamUser extends AbstractMigration
 {
     public function change()
     {
-        $table = $this->table('user_teams');
+        $table = $this->table('team_user');
         $table->addColumn('team_id', 'integer')
             ->addColumn('user_id', 'integer')
             ->addTimestamps(null, null)
