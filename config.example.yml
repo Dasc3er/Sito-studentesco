@@ -19,6 +19,11 @@ app:
 ### Database connections
 connections:
     default:
+        driver: 
+        host: 
+        database: 
+        username: 
+        password: 
 
 ## Language config
 lang:
