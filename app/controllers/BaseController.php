@@ -23,4 +23,18 @@ class BaseController extends \App\Core\BaseContainer
 
 		return $response;
 	}
+
+    public function contactsForm($request, $response, $args)
+	{
+		$response = $this->view->render($response, 'contacts.twig', $args);
+
+		return $response;
+	}
+
+    public function cookies($request, $response, $args)
+	{
+		$response = $this->view->render($response, 'cookies.twig', $args);
+
+		return $response;
+	}
 }

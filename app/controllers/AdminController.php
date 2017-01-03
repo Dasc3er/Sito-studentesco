@@ -20,7 +20,7 @@ class AdminController extends \App\Core\BaseContainer
             return $container['filter']->page;;
         });
 
-        $args['results'] = Models\Login::orderBy('created_at', 'desc')->paginate(100);
+        $args['results'] = Models\Login::with('user')->orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
         $args['count'] = $args['results']->count();

@@ -4,7 +4,7 @@
 {% block content %}
 			<div class="jumbotron">
 				<div class="container text-center">
-					<h1><i class="fa fa-list"></i> {{ 'profile.header'|trans }}</h1>
+					<h1><i class="fa fa-user"></i> {{ 'profile.header'|trans({':name': result.name}) }}</h1>
 					<p>{{ 'profile.text'|trans }}</p>
 				</div>
 			</div>

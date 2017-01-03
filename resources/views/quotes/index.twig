@@ -1,11 +1,14 @@
 {% extends "layout.twig" %}
 
-{% block title %}{{ 'courses.title'|trans }}{% endblock %}
+{% block title %}{{ 'quotes.title'|trans }}{% endblock %}
 {% block content %}
 			<div class="jumbotron">
 				<div class="container text-center">
-					<h1><i class="fa fa-list"></i> {{ 'courses.header'|trans }}</h1>
-					<p>{{ 'courses.text'|trans }}</p>
+					<h1><i class="fa fa-list"></i> {{ 'quotes.header'|trans }}</h1>
+					<p>{{ 'quotes.text'|trans }}</p>
+                    {% if auth.check() %}
+                        <p><a class="btn btn-success" href="{{ path_for('new-quote', {'locale': locale}) }}"><i class="fa fa-plus"></i> {{ 'base.new'|trans }}</a></p>
+                    {% endif %}
 				</div>
 			</div>
 			<hr>
@@ -15,8 +18,13 @@
 				<div class="row">
 {% endif %}
 					<div class="col-xs-12 col-md-6">
-						<h3><a href="{{ path_for('course', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a></h3>
-					</div>
+                        <blockquote>
+						    <p>{{ result.content }}</p>
+                            <footer>
+                                <cite title="{{ result.teacher.name }}">{{ result.teacher.name }}</cite>{% if auth.admin() %}({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
+                            </footer>
+                        </blockquote>
+                    </div>
 {% if loop.index is even %}
 				</div>
 {% endif %}

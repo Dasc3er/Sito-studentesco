@@ -49,11 +49,15 @@
 
 {% macro select(options = { name: null, value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false, multiple: false, values: {} }) %}
             <select class="form-control {{ options.class }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" {%- if options.disabled %} disabled{% endif %} {%- if options.autofocus %} autofocus{% endif %} {%- if options.required %} required{% endif %} {%- if options.multiple %} multiple{% endif %}>
-                {% if options.include_blank %}
+{% if options.include_blank %}
                     <option disabled selected></option>
-                {% endif %}
-                {% for item in options.values %}
-                    <option {%- if item.id == options.value %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
-                {% endfor %}
+{% endif %}
+{% for item in options.values %}
+                    <option {%- if options.value is iterable %}
+                    {% for row in options.value %}
+                        {% if item.id == row.id %} selected{% endif %}
+                    {% endfor %}
+                    {% elseif item.id == options.value %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+{% endfor %}
             </select>
 {% endmacro %}

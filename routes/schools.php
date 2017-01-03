@@ -3,8 +3,6 @@
 $app->group('/schools', function () use ($app, $permissions) {
     $app->get('', 'App\Controllers\SchoolController:index')->setName('schools');
 
-    $app->get('/{id:[0-9]}', 'App\Controllers\SchoolController:datail')->setName('school');
-
     $app->get('/new', 'App\Controllers\SchoolController:form')->setName('new-school');
     $app->post('/new', 'App\Controllers\SchoolController:formPost');
 

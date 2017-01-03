@@ -3,8 +3,6 @@
 $app->group('/events', function () use ($app, $permissions) {
     $app->get('', 'App\Controllers\EventController:index')->setName('events');
 
-    $app->get('/{id:[0-9]}', 'App\Controllers\EventController:datail')->setName('event');
-
     $app->get('/new', 'App\Controllers\EventController:form')->setName('new-event');
     $app->post('/new', 'App\Controllers\EventController:formPost');
 

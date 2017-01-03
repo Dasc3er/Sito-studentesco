@@ -11,29 +11,29 @@
                 <div id="myCarousel" class="carousel slide margin-top" data-ride="carousel">
                     <!-- Indicators -->
                     <ol class="carousel-indicators">
-    {% for img in carousel %}
+{% for element in carousel %}
                         <li data-target="#myCarousel" data-slide-to="{{ loop.index - 1 }}"{% if loop.index == 1 %} class="active"{% endif %}></li>
-    {% endfor %}
+{% endfor %}
                     </ol>
 
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner" role="listbox">
-    {% for img in carousel %}
+{% for element in carousel %}
                         <div class="item{% if loop.index == 1 %} active{% endif %}">
-                            <img src="{{ base_url() }}{{ paths.img }}{{ img.image }}">
-    {% if img.title or img.description %}
+                            <img src="{{ img.getUrl(element.image) }}">
+{% if element.title or element.description %}
 
                             <div class="carousel-caption">
-                                <h3>{{ img.title }}</h3>
-                                <p>{{ img.description }}</p>
+                                <h3>{{ element.title }}</h3>
+                                <p>{{ element.description }}</p>
                             </div>
-    {% endif %}
+{% endif %}
                         </div>
-    {% endfor %}
+{% endfor %}
                     </div>
                 </div>
 
-				<!-- Left and right controls -->
+				<!-- Left and right controls
 				<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
 					<span class="icon-prev" aria-hidden="true"></span>
 					<span class="sr-only">{{ 'previous'|trans }}</span>
@@ -41,7 +41,7 @@
 				<a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
 					<span class="icon-next" aria-hidden="true"></span>
 					<span class="sr-only">{{ 'next'|trans }}</span>
-				</a>
+				</a>-->
 			</div>
 			<hr>
 			<div class="container">
@@ -50,7 +50,7 @@
 					<div class="col-xs-12 col-md-6"></div>
 				</div>
 
-                <h3 class="text-center">Vivi l'evoluzione tecnologica del tuo Istituto!!!</h3>
+                <h3 class="text-center">{{ 'index.inspire'|trans }}</h3>
 			</div>
 {% endblock %}
 {% block scripts %}

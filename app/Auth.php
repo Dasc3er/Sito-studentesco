@@ -5,7 +5,6 @@ namespace App;
 class Auth extends \App\Core\BaseContainer
 {
     protected $user;
-    protected $user_id;
     protected $is_admin;
     protected $email_verified;
 

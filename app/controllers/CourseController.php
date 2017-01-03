@@ -45,6 +45,7 @@ class CourseController extends \App\Core\BaseContainer
         }
 
         $args['schools'] = Models\School::all();
+        $args['times'] = Models\Time::all();
 
         $response = $this->view->render($response, 'courses/form.twig', $args);
 
@@ -65,10 +66,11 @@ class CourseController extends \App\Core\BaseContainer
 
             $school = Models\School::findOrFail($this->filter->school);
 
+            $course->times()->sync($this->filter->times);
             $course->school()->associate($school);
             $course->name = $this->filter->name;
             $course->description = $this->filter->description;
-            $course->time = $this->filter->time;
+            $course->place = $this->filter->place;
             $course->capacity = $this->filter->capacity;
             $course->team_capacity = $this->filter->team_capacity;
 

@@ -1,31 +1,21 @@
 {% extends "layout.twig" %}
 
-{% block title %}{{ 'courses.form.title'|trans }}{% endblock %}
+{% block title %}{{ 'quotes.form.title'|trans }}{% endblock %}
 {% block content %}
 			<div class="jumbotron">
 				<div class="container text-center">
-					<h1><i class="fa fa-edit"></i> {{ 'courses.form'|trans }}</h1>
-					<p>{{ 'courses.formText'|trans }}</p>
+					<h1><i class="fa fa-edit"></i> {{ 'quotes.form.header'|trans }}</h1>
+					<p>{{ 'quotes.form.text'|trans }}</p>
 				</div>
 			</div>
 			<hr>
 			<div class="container">
-				<form action="{% if result %}{{ path_for('edit-course', {'locale': locale, 'id': result.id}) }}{% else %}{{ path_for('new-course', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form">
+				<form action="{% if result %}{{ path_for('edit-quote', {'locale': locale, 'id': result.id}) }}{% else %}{{ path_for('new-quote', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form">
 					{{ form.csrf_field(csrf) }}
 
-                    {{ form.field({name: 'name', placeholder: 'base.name'|trans, value: result.name, required: true, autofocus: true, form_horizontal: true}) }}
+                    {{ form.field({name: 'teacher', placeholder: 'base.teacher'|trans, value: result.teacher.name, required: true, autofocus: true, form_horizontal: true}) }}
 
-                    {{ form.field({name: 'place', placeholder: 'base.place'|trans, value: result.place, required: true, form_horizontal: true}) }}
-
-                    {{ form.field({name: 'time', placeholder: 'base.time'|trans, value: result.time, required: true, form_horizontal: true}) }}
-
-                    {{ form.field({type: 'number', name: 'capacity', placeholder: 'base.capacity'|trans, value: result.capacity, required: true, form_horizontal: true}) }}
-
-                    {{ form.field({type: 'number', name: 'team_capacity', placeholder: 'base.team_capacity'|trans, value: result.team_capacity, form_horizontal: true}) }}
-
-                    {{ form.field({type: 'select', name: 'school', placeholder: 'base.school'|trans, values: schools, value: result.school_id, required: true, form_horizontal: true}) }}
-
-                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, required: true, form_horizontal: true}) }}
+                    {{ form.field({type: 'textarea', name: 'content', placeholder: 'base.content'|trans, value: result.description, form_horizontal: true, class: 'editor'}) }}
 
 					<div class="row">
 						<div class="col-xs-12 col-md-3 col-md-push-9">
@@ -36,6 +26,6 @@
 			</div>
 {% endblock %}
 {% block scripts %}
-		<script src="{{ base_url() }}{{ paths.js }}tinymce.min.js"></script>
-		<script src="{{ base_url() }}{{ paths.js }}tinymce.init.min.js"></script>
+		<script src="{{ js.getUrl('tinymce.min.js') }}"></script>
+		<script src="{{ js.getUrl('tinymce.init.min.js') }}"></script>
 {% endblock %}

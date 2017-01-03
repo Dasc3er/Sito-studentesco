@@ -4,8 +4,8 @@
 {% block content %}
 			<div class="jumbotron">
 				<div class="container text-center">
-					<h1><i class="fa fa-edit"></i> {{ 'courses.form.header'|trans }}</h1>
-					<p>{{ 'courses.form.text'|trans }}</p>
+					<h1><i class="fa fa-edit"></i> {{ 'courses.form'|trans }}</h1>
+					<p>{{ 'courses.formText'|trans }}</p>
 				</div>
 			</div>
 			<hr>
@@ -25,7 +25,7 @@
 
                     {{ form.field({type: 'select', name: 'school', placeholder: 'base.school'|trans, values: schools, value: result.school_id, required: true, form_horizontal: true}) }}
 
-                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, required: true, form_horizontal: true, class: 'editor'}) }}
+                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, required: true, form_horizontal: true}) }}
 
 					<div class="row">
 						<div class="col-xs-12 col-md-3 col-md-push-9">
@@ -36,6 +36,6 @@
 			</div>
 {% endblock %}
 {% block scripts %}
-		<script src="{{ js.getUrl('tinymce.min.js') }}"></script>
-		<script src="{{ js.getUrl('tinymce.init.min.js') }}"></script>
+		<script src="{{ base_url() }}{{ paths.js }}tinymce.min.js"></script>
+		<script src="{{ base_url() }}{{ paths.js }}tinymce.init.min.js"></script>
 {% endblock %}

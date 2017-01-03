@@ -13,7 +13,7 @@ class QuoteController extends \App\Core\BaseContainer
             return $container['filter']->page;;
         });
 
-        $args['results'] = Models\Quote::orderBy('created_at', 'desc')->paginate(10);
+        $args['results'] = Models\Quote::with('user', 'teacher')->orderBy('created_at', 'desc')->paginate(10);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
         $response = $this->view->render($response, 'quotes/index.twig', $args);
@@ -41,7 +41,15 @@ class QuoteController extends \App\Core\BaseContainer
                 $quote = new Models\Quote();
             }
 
-            $quote->name = $this->filter->name;
+            $teacher = Models\Teacher::where(['name' => $this->filter->teacher])->first();
+            if(empty($teacher)){
+                $teacher = new Models\Teacher();
+                $teacher->name = $this->filter->teacher;
+                $teacher->save();
+            }
+
+            $quote->teacher()->associate($teacher);
+            $quote->user()->associate($this->auth->user());
             $quote->content = $this->filter->content;
 
             $quote->save();
