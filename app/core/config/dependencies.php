@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
+use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\Asset\PathPackage;
 use Respect\Validation\Validator as v;
 use Doctrine\ORM\Tools\Setup;
@@ -34,16 +35,6 @@ $container['csrf'] = function ($container) {
     return $csrf;
 };
 
-// Monolog
-$container['logger'] = function ($container) {
-    $settings = $container->get('settings')['logger'];
-    $logger = new Monolog\Logger($settings['name']);
-    $logger->pushProcessor(new Monolog\Processor\UidProcessor());
-    $logger->pushHandler(new Monolog\Handler\StreamHandler(realpath(__DIR__.'/../../../'.$settings['path']), \Monolog\Logger::toMonologLevel($settings['level'])));
-
-    return $logger;
-};
-
 // Render
 $container['view'] = function ($container) {
     $settings = $container->get('settings')['views'];
@@ -57,15 +48,17 @@ $container['view'] = function ($container) {
     $view->addExtension(new \App\Extensions\TwigCsrfExtension($container['csrf']));
 
     $assets = $basePath.'/'.$settings['assets'];
-    $view->offsetSet('css', new PathPackage($assets.'/css', new StaticVersionStrategy('v1')));
-    $view->offsetSet('js', new PathPackage($assets.'/js', new StaticVersionStrategy('v1')));
-    $view->offsetSet('img', new PathPackage($assets.'/img', new StaticVersionStrategy('v1')));
+    $view->offsetSet('css', new PathPackage($assets.'/css', new EmptyVersionStrategy()));
+    $view->offsetSet('js', new PathPackage($assets.'/js', new EmptyVersionStrategy()));
+    $view->offsetSet('img', new PathPackage($assets.'/img', new EmptyVersionStrategy()));
+    $view->offsetSet('uploads', new PathPackage($assets.'/img/uploads', new EmptyVersionStrategy()));
 
     $view->offsetSet('auth', $container['auth']);
     $view->offsetSet('flash', $container['flash']);
     $view->offsetSet('translator', $container['translator']);
     $view->offsetSet('router', $container['router']);
     $view->offsetSet('functions', $container['settings']['app']['functions']);
+    $view->offsetSet('superuser', $container['settings']['app']['superuser']);
 
     if(!empty($container['debugbar'])){
         $debugbar = $container['debugbar']->getJavascriptRenderer();

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quote extends Model
 {
-    protected $connection = 'default';
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
     public function user()
     {
@@ -20,6 +20,6 @@ class Quote extends Model
 
     public function likes()
     {
-        return $this->belongsToMany('App\Models\Users');
+        return $this->belongsToMany('App\Models\User');
     }
 }

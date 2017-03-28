@@ -27,6 +27,8 @@ class QuoteController extends \App\Core\BaseContainer
             $args['result'] = Models\Quote::findOrFail($args['id']);
         }
 
+        $args['teachers'] = Models\Teacher::all();
+
         $response = $this->view->render($response, 'quotes/form.twig', $args);
 
         return $response;
@@ -41,11 +43,14 @@ class QuoteController extends \App\Core\BaseContainer
                 $quote = new Models\Quote();
             }
 
-            $teacher = Models\Teacher::where(['name' => $this->filter->teacher])->first();
+            $teacher = Models\Teacher::find($this->filter->teacher);
             if(empty($teacher)){
-                $teacher = new Models\Teacher();
-                $teacher->name = $this->filter->teacher;
-                $teacher->save();
+                $teacher = Models\Teacher::where(['name' => $this->filter->new_teacher])->first();
+                if(empty($teacher)){
+                    $teacher = new Models\Teacher();
+                    $teacher->name = $this->filter->new_teacher;
+                    $teacher->save();
+                }
             }
 
             $quote->teacher()->associate($teacher);
@@ -63,18 +68,20 @@ class QuoteController extends \App\Core\BaseContainer
 
     public function delete($request, $response, $args)
     {
-        if (!empty($args['id'])) {
-            $args['result'] = Models\Quote::findOrFail($args['id']);
-        }
+        $args['delete'] = true;
 
-        $response = $this->view->render($response, 'quotes/form.twig', $args);
+        $response = $this->view->render($response, 'quotes/index.twig', $args);
 
         return $response;
     }
 
     public function deletePost($request, $response, $args)
     {
-        $response = $this->view->render($response, 'quotes/form.twig', $args);
+        if (!empty($args['id'])) {
+            Models\Quote::findOrFail($args['id'])->delete();
+        }
+
+        $this->router->redirectTo('quotes');
 
         return $response;
     }

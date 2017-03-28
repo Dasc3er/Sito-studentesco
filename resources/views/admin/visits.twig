@@ -28,7 +28,7 @@
 					</tbody>
 				</table>
                 {{ results.links()|raw }}
-				<p>{{ 'visits.total'|trans }}: {{ count }}</p>
+				<p>{{ 'visits.total'|trans }}: {{ results|length }}</p>
 				<p><a href="{{ path_for('reset-visits', {'locale': locale}) }}" class="btn btn-danger">{{ 'visits.reset'|trans }}</a></p>
 			</div>
 {% endblock %}

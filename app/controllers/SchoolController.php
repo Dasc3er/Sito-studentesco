@@ -54,18 +54,18 @@ class SchoolController extends \App\Core\BaseContainer
 
     public function delete($request, $response, $args)
     {
-        if (!empty($args['id'])) {
-            $args['result'] = Models\School::findOrFail($args['id']);
-        }
+        $args['delete'] = true;
 
-        $response = $this->view->render($response, 'schools/form.twig', $args);
-
-        return $response;
+        return $this->index($request, $response, $args);
     }
 
     public function deletePost($request, $response, $args)
     {
-        $response = $this->view->render($response, 'schools/form.twig', $args);
+        if (!empty($args['id'])) {
+            Models\School::findOrFail($args['id'])->delete();
+        }
+
+        $this->router->redirectTo('schools');
 
         return $response;
     }

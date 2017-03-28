@@ -56,18 +56,18 @@ class EventController extends \App\Core\BaseContainer
 
     public function delete($request, $response, $args)
     {
-        if (!empty($args['id'])) {
-            $args['result'] = Models\Event::findOrFail($args['id']);
-        }
+        $args['delete'] = true;
 
-        $response = $this->view->render($response, 'events/form.twig', $args);
-
-        return $response;
+        return $this->datail($request, $response, $args);
     }
 
     public function deletePost($request, $response, $args)
     {
-        $response = $this->view->render($response, 'events/form.twig', $args);
+        if (!empty($args['id'])) {
+            Models\Event::findOrFail($args['id'])->delete();
+        }
+
+        $this->router->redirectTo('events');
 
         return $response;
     }

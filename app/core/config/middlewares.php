@@ -36,10 +36,4 @@ $app->add(function (Request $request, Response $response, callable $next) {
     return $next($request, $response);
 });
 
-// Whoops error handling
-if (!empty($container['settings']['debug']['enableWhoops'])) {
-    $app->add(new \Dasc3er\Slim\Whoops\WhoopsMiddleware($container, $container['settings']['whoopsEditor']));
-}
-
 $app->add(new \App\Middlewares\Permissions\FunctionsMiddleware($container));
-

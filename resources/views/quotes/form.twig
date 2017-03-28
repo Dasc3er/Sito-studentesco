@@ -13,9 +13,11 @@
 				<form action="{% if result %}{{ path_for('edit-quote', {'locale': locale, 'id': result.id}) }}{% else %}{{ path_for('new-quote', {'locale': locale}) }}{% endif %}" method="post" class="form-horizontal" role="form">
 					{{ form.csrf_field(csrf) }}
 
-                    {{ form.field({name: 'teacher', placeholder: 'base.teacher'|trans, value: result.teacher.name, required: true, autofocus: true, form_horizontal: true}) }}
+                    {{ form.field({type: 'select', name: 'teacher', placeholder: 'base.teacher'|trans, value: result.teacher, autofocus: true, form_horizontal: true, values: teachers}) }}
 
-                    {{ form.field({type: 'textarea', name: 'content', placeholder: 'base.content'|trans, value: result.description, form_horizontal: true, class: 'editor'}) }}
+                    {{ form.field({name: 'new_teacher', placeholder: 'base.teacher'|trans, form_horizontal: true}) }}
+
+                    {{ form.field({type: 'textarea', name: 'content', placeholder: 'base.content'|trans, value: result.content, form_horizontal: true, class: 'editor'}) }}
 
 					<div class="row">
 						<div class="col-xs-12 col-md-3 col-md-push-9">

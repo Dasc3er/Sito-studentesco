@@ -21,7 +21,7 @@
 					<tbody>
 {% for result in results %}
 						<tr>
-							<td>{{ result.user.name }}</td>
+                            <td><a href="{{ path_for('profile', {'locale': locale, 'id': result.user.id }) }}">{{ result.user.name }}</a></td>
 							<td>{{ result.browser }}</td>
 							<td>{{ result.address }}</td>
 							<td>{{ result.created_at }}</td>
@@ -30,7 +30,7 @@
 					</tbody>
 				</table>
                 {{ results.links()|raw }}
-				<p>{{ 'logins.total'|trans }}: {{ count }}</p>
+				<p>{{ 'logins.total'|trans }}: {{ results|length }}</p>
 				<p><a href="{{ path_for('reset-logins', {'locale': locale}) }}" class="btn btn-danger">{{ 'logins.reset'|trans }}</a></p>
 			</div>
 {% endblock %}

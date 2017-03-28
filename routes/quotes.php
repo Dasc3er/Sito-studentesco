@@ -15,4 +15,4 @@ $app->group('/quotes', function () use ($app, $permissions) {
         $app->get('/delete/{id:[0-9]}', 'App\Controllers\QuoteController:delete')->setName('delete-quote');
         $app->post('/delete/{id:[0-9]}', 'App\Controllers\QuoteController:deletePost');
     })->add($permissions['admin']);
-});
+})->add($permissions['user']);

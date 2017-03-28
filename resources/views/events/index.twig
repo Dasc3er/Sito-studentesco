@@ -9,8 +9,22 @@
                     <p><a class="btn btn-success" href="{{ path_for('new-event', {'locale': locale}) }}"><i class="fa fa-plus"></i> {{ 'base.new'|trans }}</a></p>
 				</div>
 			</div>
-			<hr>
+            <hr>
 			<div class="container">
+{% if (result.user_id == auth.user().id or auth.admin()) and delete %}
+                <p>{{ 'base.deleteQuestion'|trans }}</p>
+                <div class="row">
+                    <div class="col-xs-12 col-md-6 text-left">
+                        <a class="btn btn-success" href="{{ path_for('events', {'locale': locale}) }}"><i class="fa fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
+                    </div>
+                    <div class="col-xs-12 col-md-6 text-right">
+                        <form action="{{ path_for('delete-event', {'locale': locale, 'id': id}) }}" method="post" role="form">
+                            {{ form.csrf_field(csrf) }}
+                            <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</button>
+                        </form>
+                    </div>
+                </div>
+{% else %}
 {% if results is not empty %}
                 <table class="table table-hover table-striped">
 					<thead>
@@ -41,5 +55,6 @@
 
                 {{ results.links()|raw }}
 
+{% endif %}
 			</div>
 {% endblock %}

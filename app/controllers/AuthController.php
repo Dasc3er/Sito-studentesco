@@ -100,7 +100,7 @@ class AuthController extends \App\Core\BaseContainer
 
                 $user->save();
 
-                \Utils::sendEmail($email, 'verification', [':path' => 'http://'.$request->getUri()->getHost().''.pathFor('verifica-email', ['code' => $key])]);
+                \Utils::sendEmail($email, 'verification', [':path' => 'http://'.$request->getUri()->getHost().$this->router->pathFor('verify-email', ['code' => $user->email_token])]);
 
                 $this->flash->addMessage('infos', $this->translator->translate('register.success'));
                 $this->router->redirectTo();
@@ -143,11 +143,7 @@ class AuthController extends \App\Core\BaseContainer
                 $result->reset_token = $token;
                 $result->save();
 
-                \Utils::sendEmail($email, 'reset', ['PATH' => 'http://'.$request->getUri()->getHost().''.pathFor('verifica-email', ['token' => $token])]);
-
-                $body = '<p>&Egrave; stato effettuata una richeista di recupero delle credenziali per il tuo account dell\'autogestione.</p>
-				<p>Clicca sul link seguente o copialo nella barra del browser per completare l\'operazione.</p>
-				<p><center><a href="http://itiseuganeo.altervista.org/recupero/' .$token.'">http://itiseuganeo.altervista.org/recupero/'.$token.'</a></center></p>';
+                \Utils::sendEmail($email, 'reset', [':path' => 'http://'.$request->getUri()->getHost().$this->router->pathFor('retrieve', ['token' => $token])]);
 
                 $this->flash->addMessage('infos', $this->translator->translate('retrieve.success'));
                 $this->router->redirectTo();
@@ -161,7 +157,7 @@ class AuthController extends \App\Core\BaseContainer
 
     public function retrieveToken($request, $response, $args)
     {
-        $response = $this->view->render($response, 'auth/credentials.twig', $args);
+        $response = $this->view->render($response, 'users/credentials.twig', $args);
 
         return $response;
     }
@@ -172,7 +168,8 @@ class AuthController extends \App\Core\BaseContainer
         $rep_password = $this->filter->rep_password;
 
         if (!$this->validator->hasErrors() && $password == $rep_password) {
-            $result = Models\User::where(['email_token' => $args['token']])->first();
+            $result = Models\User::where(['reset_token' => $args['token']])->first();
+
             $result->password = $password;
             $result->reset_token = '';
             $result->save();

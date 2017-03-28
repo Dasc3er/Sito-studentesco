@@ -6,41 +6,72 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-list"></i> {{ result.name }}</h1>
 					<p>{{ result.description }}</p>
+{% if auth.admin() %}
+                    <hr>
+{% if delete %}
+					<p>{{ 'base.deleteQuestion'|trans }}</p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-success" href="{{ path_for('course', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <form action="{{ path_for('delete-course', {'locale': locale, 'id': result.id}) }}" method="post" role="form">
+                                {{ form.csrf_field(csrf) }}
+                                <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+{% else %}
+{% set subscribed = auth.user().isSubscribedTo(result) %}
+{% set freeTime = auth.user().isFreeTime(result) %}
+{% if subscribed or freeTime %}
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a class="btn btn-block btn-{% if subscribed %}warning{% else %}success{% endif %}" href="{{ path_for('course-action', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-refresh"></i> {% if subscribed %}{{ 'base.unsubscribe'|trans }}{% elseif freeTime %}{{ 'base.subscribe'|trans }}{% endif %}</a>
+                        </div>
+                    </div>
+                    <hr>
+{% endif %}
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-info" href="{{ path_for('edit-course', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <a class="btn btn-danger" href="{{ path_for('delete-course', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                        </div>
+                    </div>
+{% endif %}
+{% endif %}
 				</div>
 			</div>
 			<hr>
 			<div class="container">
-                <p>{{ result.time }}</p>
+                <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{%if not loop.last %}, {% endif %}{% endfor %}.</p>
+                <p><strong>{{ 'base.place'|trans }}</strong>: {{ result.place }}.</p>
+                <p>{{ 'base.description'|trans }}:</p>
+                <p>{{ result.description }}</p>
+
+                <hr>
+                <p>{{ 'base.subscripters' }}</p>
 				<table class="table table-hover table-striped">
 					<thead>
 						<tr>
-							<th>{{ 'row-name'|trans }}</th>
-							<th>{{ 'row-value'|trans }}</th>
+							<th>{{ 'base.name'|trans }}</th>
+							<th>{{ 'base.class'|trans }}</th>
 						</tr>
 					</thead>
 					<tbody>
-{% for row in rows %}
+{% for user in users %}
 						<tr>
-							<td>{{ row.name }}</td>
-							<td>{{ row.value }}</td>
+							<td>{{ user.name }}</td>
+							<td>{{ user.group }}</td>
 						</tr>
 
 {% else %}
-        				<p>{{ 'courses.no-rows'|trans }}</p>
+        				<p>{{ 'base.no-results'|trans }}</p>
 {% endfor %}
 					</tbody>
 				</table>
-
-{% for row in sections %}
-				<div class="row">
-					<div class="col-xs-12 col-md-{% if loop.index is odd %}3{% else %}9{% endif %}">
-						{{ sections.description }}
-					</div>
-					<div class="col-xs-12 col-md-{% if loop.index is odd %}9{% else %}3{% endif %}">
-						{{ images[loop.index].name }}
-					</div>
-				</div>
-{% endfor %}
-
 			</div>
 {% endblock %}

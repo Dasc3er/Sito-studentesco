@@ -5,8 +5,6 @@ namespace App\Core;
 use Whoops\Util\Misc;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\JsonResponseHandler;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 class AppContainer
 {
@@ -32,9 +30,20 @@ class AppContainer
         self::eloquent();
         self::dependecies($container);
 
-        if(!empty($config['settings']['displayErrorDetails'])){
+        // Monolog
+        $logger = new \Monolog\Logger($config['settings']['logger']['name']);
+        $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
+        $logger->pushProcessor(new \Monolog\Processor\WebProcessor());
+        $logger->pushHandler(new \Monolog\Handler\RotatingFileHandler(__DIR__.'/../../'.$config['settings']['logger']['path'].'/info.log', 0, \Monolog\Logger::INFO));
+        $logger->pushHandler(new \Monolog\Handler\RotatingFileHandler(__DIR__.'/../../'.$config['settings']['logger']['path'].'/error.log', 0, \Monolog\Logger::ERROR));
+        $logger->pushHandler(new \Monolog\Handler\RotatingFileHandler(__DIR__.'/../../'.$config['settings']['logger']['path'].'/emergency.log', 0, \Monolog\Logger::EMERGENCY));
+
+        $container['logger'] = $logger;
+
+        if (!empty($config['settings']['displayErrorDetails'])) {
             self::debug($container);
         }
+        \Monolog\ErrorHandler::register($container['logger']);
 
         $app = new \Slim\App($container);
 
@@ -49,7 +58,7 @@ class AppContainer
         if (empty(self::$settings)) {
             $default = \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__.'/../../config.default.yml'));
 
-            $settings =  \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__.'/../../config.yml'));
+            $settings = \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__.'/../../config.yml'));
 
             $settings = \Utils::array_merge($default, $settings);
 
@@ -82,7 +91,7 @@ class AppContainer
         return self::$eloquent;
     }
 
-protected static function debug(\Slim\Container $container)
+    protected static function debug(\Slim\Container $container)
     {
         // Debugbar
         $debugbar = new \DebugBar\StandardDebugBar();
@@ -91,23 +100,30 @@ protected static function debug(\Slim\Container $container)
 
         $container['debugbar'] = $debugbar;
 
-        // Whoops default
-        $prettyPageHandler = new PrettyPageHandler();
-        $prettyPageHandler->addDataTable('Whoops Default', [
-            'Script Name' => $_SERVER['SCRIPT_NAME'],
-            'Request URI' => $_SERVER['REQUEST_URI'] ?: '-',
-        ]);
+        // Whoops error handling
+        if (!empty($container['settings']['debug']['enableWhoops'])) {
+            $prettyPageHandler = new PrettyPageHandler();
+            $prettyPageHandler->addDataTable('Whoops Default', [
+                'Script Name' => $_SERVER['SCRIPT_NAME'],
+                'Request URI' => $_SERVER['REQUEST_URI'] ?: '-',
+            ]);
 
-        // Set Whoops to default exception handler
-        $whoops = new \Whoops\Run();
-        $whoops->pushHandler($prettyPageHandler);
+            // Set Whoops to default exception handler
+            $whoops = new \Whoops\Run();
+            $whoops->pushHandler($prettyPageHandler);
 
-        // Enable JsonResponseHandler when request is AJAX
-        if (Misc::isAjaxRequest()) {
-            $whoops->pushHandler(new JsonResponseHandler());
+            // Enable JsonResponseHandler when request is AJAX
+            if (Misc::isAjaxRequest()) {
+                $whoops->pushHandler(new JsonResponseHandler());
+            }
+
+            $whoops->register();
+
+            // Override the default Slim error handler
+            $container['errorHandler'] = function () use ($whoops) {
+                return new \App\Extensions\WhoopsErrorHandler($whoops);
+            };
         }
-
-        $whoops->register();
     }
 
     protected static function dependecies(\Slim\Container $container)
@@ -131,7 +147,8 @@ protected static function debug(\Slim\Container $container)
         require __DIR__.'/config/middlewares.php';
     }
 
-    public static function container(){
+    public static function container()
+    {
         return self::getInstance()->getContainer();
     }
 }

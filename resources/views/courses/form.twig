@@ -17,7 +17,7 @@
 
                     {{ form.field({name: 'place', placeholder: 'base.place'|trans, value: result.place, required: true, form_horizontal: true}) }}
 
-                    {{ form.field({name: 'time', placeholder: 'base.time'|trans, value: result.time, required: true, form_horizontal: true}) }}
+                    {{ form.field({type: 'select', name: 'times[]', placeholder: 'base.time'|trans, value: result.times, values: times, required: true, form_horizontal: true, multiple: true}) }}
 
                     {{ form.field({type: 'number', name: 'capacity', placeholder: 'base.capacity'|trans, value: result.capacity, required: true, form_horizontal: true}) }}
 
@@ -25,7 +25,7 @@
 
                     {{ form.field({type: 'select', name: 'school', placeholder: 'base.school'|trans, values: schools, value: result.school_id, required: true, form_horizontal: true}) }}
 
-                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, required: true, form_horizontal: true}) }}
+                    {{ form.field({type: 'textarea', name: 'description', placeholder: 'base.description'|trans, value: result.description, form_horizontal: true, class: 'editor'}) }}
 
 					<div class="row">
 						<div class="col-xs-12 col-md-3 col-md-push-9">
@@ -36,6 +36,6 @@
 			</div>
 {% endblock %}
 {% block scripts %}
-		<script src="{{ base_url() }}{{ paths.js }}tinymce.min.js"></script>
-		<script src="{{ base_url() }}{{ paths.js }}tinymce.init.min.js"></script>
+        <script src="{{ js.getUrl('tinymce.min.js') }}"></script>
+		<script src="{{ js.getUrl('tinymce.init.min.js') }}"></script>
 {% endblock %}

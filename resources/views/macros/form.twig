@@ -7,7 +7,8 @@
     {%- if not options.id %}{% set options = options|merge({id: options.name|replace({'[': '', ']': ''})}) %}{% endif %}
 
 			<div class="form-group">
-                <label class="{% if options.sr_only %}sr-only{% else %}control-label{% if options.form_horizontal %} col-xs-12 col-sm-2{% endif %}{% endif %}" for="{{ options.id }}">{{ options.label }}</label>
+                <label class="{% if options.sr_only %}sr-only{% else %}control-label{% if options.form_horizontal %} col-xs-12 col-sm-2{% endif %}{% endif %}" for="{{ options.id }}">{{ options.label }}{% if options.required %}*{% endif %}
+</label>
 	{%- if options.form_horizontal %}
 
 
@@ -33,7 +34,7 @@
 
 
 {% macro input(options = { name: null, type: 'text', value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false }) %}
-<input class="form-control {{ options.class }}" type="{{ options.type }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" value="{{ options.value }}"{% if options.disabled %} disabled{% endif %}{% if options.autofocus %} autofocus{% endif %}{% if options.required %} required{% endif %}>
+<input class="form-control {{ options.class }}" type="{{ options.type }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" value="{{ options.value }}"{% if options.disabled %} disabled{% endif %}{% if options.autofocus %} autofocus{% endif %}{% if options.required %} required{% endif %}{% if options.step %} step="{{ options.step }}"{% endif %}>
 {% endmacro %}
 
 
@@ -49,7 +50,7 @@
 
 {% macro select(options = { name: null, value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false, multiple: false, values: {} }) %}
             <select class="form-control {{ options.class }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" {%- if options.disabled %} disabled{% endif %} {%- if options.autofocus %} autofocus{% endif %} {%- if options.required %} required{% endif %} {%- if options.multiple %} multiple{% endif %}>
-{% if options.include_blank %}
+{% if options.include_blank or not options.required %}
                     <option disabled selected></option>
 {% endif %}
 {% for item in options.values %}
@@ -57,7 +58,7 @@
                     {% for row in options.value %}
                         {% if item.id == row.id %} selected{% endif %}
                     {% endfor %}
-                    {% elseif item.id == options.value %} selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+                    {% elseif item.id == options.value %} selected{% endif %} value="{{ item.id }}">{{ item.name }}{% if item.surname %} {{ item.surname }}{% endif %}</option>
 {% endfor %}
             </select>
 {% endmacro %}

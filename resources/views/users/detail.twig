@@ -1,0 +1,41 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'profile.header'|trans({':name': result.name}) }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-user"></i> {{ 'profile.header'|trans({':name': result.name}) }}</h1>
+					<p>{{ 'profile.text'|trans }}</p>
+{% if result.id != auth.user().id and auth.admin() %}
+                    <hr>
+{% if delete %}
+					<p>{{ 'base.deleteQuestion'|trans }}</p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-success" href="{{ path_for('profile', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <form action="{{ path_for('delete-user', {'locale': locale, 'id': result.id}) }}" method="post" role="form">
+                                {{ form.csrf_field(csrf) }}
+                                <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+{% else %}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a class="btn btn-danger" href="{{ path_for('delete-user', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                        </div>
+                    </div>
+{% endif %}
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 col-md-6"></div>
+					<div class="col-xs-12 col-md-6"></div>
+				</div>
+			</div>
+{% endblock %}

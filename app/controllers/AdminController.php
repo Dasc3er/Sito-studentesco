@@ -23,8 +23,6 @@ class AdminController extends \App\Core\BaseContainer
         $args['results'] = Models\Login::with('user')->orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
-        $args['count'] = $args['results']->count();
-
         $response = $this->view->render($response, 'admin/logins.twig', $args);
 
         return $response;
@@ -47,8 +45,6 @@ class AdminController extends \App\Core\BaseContainer
 
         $args['results'] = Models\Visit::orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
-
-        $args['count'] = $args['results']->count();
 
         $response = $this->view->render($response, 'admin/visits.twig', $args);
 

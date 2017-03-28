@@ -1,4 +1,5 @@
 {% extends "layout.twig" %}
+{% import "macros/form.twig" as form %}
 
 {% block title %}{{ 'login.title'|trans }}{% endblock %}
 {% block content %}
@@ -43,7 +44,7 @@
 						</div>
 						<div class="col-xs-12 col-md-9 col-md-pull-3">
 							<p class="text-center">
-								<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span> {{ 'retrieve.question'|trans }} <a href="{{ path_for('recupero-password', {'locale': locale}) }}">{{ 'retrieve.suggestion'|trans }}</a>
+								<span class="fa-stack fa-lg"><i class="fa fa-circle fa-stack-2x"></i><i class="fa fa-unlock-alt fa-stack-1x fa-inverse"></i></span> {{ 'retrieve.question'|trans }} <a href="{{ path_for('retrieve-password', {'locale': locale}) }}">{{ 'retrieve.suggestion'|trans }}</a>
 							</p>
 {% if functions.registration %}
 

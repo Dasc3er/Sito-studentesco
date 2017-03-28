@@ -21,6 +21,15 @@ class TeacherController extends \App\Core\BaseContainer
         return $response;
     }
 
+    public function datail($request, $response, $args)
+    {
+        $args['result'] = Models\Teacher::with('quotes')->findOrFail($args['id']);
+
+        $response = $this->view->render($response, 'teachers/datail.twig', $args);
+
+        return $response;
+    }
+
     public function form($request, $response, $args)
     {
         if (!empty($args['id'])) {
@@ -54,18 +63,18 @@ class TeacherController extends \App\Core\BaseContainer
 
     public function delete($request, $response, $args)
     {
-        if (!empty($args['id'])) {
-            $args['result'] = Models\Teacher::findOrFail($args['id']);
-        }
+        $args['delete'] = true;
 
-        $response = $this->view->render($response, 'teachers/form.twig', $args);
-
-        return $response;
+        return $this->datail($request, $response, $args);
     }
 
     public function deletePost($request, $response, $args)
     {
-        $response = $this->view->render($response, 'teachers/form.twig', $args);
+        if (!empty($args['id'])) {
+            Models\Teacher::findOrFail($args['id'])->delete();
+        }
+
+        $this->router->redirectTo('teachers');
 
         return $response;
     }

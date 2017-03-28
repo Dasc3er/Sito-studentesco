@@ -54,18 +54,18 @@ class TimeController extends \App\Core\BaseContainer
 
     public function delete($request, $response, $args)
     {
-        if (!empty($args['id'])) {
-            $args['result'] = Models\Time::findOrFail($args['id']);
-        }
+        $args['delete'] = true;
 
-        $response = $this->view->render($response, 'times/form.twig', $args);
-
-        return $response;
+        return $this->index($request, $response, $args);
     }
 
     public function deletePost($request, $response, $args)
     {
-        $response = $this->view->render($response, 'times/form.twig', $args);
+        if (!empty($args['id'])) {
+            Models\Time::findOrFail($args['id'])->delete();
+        }
+
+        $this->router->redirectTo('times');
 
         return $response;
     }
