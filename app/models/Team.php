@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
-    protected $connection = 'default';
-
     public function courses()
     {
         return $this->belognsTo('App\Models\Course');
@@ -20,6 +18,6 @@ class Team extends Model
 
     public function users()
     {
-        return $this->hasManyThrough('App\Models\Users', 'App\Models\UserTeam');
+        return $this->hasManyThrough('App\Models\User', 'App\Models\UserTeam');
     }
 }

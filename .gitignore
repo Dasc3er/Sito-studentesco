@@ -79,6 +79,6 @@ vendor/
 ######################
 cache/
 tests/_output/*
-public/assets/
+assets/
 config.yml
 logs/*

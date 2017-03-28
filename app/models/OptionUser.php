@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class OptionUser extends Model
 {
-    protected $connection = 'default';
     protected $table = 'option_user';
 
     public function user()

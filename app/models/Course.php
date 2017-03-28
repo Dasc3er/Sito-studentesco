@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    protected $connection = 'default';
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
     public function event()
     {
@@ -25,7 +25,7 @@ class Course extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Models\Users');
+        return $this->belongsToMany('App\Models\User');
     }
 
     public function times()

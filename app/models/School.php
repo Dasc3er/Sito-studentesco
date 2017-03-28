@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
 {
-    protected $connection = 'default';
+    use \Illuminate\Database\Eloquent\SoftDeletes;
 
     public function classes()
     {

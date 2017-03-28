@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    protected $connection = 'default';
-
     public function school()
     {
         return $this->belongsTo('App\Models\School');
@@ -15,6 +13,6 @@ class Group extends Model
 
     public function users()
     {
-        return $this->belongsToMany('App\Models\User');
+        return $this->hasMany('App\Models\User');
     }
 }

@@ -12,5 +12,10 @@ class CreateGroups extends AbstractMigration
             ->addTimestamps(null, null)
             ->addForeignKey('school_id', 'schools', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->create();
+
+        $users = $this->table('users');
+        $users->addColumn('group_id', 'integer', ['null' => true])
+            ->addForeignKey('group_id', 'groups', 'id', ['delete' => 'SET NULL', 'update' => 'NO_ACTION'])
+            ->save();
     }
 }

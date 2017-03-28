@@ -9,6 +9,7 @@ class CreateTimes extends AbstractMigration
         $table = $this->table('times');
         $table->addColumn('name', 'string')
             ->addTimestamps(null, null)
+            ->addColumn('deleted_at', 'timestamp', ['null' => true])
             ->create();
     }
 }

@@ -11,6 +11,7 @@ class CreateQuotes extends AbstractMigration
             ->addColumn('user_id', 'integer')
             ->addColumn('content', 'string', ['limit' => 5000])
             ->addTimestamps(null, null)
+            ->addColumn('deleted_at', 'timestamp', ['null' => true])
             ->addForeignKey('user_id', 'users', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->addForeignKey('teacher_id', 'teachers', 'id', ['delete' => 'CASCADE', 'update' => 'NO_ACTION'])
             ->create();

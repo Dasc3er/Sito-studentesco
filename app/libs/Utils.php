@@ -55,7 +55,7 @@ class Utils
     public static function send($receiver, $title, $body, $name = null)
     {
         $container = \App\Core\AppContainer::container();
-        $settings = $container['settings'];
+        $settings = $container['settings']['email'];
 
         $mail = new PHPMailer();
 
@@ -72,7 +72,7 @@ class Utils
         $mail->Subject = $title.' - '.\App\Core\Translator::translate('base.site');
         $mail->isHTML(true); // Set email format to HTML
 
-        $mail->setFrom($settings['email']['default_email'], \App\Core\Translator::translate('base.site'));
+        $mail->setFrom($settings['default_email'], \App\Core\Translator::translate('base.site'));
         $mail->addAddress($receiver);
 
         $mail->Body = $container['view']->fetch('email.twig', ['title' => $title, 'body' => $body, 'name' => $name]);
@@ -176,5 +176,20 @@ class Utils
         }
 
         return $merged;
+    }
+
+    /**
+     * Pluck an array of values from an array. (Only for PHP 5.3+).
+     *
+     * @param  $array - data
+     * @param  $key - value you want to pluck from array
+     *
+     * @return plucked array only with key data
+     */
+    public static function array_pluck($array, $key)
+    {
+        return array_map(function ($v) use ($key) {
+            return is_object($v) ? $v->$key : $v[$key];
+        }, $array);
     }
 }

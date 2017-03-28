@@ -8,7 +8,7 @@ class CreateLogins extends AbstractMigration
     {
         $table = $this->table('logins');
         $table->addColumn('user_id', 'integer')
-            ->addColumn('session_code', 'string')
+            ->addColumn('session_code', 'string', ['null' => true])
             ->addColumn('browser', 'string')
             ->addColumn('address', 'string')
             ->addColumn('last_active', 'timestamp')

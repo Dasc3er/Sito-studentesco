@@ -9,6 +9,7 @@ class CreateTeachers extends AbstractMigration
         $table = $this->table('teachers');
         $table->addColumn('name', 'string')
             ->addTimestamps(null, null)
+            ->addColumn('deleted_at', 'timestamp', ['null' => true])
             ->create();
     }
 }

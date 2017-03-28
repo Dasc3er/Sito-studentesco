@@ -11,6 +11,7 @@ class CreateEvents extends AbstractMigration
             ->addColumn('date', 'date')
             ->addColumn('subscription_end', 'date')
             ->addTimestamps(null, null)
+            ->addColumn('deleted_at', 'timestamp', ['null' => true])
             ->create();
     }
 }

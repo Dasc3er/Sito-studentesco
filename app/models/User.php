@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
-    protected $connection = 'default';
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+
     protected $hidden = ['password', 'role', 'state'];
 
     public function logins()
@@ -36,7 +37,7 @@ class User extends Model
 
     public function groups()
     {
-        return $this->belongsToMany('App\Models\Course');
+        return $this->belongsTo('App\Models\Course');
     }
 
     /**
@@ -81,5 +82,44 @@ class User extends Model
         } else {
             $this->attributes['role'] = 0;
         }
+    }
+
+    public function isSubscribedTo($course)
+    {
+        $users = \Utils::array_pluck($course->users()->get()->toArray(), 'id');
+
+        return in_array($this->id, $users);
+    }
+
+    public function isFreeTime($course, $event = null)
+    {
+        if (empty($event)) {
+            $event = Event::orderBy('date', 'desc')->first();
+        }
+
+        if ($course->event_id != $event->id) {
+            return false;
+        }
+
+        $courses = $this->courses()->with(['event' => function ($query) use ($event) {
+            $query->where('id', $event->id);
+        }, 'times'])->get();
+
+        $times = [];
+        foreach ($courses as $c) {
+            $t = \Utils::array_pluck($c->times()->get()->toArray(), 'id');
+            $times = array_merge($times, $t);
+        }
+
+        $times = array_unique($times);
+        $course_time = \Utils::array_pluck($course->times()->get()->toArray(), 'id');
+
+        foreach ($times as $time) {
+            if (in_array($time, $course_time)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

@@ -176,7 +176,7 @@ class TranslationLoader extends \Symfony\Component\Translation\Loader\FileLoader
         return $result;
     }
 
-    protected function getLoader(string $name)
+    protected function getLoader($name)
     {
         if (empty(self::$loaders[$name]['istance'])) {
             self::$loaders[$name]['istance'] = new self::$loaders[$name]['class']();
