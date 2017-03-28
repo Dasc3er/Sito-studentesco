@@ -1,5 +1,6 @@
 ## Application config
 app:
+    superuser: 1
     maintenance: false
     functions:
         visits: false
@@ -19,11 +20,11 @@ app:
 ### Database connections
 connections:
     default:
-        driver: 
-        host: 
-        database: 
-        username: 
-        password: 
+        driver:
+        host:
+        database:
+        username:
+        password:
 
 ## Language config
 lang:

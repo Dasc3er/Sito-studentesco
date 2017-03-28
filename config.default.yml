@@ -5,6 +5,7 @@ addContentLengthHeader: false
 
 ## Application config
 app:
+    superuser: 1
     aliveTimeout: 600
     maintenance: false
     functions:
@@ -66,7 +67,7 @@ connections:
 lang:
     routing: true
     include_filename: true
-    path: resources/lang
+    path: resources/locales
     default_locale: en
     fallback_locales:
         - en
@@ -91,5 +92,5 @@ mail:
 ## Monolog settings
 logger:
     name: Monolog
-    path: logs/app.log
+    path: logs
     level: DEBUG

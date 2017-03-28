@@ -16,6 +16,7 @@ return [
     'new' => 'Nuovo',
     'edit' => 'Modifica',
     'delete' => 'Elimina',
+    'cancel' => 'Annulla',
     'add' => 'Aggiungi',
     'previous' => 'Precedente',
     'next' => 'Successivo',
@@ -23,6 +24,7 @@ return [
     'back' => 'Torna indietro',
     'back-home' => 'Torna alla home',
     'send' => 'Invia',
+    'deleteQuestion' => 'Eliminare l\'elemento?',
 
     'username' => 'Username',
     'teacher' => 'Professore',

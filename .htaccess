@@ -1,9 +1,11 @@
-DirectoryIndex index.php
-DirectorySlash Off
+# # av:php5-engine
+AddHandler av-php56 .php
+
 RewriteEngine On
 
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteRule ^ index.php [L]
+RewriteBase /
 
 RewriteRule !^(public/|assets/|index\.php) [NC,F]

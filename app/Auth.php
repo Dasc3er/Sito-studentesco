@@ -12,8 +12,6 @@ class Auth extends \App\Core\BaseContainer
     {
         parent::__construct($container);
 
-        Models\Login::where('last_active', '<=', \Carbon\Carbon::now()->subSeconds($this->settings['app']['aliveTimeout']))->update(['session_code' => null]);
-
         // Controllo sulla sessione attiva
         if (!empty($_SESSION['random_key'])) {
             $this->find();
@@ -34,14 +32,9 @@ class Auth extends \App\Core\BaseContainer
         }
     }
 
-    public function check()
+    public function attempt($email, $password)
     {
-        return !empty($this->user);
-    }
-
-    public function attempt(string $email, string $password)
-    {
-        $result = Models\User::where(['email' => \Crypt::encode($email), 'state' => 1])->first();
+        $result = Models\User::where(['email' => \Crypt::encode($email), 'state' => 1])->whereNull('deleted_at')->first();
 
         if (!empty($result) && password_verify($password, $result['password'])) {
             $login = new Models\Login();
@@ -67,9 +60,9 @@ class Auth extends \App\Core\BaseContainer
     public function logout()
     {
         if ($this->check()) {
-            Models\Login::where('user_id', $this->user())->update(['session_code' => null]);
+            Models\Login::where('user_id', $this->user()->id)->update(['session_code' => null]);
 
-            unset($this->user_id);
+            unset($this->user);
             unset($this->is_admin);
             unset($this->email_verified);
         }
@@ -86,6 +79,7 @@ class Auth extends \App\Core\BaseContainer
 
     private function find()
     {
+        Models\Login::where('last_active', '<=', \Carbon\Carbon::now()->subSeconds($this->settings['app']['aliveTimeout']))->update(['session_code' => null]);
         Models\Login::where('session_code', $_SESSION['random_key'])->update(['last_active' => \Carbon\Carbon::now()]);
 
         $user = Models\Login::where('session_code', $_SESSION['random_key'])->first();
@@ -105,7 +99,7 @@ class Auth extends \App\Core\BaseContainer
             }
 
             if ($this->check() && !$this->emailVerificata()) {
-                $this->flash->addMessage('warnings', '<i class="fa fa-bell"></i> '.$this->translator->translate('email.not-confirmed').' <a href="'.$this->router->pathFor('invia-verifica').'"> '.$this->translator->translate('email.send-again').'</a>');
+                $this->flash->addMessage('warnings', '<i class="fa fa-bell"></i> '.$this->translator->translate('email.not-confirmed').' <a href="'.$this->router->pathFor('send-verify').'"> '.$this->translator->translate('email.send-again').'</a>');
             }
         } else {
             $this->logout();
@@ -115,6 +109,11 @@ class Auth extends \App\Core\BaseContainer
     public function user()
     {
         return $this->user;
+    }
+
+    public function check()
+    {
+        return !empty($this->user);
     }
 
     public function admin()
