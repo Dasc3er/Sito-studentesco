@@ -14,7 +14,7 @@ class UserController extends \App\Core\BaseContainer
             return $container['filter']->page;
         });
 
-        $args['results'] = Models\User::with('books')->orderBy('name', 'asc')->withTrashed()->paginate(30);
+        $args['results'] = Models\User::orderBy('name', 'asc')->withTrashed()->paginate(30);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
         $response = $this->view->render($response, 'users/index.twig', $args);

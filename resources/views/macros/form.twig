@@ -34,7 +34,7 @@
 
 
 {% macro input(options = { name: null, type: 'text', value: null, placeholder: null, class: null, id: null, required: false, autofocus: false, disabled: false }) %}
-<input class="form-control {{ options.class }}" type="{{ options.type }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" value="{{ options.value }}"{% if options.disabled %} disabled{% endif %}{% if options.autofocus %} autofocus{% endif %}{% if options.required %} required{% endif %}{% if options.step %} step="{{ options.step }}"{% endif %}>
+<input class="form-control {{ options.class }}" type="{{ options.type }}" id="{{ options.id }}" name="{{ options.name }}" placeholder="{{ options.placeholder }}" value="{{ options.value }}"{% if options.disabled %} disabled{% endif %}{% if options.autofocus %} autofocus{% endif %}{% if options.required %} required{% endif %}{% if options.step %} step="{{ options.step }}"{% endif %}{% if options.accept and options.type == 'file' %} accept="{{ options.accept }}"{% endif %}>
 {% endmacro %}
 
 

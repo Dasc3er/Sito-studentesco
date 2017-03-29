@@ -13,7 +13,7 @@ class TeacherController extends \App\Core\BaseContainer
             return $container['filter']->page;;
         });
 
-        $args['results'] = Models\Teacher::orderBy('created_at', 'desc')->paginate(10);
+        $args['results'] = Models\Teacher::orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
         $response = $this->view->render($response, 'teachers/index.twig', $args);

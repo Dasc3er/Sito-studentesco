@@ -1,0 +1,33 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ 'upload.title'|trans }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-wrench"></i> {{ 'upload.header'|trans }}</h1>
+					<p>{{ 'upload.text'|trans }}</p>
+                    <hr>
+					<p>{{ 'upload.structure'|trans }}</p>
+                    <pre>
+                        Nome Cognome;Classe;Scuola<br>
+                        Nome Cognome;Classe;Scuola<br>
+                        Nome Cognome;Classe;Scuola<br>
+                        Nome Cognome;Classe;Scuola<br>
+                        ...
+                    </pre>
+				</div>
+			</div>
+            <div class="container">
+                <form action="{{ path_for('upload-post', {'locale': locale}) }}" method="post" class="form-horizontal" role="form" enctype="multipart/form-data">
+                    {{ form.csrf_field(csrf) }}
+
+                    {{ form.field({name: 'file', placeholder: 'base.file'|trans, required: true, autofocus: true, form_horizontal: true, type: 'file', accept: '.txt'}) }}
+
+                    <div class="row">
+						<div class="col-xs-12 col-md-3 col-md-push-9">
+							<button class="btn btn-block btn-success" type="submit" id="button"><i class="fa fa-check"></i> {{ 'base.upload'|trans }}</button>
+						</div>
+					</div>
+                </form>
+			</div>
+{% endblock %}

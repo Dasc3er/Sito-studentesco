@@ -14,4 +14,9 @@ $app->group('/admin', function () use ($app, $permissions) {
         $app->get('/reset', 'App\Controllers\AdminController:resetVisits')->setName('reset-visits');
     });
 
+    $app->group('/upload', function () use ($app, $permissions) {
+        $app->get('', 'App\Controllers\AdminController:upload')->setName('upload');
+        $app->post('', 'App\Controllers\AdminController:uploadPost')->setName('upload-post');
+    });
+
 })->add($permissions['admin']);

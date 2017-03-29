@@ -96,7 +96,6 @@ class AuthController extends \App\Core\BaseContainer
                 $user->password = $password;
                 $user->email_token = \Utils::createKey();
                 $user->role = 0;
-                $user->state = 1;
 
                 $user->save();
 

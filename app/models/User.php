@@ -35,7 +35,7 @@ class User extends Model
         return $this->belongsToMany('App\Models\Course');
     }
 
-    public function groups()
+    public function group()
     {
         return $this->belongsTo('App\Models\Course');
     }

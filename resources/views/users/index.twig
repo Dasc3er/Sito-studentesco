@@ -16,7 +16,6 @@
 						<tr>
 							<th>{{ 'base.name'|trans }}</th>
 							<th>{{ 'base.username'|trans }}</th>
-							<th>{{ 'base.book-number'|trans }}</th>
 							<th>{{ 'base.created_at'|trans }}</th>
 							<th>{{ 'base.options'|trans }}</th>
 						</tr>
@@ -26,7 +25,6 @@
 						<tr>
                             <td><a href="{{ path_for('profile', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a></td>
 							<td>{{ result.username }}</td>
-							<td>{{ result.books.count }}</td>
 							<td>{{ result.created_at }}</td>
                             <td>
 {% if result.id != auth.user().id and result.id != superuser %}

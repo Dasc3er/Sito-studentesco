@@ -11,7 +11,6 @@ class UserDataMigration extends AbstractMigration
             'password' => 'admin',
             'email' => 'admin@gmail.com',
             'role' => 1,
-            'state' => 1,
         ],
     ];
 

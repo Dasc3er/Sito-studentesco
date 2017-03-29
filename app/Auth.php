@@ -34,7 +34,7 @@ class Auth extends \App\Core\BaseContainer
 
     public function attempt($email, $password)
     {
-        $result = Models\User::where(['email' => \Crypt::encode($email), 'state' => 1])->whereNull('deleted_at')->first();
+        $result = Models\User::where(['email' => \Crypt::encode($email)])->whereNull('deleted_at')->first();
 
         if (!empty($result) && password_verify($password, $result['password'])) {
             $login = new Models\Login();

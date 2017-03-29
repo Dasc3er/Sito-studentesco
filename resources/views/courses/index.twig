@@ -19,37 +19,11 @@
 				<div class="row">
 {% endif %}
 					<div class="col-xs-12 col-md-6">
-                        <div class="panel panel-default">
-                            <div class="panel-heading"><a href="{{ path_for('course', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a></div>
-                            <div class="panel-body">
-                                <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{%if not loop.last %}, {% endif %}{% endfor %}.</p>
-                                <p><strong>{{ 'base.place'|trans }}</strong>: {{ result.place }}.</p>
-                                <p>{{ 'base.description'|trans }}:</p>
-                                <p>{{ result.description }}</p>
-{% set subscribed = auth.user().isSubscribedTo(result) %}
-{% set freeTime = auth.user().isFreeTime(result) %}
-{% if subscribed or freeTime %}
-
-                                <hr>
-                                <div class="row">
-                                    <div class="col-xs-12">
-                                        <a class="btn btn-block btn-{% if subscribed %}warning{% else %}success{% endif %}" href="{{ path_for('course-action', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-refresh"></i> {% if subscribed %}{{ 'base.unsubscribe'|trans }}{% elseif freeTime %}{{ 'base.subscribe'|trans }}{% endif %}</a>
-                                    </div>
-                                </div>
-{% endif %}
-{% if auth.admin() %}
-
-                                <hr>
-                                <div class="row">
-                                    <div class="col-xs-12 col-md-6">
-                                        <a class="btn btn-info" href="{{ path_for('edit-course', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
-                                    </div>
-                                    <div class="col-xs-12 col-md-6">
-                                        <a class="btn btn-danger pull-right" href="{{ path_for('delete-course', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
-                                    </div>
-                                </div>
-{% endif %}
-                            </div>
+                        <div class="jumbotron">
+                            <h3>
+                                <a href="{{ path_for('courses-category', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a>
+                                <span class="badge">{{ result.count }}</span></a><br>
+                            </h3>
                         </div>
 					</div>
 {% if loop.index is even %}

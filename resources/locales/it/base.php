@@ -25,7 +25,11 @@ return [
     'back-home' => 'Torna alla home',
     'send' => 'Invia',
     'deleteQuestion' => 'Eliminare l\'elemento?',
+    'subscribe' => 'Iscriviti',
+    'unsubscribe' => 'Disicriviti',
+    'upload' => 'Upload',
 
+    'name' => 'Nome',
     'username' => 'Username',
     'teacher' => 'Professore',
     'options' => 'Opzioni',
@@ -33,7 +37,6 @@ return [
     'infos' => 'Informazioni',
     'IP-address' => 'Indirizzo IP',
     'date' => 'Data',
-    'name' => 'Nome',
     'description' => 'Descrizione',
     'content' => 'Contenuto',
     'event' => 'Autogestione',
@@ -44,6 +47,7 @@ return [
     'inserted_by' => 'inserito da :name',
     'team_capacity' => 'Numero per squadra (facoltativo)',
     'subscription_end' => 'Fine delle iscrizioni',
+    'created_at' => 'Data di creazione',
 
     'links' => 'Link utili',
 	'support' => 'Rappresentanti di Istituto che hanno promosso il progetto: :names.',

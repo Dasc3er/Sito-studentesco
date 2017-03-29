@@ -11,12 +11,12 @@ class Utils
      *
      * @return bool Username libero
      */
-    public static function isUsernameFree($username)
+    public static function isUsernameFree($username, $ignore_current = true)
     {
         $where = [['username', '=', $username]];
 
         $auth = \App\Core\AppContainer::container()->auth;
-        if ($auth->check()) {
+        if ($auth->check() && !empty($ignore_current)) {
             array_push($where, ['id', '!=', $auth->user()->id]);
         }
 
@@ -191,5 +191,30 @@ class Utils
         return array_map(function ($v) use ($key) {
             return is_object($v) ? $v->$key : $v[$key];
         }, $array);
+    }
+
+    public static function combinations(array $array, $choose)
+    {
+        $result = [];
+        $combination = [];
+
+        $n = count($array);
+
+        self::inner(0, $choose, $array, $n, $result, $combination);
+
+        return $result;
+    }
+
+    protected static function inner($start, $choose, $array, $n, &$result, &$combination)
+    {
+        if ($choose == 0) {
+            array_push($result, $combination);
+        } else {
+            for ($i = $start; $i <= $n - $choose; ++$i) {
+                array_push($combination, $array[$i]);
+                self::inner($i + 1, $choose - 1, $array, $n, $result, $combination);
+                array_pop($combination);
+            }
+        }
     }
 }
