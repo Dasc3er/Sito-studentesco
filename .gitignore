@@ -75,7 +75,6 @@ vendor/
 # Project #
 ######################
 assets/
-cache/
 config.yml
 *.phar
 *.lock
