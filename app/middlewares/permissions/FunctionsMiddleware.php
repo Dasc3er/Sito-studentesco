@@ -2,7 +2,7 @@
 
 namespace App\Middlewares\Permissions;
 
-class FunctionsMiddleware extends \App\Core\PermissionMiddleware
+class FunctionsMiddleware extends PermissionMiddleware
 {
     protected $routeName;
 
@@ -20,7 +20,6 @@ class FunctionsMiddleware extends \App\Core\PermissionMiddleware
     protected function operation($request, $response)
     {
         throw new \Slim\Exception\NotFoundException($request, $response);
-        return $response;
     }
 
     protected function hasPermission()

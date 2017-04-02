@@ -28,6 +28,7 @@ return [
     'subscribe' => 'Iscriviti',
     'unsubscribe' => 'Disicriviti',
     'upload' => 'Upload',
+    'emailOrUsername' => 'Indirizzo email o username',
 
     'name' => 'Nome',
     'username' => 'Username',
@@ -49,6 +50,9 @@ return [
     'subscription_end' => 'Fine delle iscrizioni',
     'created_at' => 'Data di creazione',
 
+    'admin-up' => 'Promuovi ad Admin',
+    'admin-down' => 'Degrada a utente normale',
+
     'links' => 'Link utili',
 	'support' => 'Rappresentanti di Istituto che hanno promosso il progetto: :names.',
     'developed-by' => 'Progettato e sviluppato da :name.',
@@ -57,4 +61,6 @@ return [
     'maintenance' => 'Manutenzione in corso...',
     'please-login' => 'Non è stato possibile accedere alla pagine richiesta',
     'no-result' => 'Nessun risultato :(',
+    'github' => 'GitHub',
+    'toggle-navigation' => 'Inverti',
 ];

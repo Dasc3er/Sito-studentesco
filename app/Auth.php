@@ -2,10 +2,9 @@
 
 namespace App;
 
-class Auth extends \App\Core\BaseContainer
+class Auth extends \App\App
 {
     protected $user;
-    protected $is_admin;
     protected $email_verified;
 
     public function __construct($container)
@@ -34,7 +33,7 @@ class Auth extends \App\Core\BaseContainer
 
     public function attempt($email, $password)
     {
-        $result = Models\User::where(['email' => \Crypt::encode($email)])->whereNull('deleted_at')->first();
+        $result = Models\User::where(['email' => \App\App::encode($email)])->orWhere(['username' => \App\App::encode($email)])->whereNull('deleted_at')->first();
 
         if (!empty($result) && password_verify($password, $result['password'])) {
             $login = new Models\Login();
@@ -43,7 +42,7 @@ class Auth extends \App\Core\BaseContainer
             $login->browser = getenv('HTTP_USER_AGENT');
             $login->address = getenv('REMOTE_ADDR');
             $login->last_active = \Carbon\Carbon::now();
-            $login->session_code = \Utils::createKey();
+            $login->session_code = secure_random_string();
 
             $login->save();
 
@@ -63,7 +62,6 @@ class Auth extends \App\Core\BaseContainer
             Models\Login::where('user_id', $this->user()->id)->update(['session_code' => null]);
 
             unset($this->user);
-            unset($this->is_admin);
             unset($this->email_verified);
         }
 
@@ -87,7 +85,6 @@ class Auth extends \App\Core\BaseContainer
         if (!empty($user)) {
             $user = $user->user;
             $this->user = $user;
-            $this->is_admin = ($user->role == 1);
             $this->email_verified = empty($user->email_token);
 
             $identifier = md5($_SESSION['random_key'].$_SERVER['HTTP_USER_AGENT']);
@@ -118,7 +115,7 @@ class Auth extends \App\Core\BaseContainer
 
     public function admin()
     {
-        return $this->check() && !empty($this->is_admin);
+        return $this->check() && $this->user->isAdmin();
     }
 
     public function emailVerificata()

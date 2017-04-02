@@ -1,6 +1,6 @@
 <?php
 
-$app->group('/times', function () use ($app, $permissions) {
+$app->group('/times', function () use ($app) {
     $app->get('', 'App\Controllers\TimeController:index')->setName('times');
 
     $app->get('/new', 'App\Controllers\TimeController:form')->setName('new-time');
@@ -12,4 +12,4 @@ $app->group('/times', function () use ($app, $permissions) {
     $app->get('/delete/{id:[0-9]}', 'App\Controllers\TimeController:delete')->setName('delete-time');
     $app->post('/delete/{id:[0-9]}', 'App\Controllers\TimeController:deletePost');
 
-})->add($permissions['admin']);
+})->add('App\Middlewares\Permissions\AdminMiddleware');

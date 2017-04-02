@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models;
 
-class AuthController extends \App\Core\BaseContainer
+class AuthController extends \App\App
 {
     public function login($request, $response, $args)
     {
@@ -84,8 +84,8 @@ class AuthController extends \App\Core\BaseContainer
             $password = $this->filter->password;
             $rep_password = $this->filter->rep_password;
 
-            $userFree = \Utils::isUsernameFree($username);
-            $emailFree = \Utils::isEmailFree($email);
+            $userFree = Models\User::isUsernameFree($username);
+            $emailFree = Models\User::isEmailFree($email);
 
             if ($userFree && $emailFree && $password == $rep_password) {
                 $user = new Models\User();
@@ -94,7 +94,7 @@ class AuthController extends \App\Core\BaseContainer
                 $user->username = $username;
                 $user->email = $email;
                 $user->password = $password;
-                $user->email_token = \Utils::createKey();
+                $user->email_token = secure_random_string();
                 $user->role = 0;
 
                 $user->save();
@@ -135,9 +135,9 @@ class AuthController extends \App\Core\BaseContainer
         if (!$this->validator->hasErrors()) {
             $email = $this->filter->email;
 
-            $result = Models\User::where(['email' => \Crypt::encode($email), 'state' => 1])->first();
+            $result = Models\User::where(['email' => \App\App::encode($email)])->first();
             if (!empty($result)) {
-                $token = \Utils::createKey();
+                $token = secure_random_string();
 
                 $result->reset_token = $token;
                 $result->save();

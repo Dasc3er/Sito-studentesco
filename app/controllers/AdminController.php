@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models;
 
-class AdminController extends \App\Core\BaseContainer
+class AdminController extends \App\App
 {
     public function index($request, $response, $args)
     {
@@ -31,11 +31,8 @@ class AdminController extends \App\Core\BaseContainer
             $datas = file($targetFile);
             unlink($targetFile);
 
-            $users = Models\User::has('group')->get();
-            foreach ($users as $user) {
-                $user->group()->dissociate();
-            }
-
+            $passwords = [];
+            Models\User::where('group_id',  '!=', null)->update(['group_id' => null]);
             foreach ($datas as $data) {
                 $data = explode(';', $data);
 
@@ -44,16 +41,16 @@ class AdminController extends \App\Core\BaseContainer
                         $school_name = $data[3];
                         $group_name = $data[2];
                         $name = $data[1];
-                        $number = $data[0];
+                        $number = trim($data[0]);
                     } else {
                         $school_name = $data[2];
                         $group_name = $data[1];
                         $name = $data[0];
                     }
 
-                    $school_name = ucfirst($school_name);
-                    $group_name = strtoupper($group_name);
-                    $name = ucwords($name);
+                    $school_name = trim(ucfirst($school_name));
+                    $group_name = trim(strtoupper($group_name));
+                    $name = trim(ucwords($name));
 
                     $school = Models\School::where(['name' => $school_name])->first();
                     if (empty($school)) {
@@ -85,7 +82,7 @@ class AdminController extends \App\Core\BaseContainer
                         $replace = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
                         $to = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
                         $username = substr(str_replace(' ', '.', str_replace($replace, $to, $name)), 0, 20);
-                        while (!\Utils::isUsernameFree($username, false)) {
+                        while (!Models\User::isUsernameFree($username, false)) {
                             $username .= rand(0, 999);
                         }
                         $user->username = $username;
@@ -104,11 +101,63 @@ class AdminController extends \App\Core\BaseContainer
 
                         $user->group()->associate($group);
                         $user->save();
+
+                        $passwords[$user->id] = $password;
                     }
                 }
             }
+
+            $pdf = '';
+
+            $schools = Models\School::all();
+            foreach ($schools as $school) {
+                $groups = $school->groups()->get();
+                foreach ($groups as $group) {
+                    $pdf .= '
+                    <page>
+                        <h1>'.$group->name.' - '.$school->name.'</h1>
+                        <table border=0>';
+
+                    $users = $group->users()->get();
+
+                    $cont = 0;
+                    foreach ($users as $user) {
+                        if ($cont % 3 == 0) {
+                            $pdf .= '
+                            <tr>';
+                        }
+
+                        $pdf .= '
+                                <td style="width:33%">
+                                    '.$user->name.'<br>
+                                    '.$this->translator->translate('base.username').': '.$user->username.'<br>
+                                    '.$this->translator->translate('base.password').': '.(isset($passwords[$user->id]) ? $passwords[$user->id] : '').'<br><br>
+                                </td>';
+
+                        ++$cont;
+
+                        if ($cont % 3 == 0) {
+                            $pdf .= '
+                            </tr>';
+                        }
+                    }
+                    if ($cont % 3 != 0) {
+                        $pdf .= '
+                            </tr>';
+                    }
+                    $pdf .= '
+                        </table>
+                    </page>';
+                }
+            }
+
+            $html2pdf = new \Html2Pdf('P', 'A4', 'it');
+            $html2pdf->setDefaultFont('Arial');
+            $html2pdf->writeHTML($pdf);
+            $html2pdf->Output();
         }
 
+        exit();
         $this->router->redirectTo('users');
 
         return $response;
@@ -116,10 +165,8 @@ class AdminController extends \App\Core\BaseContainer
 
     public function logins($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
-            $container = \App\Core\AppContainer::container();
-
-            return $container['filter']->page;
+        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
+            return $this->filter->page;;
         });
 
         $args['results'] = Models\Login::with('user')->orderBy('created_at', 'desc')->paginate(100);
@@ -140,10 +187,8 @@ class AdminController extends \App\Core\BaseContainer
 
     public function visits($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
-            $container = \App\Core\AppContainer::container();
-
-            return $container['filter']->page;
+        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
+            return $this->filter->page;;
         });
 
         $args['results'] = Models\Visit::orderBy('created_at', 'desc')->paginate(100);

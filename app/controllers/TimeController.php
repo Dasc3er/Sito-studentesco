@@ -4,13 +4,12 @@ namespace App\Controllers;
 
 use App\Models;
 
-class TimeController extends \App\Core\BaseContainer
+class TimeController extends \App\App
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
-            $container = \App\Core\AppContainer::container();
-            return $container['filter']->page;;
+        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
+            return $this->filter->page;;
         });
 
         $args['results'] = Models\Time::orderBy('created_at', 'desc')->paginate(10);

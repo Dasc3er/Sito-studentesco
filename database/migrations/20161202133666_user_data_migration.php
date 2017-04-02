@@ -35,7 +35,7 @@ class UserDataMigration extends AbstractMigration
     public function up()
     {
         foreach ($this->users as $key => $value) {
-            $this->users[$key]['password'] = \Crypt::hashpassword($value['password']);
+            $this->users[$key]['password'] = \App\App::hashpassword($value['password']);
         }
 
         $users = $this->table('users');

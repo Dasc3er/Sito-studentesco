@@ -26,7 +26,7 @@
 
 namespace App\Controllers;
 
-class PhinxController extends \App\Core\BaseContainer
+class PhinxController extends \App\App
 {
     public function migrate($request, $response, $args)
     {

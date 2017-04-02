@@ -2,7 +2,7 @@
 
 namespace App\Middlewares\Permissions;
 
-class UserMiddleware extends \App\Core\PermissionMiddleware
+class UserMiddleware extends PermissionMiddleware
 {
     protected function operation($request, $response)
     {

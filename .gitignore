@@ -68,17 +68,15 @@ Desktop.ini
 
 # Npm and Yarn, Bower, Composer #
 ######################
-node_modules/
-yarn.lock
 bower_components/
-composer.phar
-composer.lock
+node_modules/
 vendor/
 
 # Project #
 ######################
-cache/
-tests/_output/*
 assets/
+cache/
 config.yml
-logs/*
+*.phar
+*.lock
+*.txt

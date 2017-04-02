@@ -4,12 +4,12 @@ namespace App\Controllers;
 
 use App\Models;
 
-class BaseController extends \App\Core\BaseContainer
+class BaseController extends \App\App
 {
     public function index($request, $response, $args)
     {
         $args['carousel'] = [];
-        $args['carousel'][] = ['image' => 'favicon_gb.jpg'];
+        $args['carousel'][] = ['image' => 'favicon.jpg'];
         $args['carousel'][] = ['image' => 'archivio.png'];
 
         $response = $this->view->render($response, 'index.twig', $args);

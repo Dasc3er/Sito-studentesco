@@ -2,7 +2,7 @@
 
 namespace App\Middlewares;
 
-class DataMiddleware extends \App\Core\BaseContainer
+class DataMiddleware extends \App\App
 {
     protected $routeName;
 
@@ -69,19 +69,24 @@ class DataMiddleware extends \App\Core\BaseContainer
                 $state = true;
             }
 
-            $title = $element;
             if ($this->router->hasRoute($element)) {
                 $path = $this->router->pathFor($element);
-                $title = $title.'.title';
+                $title = $element.'.title';
+            } elseif (starts_with(strtolower($element), 'http') || starts_with(strtolower($element), 'https')) {
+                $results = explode(' ', $element, 2);
+                $path = $results[0];
+                $title = $results[1];
             } else {
                 $path = '#';
-                $title = 'menu.'.$title;
+                $title = 'menu.'.$element;
             }
 
-            $result['title'] = $this->translator->translate($title);
-            if (strpos($result['title'], ':username') !== false) {
-                $result['title'] = $this->translator->translate($title, [':username' => $this->auth->user()->username]);
+            $replace = [];
+            if ($this->auth->user()) {
+                $replace[':username'] = $this->auth->user()->username;
             }
+
+            $result['title'] = $this->translator->translate($title, $replace);
             $result['path'] = $path;
             $result['state'] = $state;
 

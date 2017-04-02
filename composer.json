@@ -5,7 +5,6 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "respect/validation": "^1.1",
         "ezyang/htmlpurifier": "^4.8",
         "filp/whoops": "^2.1",
         "illuminate/database": "5.2.*",
@@ -13,11 +12,13 @@
         "maximebf/debugbar": "^1.13",
         "monolog/monolog": "^1.21",
         "phpmailer/phpmailer": "^5.2",
+        "respect/validation": "^1.1",
         "robmorgan/phinx": "^0.8",
         "slim/csrf": "^0.8",
         "slim/flash": "^0.1",
         "slim/slim": "^3.4",
         "slim/twig-view": "^2.1",
+        "spipu/html2pdf": "^4.6",
         "symfony/asset": "^3.1",
         "symfony/translation": "^3.1",
         "symfony/twig-bridge": "^3.1",
@@ -34,6 +35,9 @@
         },
         "classmap": [
             "app/libs/"
+        ],
+        "files": [
+            "app/libs/useful.php"
         ]
     },
     "config": {

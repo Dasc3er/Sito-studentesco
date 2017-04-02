@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace App;
 
 use FastRoute\RouteParser;
 use Slim\InvalidArgumentException;
@@ -8,18 +8,20 @@ use RuntimeException;
 
 class Router extends \Slim\Router
 {
-    protected $translator;
+    protected $container;
+
     protected $redirectTo;
     protected $redirectParamenters;
 
     /**
      * Create new router.
      *
+     * @param mixed $container
      * @param RouteParser $parser
      */
-    public function __construct(Translator $translator, \FastRoute\RouteParser $parser = null)
+    public function __construct($container, \FastRoute\RouteParser $parser = null)
     {
-        $this->translator = $translator;
+        $this->container = $container;
         parent::__construct($parser);
     }
 
@@ -45,12 +47,14 @@ class Router extends \Slim\Router
      */
     protected function createRoute($methods, $pattern, $callable)
     {
-        $languages = [];
-        foreach ($this->translator->getAvailableLocales() as $lang) {
-            array_push($languages, '/'.$lang);
+        if ($this->container->settings['lang']['routing']) {
+            $languages = [];
+            foreach ($this->container->translator->getAvailableLocales() as $lang) {
+                array_push($languages, '/'.$lang);
+            }
+            array_push($languages, '');
+            $pattern = '{locale:'.implode('|', $languages).'}'.$pattern;
         }
-        array_push($languages, '');
-        $pattern = '{locale:'.implode('|', $languages).'}'.$pattern;
 
         return parent::createRoute($methods, $pattern, $callable);
     }
@@ -69,8 +73,8 @@ class Router extends \Slim\Router
      */
     public function pathFor($name, array $data = [], array $queryParams = [])
     {
-        if (!isset($data['locale'])) {
-            $data['locale'] = $this->translator->getUrlLocale();
+        if (!isset($data['locale']) && $this->container->settings['lang']['routing']) {
+            $data['locale'] = $this->container->translator->getCurrentLocale();
         }
 
         return parent::pathFor($name, $data, $queryParams);

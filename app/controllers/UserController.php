@@ -4,14 +4,12 @@ namespace App\Controllers;
 
 use App\Models;
 
-class UserController extends \App\Core\BaseContainer
+class UserController extends \App\App
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
-            $container = \App\Core\AppContainer::container();
-
-            return $container['filter']->page;
+        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
+            return $this->filter->page;;
         });
 
         $args['results'] = Models\User::orderBy('name', 'asc')->withTrashed()->paginate(30);
@@ -109,22 +107,21 @@ class UserController extends \App\Core\BaseContainer
             $password = $this->filter->password;
             $rep_password = $this->filter->rep_password;
 
-            $userFree = \Utils::isUsernameFree($username);
-            $emailFree = \Utils::isEmailFree($email);
+            $userFree = Models\User::isUsernameFree($username);
+            $emailFree = Models\User::isEmailFree($email);
 
             if ($userFree && $emailFree && $password == $rep_password) {
                 $user = $this->auth->user();
 
                 $user->name = $name;
                 $user->username = $username;
+                $user->password = $password;
+                $user->email_token = secure_random_string();
 
                 if ($user->email != $email) {
                     $user->email = $email;
                     \Utils::sendEmail($email, 'verification', [':path' => 'http://'.$request->getUri()->getHost().$this->router->pathFor('verify-email', ['code' => $user->email_token])]);
                 }
-
-                $user->password = $password;
-                $user->email_token = \Utils::createKey();
 
                 $user->save();
 
@@ -152,7 +149,7 @@ class UserController extends \App\Core\BaseContainer
 
     public function verifyEmail($request, $response, $args)
     {
-        Models\User::where(['email_token' => $args['code'], 'state' => 1])->update(['email_token' => null]);
+        Models\User::where(['email_token' => $args['code']])->update(['email_token' => null]);
         $this->router->redirectTo();
 
         return $response;
@@ -162,7 +159,7 @@ class UserController extends \App\Core\BaseContainer
     {
         $user = $this->auth->user();
 
-        $user->email_token = \Utils::createKey();
+        $user->email_token = secure_random_string();
         $user->save();
 
         \Utils::sendEmail($user->email, 'verification', [':path' => 'http://'.$request->getUri()->getHost().$this->router->pathFor('verify-email', ['code' => $user->email_token])]);

@@ -4,13 +4,12 @@ namespace App\Controllers;
 
 use App\Models;
 
-class QuoteController extends \App\Core\BaseContainer
+class QuoteController extends \App\App
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
-            $container = \App\Core\AppContainer::container();
-            return $container['filter']->page;;
+        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
+            return $this->filter->page;;
         });
 
         $args['results'] = Models\Quote::with('user', 'teacher')->orderBy('created_at', 'desc')->paginate(10);
@@ -25,6 +24,10 @@ class QuoteController extends \App\Core\BaseContainer
     {
         if (!empty($args['id'])) {
             $args['result'] = Models\Quote::findOrFail($args['id']);
+
+            if($args['result']->user_id != $this->auth->user()->id && !$this->auth->admin()){
+                throw new \Slim\Exception\NotFoundException();
+            }
         }
 
         $args['teachers'] = Models\Teacher::all();
@@ -39,6 +42,10 @@ class QuoteController extends \App\Core\BaseContainer
         if (!$this->validator->hasErrors()) {
             if (!empty($args['id'])) {
                 $quote = Models\Quote::findOrFail($args['id']);
+
+                if($quote->user_id != $this->auth->user()->id && !$this->auth->admin()){
+                    throw new \Slim\Exception\NotFoundException();
+                }
             } else {
                 $quote = new Models\Quote();
             }
@@ -78,7 +85,13 @@ class QuoteController extends \App\Core\BaseContainer
     public function deletePost($request, $response, $args)
     {
         if (!empty($args['id'])) {
-            Models\Quote::findOrFail($args['id'])->delete();
+            $quote = Models\Quote::findOrFail($args['id']);
+
+            if($quote->user_id != $this->auth->user()->id && !$this->auth->admin()){
+                throw new \Slim\Exception\NotFoundException();
+            }
+
+            $quote->delete();
         }
 
         $this->router->redirectTo('quotes');

@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/vendor/autoload.php';
 
-$settings = \App\Core\AppContainer::settings();
+$settings = \App\App::getSettings();
 
 $config = [
     'paths' => [

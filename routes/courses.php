@@ -1,6 +1,6 @@
 <?php
 
-$app->group('/courses', function () use ($app, $permissions) {
+$app->group('/courses', function () use ($app) {
     $app->get('', 'App\Controllers\CourseController:index')->setName('courses');
 
     $app->get('/category/{id}', 'App\Controllers\CourseController:category')->setName('courses-category');
@@ -9,7 +9,7 @@ $app->group('/courses', function () use ($app, $permissions) {
 
     $app->get('/action/{id:[0-9]}', 'App\Controllers\CourseController:action')->setName('course-action');
 
-    $app->group('', function () use ($app, $permissions) {
+    $app->group('', function () use ($app) {
         $app->get('/all', 'App\Controllers\CourseController:all')->setName('all-courses');
 
         $app->get('/new', 'App\Controllers\CourseController:form')->setName('new-course');
@@ -20,5 +20,5 @@ $app->group('/courses', function () use ($app, $permissions) {
 
         $app->get('/delete/{id:[0-9]}', 'App\Controllers\CourseController:delete')->setName('delete-course');
         $app->post('/delete/{id:[0-9]}', 'App\Controllers\CourseController:deletePost');
-    })->add($permissions['admin']);
-})->add($permissions['user']);
+    })->add('App\Middlewares\Permissions\AdminMiddleware');
+})->add('App\Middlewares\Permissions\UserMiddleware');

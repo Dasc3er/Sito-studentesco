@@ -1,15 +1,29 @@
 // Librerie NPM richieste per l'esecuzione
 var gulp = require('gulp');
-var mainBowerFiles = require('main-bower-files');
-var bowerMain = require('bower-main');
 var del = require('del');
-var uglify = require('gulp-uglify');
-var uglifyCSS = require('gulp-uglifycss');
+var debug = require('gulp-debug');
+var util = require('gulp-util');
+
+var mainBowerFiles = require('main-bower-files');
+var gulpIf = require('gulp-if');
+
+// Minificatori
+var minifyJS = require('gulp-uglify');
+var minifyCSS = require('gulp-clean-css');
+var minifyJSON = require('gulp-json-minify');
+
+// Interpretatori CSS
+var sass = require('gulp-sass');
+var less = require('gulp-less');
+var stylus = require('gulp-stylus');
+var autoprefixer = require('gulp-autoprefixer');
+
+// Concatenatore
+var concat = require('gulp-concat');
+
+// Altro
 var flatten = require('gulp-flatten');
 var rename = require('gulp-rename');
-var jsonMinify = require('gulp-json-minify');
-var concat = require('gulp-concat');
-var concatCss = require('gulp-concat-css');
 
 /**
  * Detect .bowerrc file and read bower directory's path.
@@ -21,15 +35,11 @@ function getBowerDirectory() {
     var path = require('path');
     var fs = require('fs');
 
-    var bowerrc = path.join(cwd(), '.bowerrc');
+    try {
+        bower_config = JSON.parse(fs.readFileSync(path.join(cwd(), '.bowerrc')));
+        directory = bower_config.directory;
+    } catch (err) {
 
-    if (fs.existsSync(bowerrc)) {
-        try {
-            bower_config = JSON.parse(fs.readFileSync(bowerrc));
-            directory = bower_config.directory;
-        } catch (err) {
-
-        }
     }
 
     if (typeof directory === "undefined") {
@@ -39,140 +49,158 @@ function getBowerDirectory() {
     return directory;
 }
 
-// Cartelle di destinazione
-var directoryAssets = 'public/assets';
-var directoryJS = directoryAssets + '/js';
-var directoryCSS = directoryAssets + '/css';
-var directoryImages = directoryAssets + '/img';
-var directoryFonts = directoryAssets + '/fonts';
-
-// Cartelle di origine
-var bowerDirectory = getBowerDirectory();
-var directorySrc = 'resources/assets';
-var directorySrcJS = directorySrc + '/js';
-var directorySrcCSS = directorySrc + '/css';
-var directorySrcImages = directorySrc + '/img';
-var directorySrcFonts = directorySrc + '/fonts';
+// Configurazione
+var config = {
+    production: 'assets', // Cartella di destinazione
+    development: 'resources/assets', // Cartella dei file di personalizzazione
+    bower: getBowerDirectory(),
+    paths: {
+        js: 'js',
+        css: 'css',
+        images: 'img',
+        fonts: 'fonts'
+    }
+};
 
 // Elaborazione e minificazione di JS
 gulp.task('JS', ['clean'], function () {
-    var JS = bowerMain('js', 'min.js');
-    gulp.src(JS.minified)
-        .pipe(gulp.dest(directoryJS));
-
-    gulp.src(JS.minifiedNotFound)
-        .pipe(uglify())
-        .pipe(rename({
+    gulp.src(mainBowerFiles('**/*.js'))
+        .pipe(minifyJS())
+        .pipe(gulpIf('!*.min.*', rename({
             suffix: '.min'
-        }))
-        .pipe(gulp.dest(directoryJS));
+        })))
+        .pipe(gulp.dest(config.production + '/' + config.paths.js));
 
     gulp.start('srcJS');
 });
 
 // Elaborazione e minificazione di JS personalizzati
 gulp.task('srcJS', function () {
-    gulp.src([directorySrcJS + '/*.js'])
-        .pipe(uglify())
+    gulp.src([
+            config.development + '/' + config.paths.js + '/*.js',
+        ])
+        .pipe(minifyJS())
         .pipe(rename({
             suffix: '.min'
         }))
-        .pipe(gulp.dest(directoryJS));
+        .pipe(gulp.dest(config.production + '/' + config.paths.js));
 });
 
 // Elaborazione e minificazione di CSS
 gulp.task('CSS', ['clean'], function () {
-    var CSS = bowerMain('css', 'min.css');
-    gulp.src(CSS.minified)
-        .pipe(gulp.dest(directoryCSS));
-
-    gulp.src(CSS.minifiedNotFound)
-        .pipe(uglifyCSS())
-        .pipe(rename({
-            suffix: '.min'
+    gulp.src(mainBowerFiles('**/*.{css,scss,less,styl}'))
+        .pipe(gulpIf('*.scss', sass(), gulpIf('*.less', less(), gulpIf('*.styl', stylus()))))
+        .pipe(autoprefixer({
+            browsers: 'last 2 version',
         }))
-        .pipe(gulp.dest(directoryCSS));
+        .pipe(minifyCSS({
+            rebase: false,
+        }))
+        .pipe(gulpIf('!*.min.*', rename({
+            suffix: '.min'
+        })))
+        .pipe(gulp.dest(config.production + '/' + config.paths.css));
 
     gulp.start('srcCSS');
 });
 
 // Elaborazione e minificazione di CSS personalizzati
 gulp.task('srcCSS', function () {
-    gulp.src([directorySrcCSS + '/*.css'])
-        .pipe(uglifyCSS())
+    gulp.src([
+            config.development + '/' + config.paths.css + '/*.{css,scss,less,styl}',
+        ])
+        .pipe(gulpIf('*.scss', sass(), gulpIf('*.less', less(), gulpIf('*.styl', stylus()))))
+        .pipe(autoprefixer({
+            browsers: 'last 2 version',
+        }))
+        .pipe(minifyCSS({
+            rebase: false,
+        }))
         .pipe(rename({
             suffix: '.min'
         }))
-        .pipe(gulp.dest(directoryCSS));
+        .pipe(gulp.dest(config.production + '/' + config.paths.css));
 });
 
 // Elaborazione delle immagini
 gulp.task('images', ['clean'], function () {
     gulp.src(mainBowerFiles('**/*.{jpg,png,jpeg,gif}'))
         .pipe(flatten())
-        .pipe(gulp.dest(directoryImages));
+        .pipe(gulp.dest(config.production + '/' + config.paths.images));
 
     gulp.start('srcImages');
 });
 
 // Elaborazione delle immagini personalizzate
 gulp.task('srcImages', function () {
-    gulp.src([directorySrcImages + '/**/*.{jpg,png,jpeg,gif}'])
+    gulp.src([
+            config.development + '/' + config.paths.images + '/**/*.{jpg,png,jpeg,gif}',
+        ])
         .pipe(flatten())
-        .pipe(gulp.dest(directoryImages));
+        .pipe(gulp.dest(config.production + '/' + config.paths.images));
 });
 
 // Elaborazione dei fonts
 gulp.task('fonts', ['clean'], function () {
     gulp.src(mainBowerFiles('**/*.{otf,eot,svg,ttf,woff,woff2}'))
         .pipe(flatten())
-        .pipe(gulp.dest(directoryFonts));
+        .pipe(gulp.dest(config.production + '/' + config.paths.fonts));
 
     gulp.start('srcFonts');
 });
 
 // Elaborazione dei fonts personalizzati
 gulp.task('srcFonts', function () {
-    gulp.src([directorySrcFonts + '/**/*.{otf,eot,svg,ttf,woff,woff2}'])
+    gulp.src([
+            config.development + '/' + config.paths.fonts + '/**/*.{otf,eot,svg,ttf,woff,woff2}',
+        ])
         .pipe(flatten())
-        .pipe(gulp.dest(directoryFonts));
+        .pipe(gulp.dest(config.production + '/' + config.paths.fonts));
 });
 
 gulp.task('tinymce', ['clean'], function () {
-    gulp.src([bowerDirectory + '/tinymce/plugins/**/*'])
-        .pipe(gulp.dest(directoryJS + '/plugins'));
+    //gulp.src([config.bower + '/tinymce/plugins/**/*'])
+    //    .pipe(gulp.dest(config.production + '/' + config.paths.js + '/plugins'));
 
-    gulp.src([bowerDirectory + '/tinymce/themes/**/*'])
-        .pipe(gulp.dest(directoryJS + '/themes'));
+    gulp.src([config.bower + '/tinymce/themes/**/*'])
+        .pipe(gulp.dest(config.production + '/' + config.paths.js + '/themes'));
 
-    gulp.src([bowerDirectory + '/tinymce/skins/**/*'])
-        .pipe(gulp.dest(directoryJS + '/skins'));
+    gulp.src([config.bower + '/tinymce/skins/**/*'])
+        .pipe(gulp.dest(config.production + '/' + config.paths.js + '/skins'));
 
-    gulp.src([bowerDirectory + '/tinymce/tinymce.min.js'])
-        .pipe(gulp.dest(directoryJS));
+    gulp.src([config.bower + '/tinymce/tinymce.min.js'])
+        .pipe(gulp.dest(config.production + '/' + config.paths.js));
 });
 
 gulp.task('php-debugbar', ['clean'], function () {
-    gulp.src([bowerDirectory + '/php-debugbar/src/DebugBar/Resources/**/*'])
-        .pipe(gulp.dest(directoryAssets + '/php-debugbar'));
+    gulp.src([
+            './vendor/maximebf/debugbar/src/DebugBar/Resources/**/*',
+        ])
+        .pipe(gulpIf('*.css', minifyCSS(), gulpIf('*.js', minifyJS())))
+        .pipe(gulp.dest(config.production + '/php-debugbar'));
 });
 
 // Elaborazione e minificazione delle informazioni sull'internazionalizzazione
 gulp.task('i18n', ['clean'], function () {
-    gulp.src([bowerDirectory + '/**/i18n/*.js', bowerDirectory + '/**/lang/*.js', directorySrcJS + '/i18n/**/*.js', '!' + bowerDirectory + '/**/src/**', '!' + bowerDirectory + '/tinymce/**', '!src/js/i18n/datatables/**'])
-        .pipe(rename(function (path) {
-            if (path.basename.indexOf('.min') == -1) path.basename += '.min';
-        }))
-        .pipe(uglify())
+    gulp.src([
+            config.bower + '/**/{i18n,lang}/*.{js,json}',
+            config.development + '/' + config.paths.js + '/i18n/**/*.{js,json}',
+            '!' + config.bower + '/**/{src,plugins}/**',
+            '!' + config.bower + '/tinymce/**',
+        ])
+        .pipe(gulpIf('*.js', minifyJS(), gulpIf('*.json', minifyJSON())))
+        .pipe(gulpIf('!*.min.*', rename({
+            suffix: '.min'
+        })))
         .pipe(flatten({
             includeParents: 1
         }))
-        .pipe(gulp.dest(directoryJS + '/i18n'));
+        .pipe(gulp.dest(config.production + '/' + config.paths.js + '/i18n'));
 });
 
 // Pulizia
 gulp.task('clean', function () {
-    return del([directoryAssets]);
+    return del([config.production]);
 });
 
 gulp.task('bower', ['clean'], function () {
@@ -197,7 +225,7 @@ gulp.task('src', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch('src/**/*', ['src']);
+    gulp.watch(config.development + '/**/*', ['src']);
 });
 
 gulp.task('src&watch', ['src', 'watch']);

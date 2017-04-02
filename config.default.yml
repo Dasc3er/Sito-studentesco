@@ -8,6 +8,7 @@ app:
     superuser: 1
     aliveTimeout: 600
     maintenance: false
+    redirectHTTPS: false
     functions:
         visits: true
         registration: true
@@ -71,10 +72,20 @@ lang:
     default_locale: en
     fallback_locales:
         - en
+    separators:
+        decimals: ,
+        thousands:
+        date: /
+        time: :
+    dateOrder:
+        - day
+        - month
+        - year
+
 
 ## Views
 views:
-    assets: public/assets
+    assets: assets
     templates: resources/views
     config:
         cache: false

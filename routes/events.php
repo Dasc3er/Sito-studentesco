@@ -1,6 +1,6 @@
 <?php
 
-$app->group('/events', function () use ($app, $permissions) {
+$app->group('/events', function () use ($app) {
     $app->get('', 'App\Controllers\EventController:index')->setName('events');
 
     $app->get('/new', 'App\Controllers\EventController:form')->setName('new-event');
@@ -11,4 +11,4 @@ $app->group('/events', function () use ($app, $permissions) {
 
     $app->get('/delete/{id:[0-9]}', 'App\Controllers\EventController:delete')->setName('delete-event');
     $app->post('/delete/{id:[0-9]}', 'App\Controllers\EventController:deletePost');
-})->add($permissions['admin']);
+})->add('App\Middlewares\Permissions\AdminMiddleware');

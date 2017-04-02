@@ -40,8 +40,10 @@
                                 <cite title="{{ result.teacher.name }}">{{ result.teacher.name }}</cite>{% if auth.admin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
                             </footer>
                         </blockquote>
+{% if result.user_id == auth.user().id or auth.admin() %}
                         <a class="btn btn-info" href="{{ path_for('edit-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
                         <a class="btn btn-danger" href="{{ path_for('delete-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
+{% endif %}
                     </div>
 {% if loop.index is even %}
 				</div>

@@ -8,7 +8,7 @@ class School extends Model
 {
     use \Illuminate\Database\Eloquent\SoftDeletes;
 
-    public function classes()
+    public function groups()
     {
         return $this->hasMany('App\Models\Group');
     }

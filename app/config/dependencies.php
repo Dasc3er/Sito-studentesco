@@ -1,11 +1,10 @@
 <?php
 
-use Symfony\Component\Asset\VersionStrategy\StaticVersionStrategy;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 use Symfony\Component\Asset\PathPackage;
+
 use Respect\Validation\Validator as v;
-use Doctrine\ORM\Tools\Setup;
-use Doctrine\ORM\EntityManager;
+
 
 // Auth manager
 $container['auth'] = function ($container) {
@@ -14,12 +13,12 @@ $container['auth'] = function ($container) {
 
 // Language manager
 $container['translator'] = function ($container) {
-    return new \App\Core\Translator($container['settings']['lang']);
+    return new \App\Translator($container->settings['lang']);
 };
 
 // Custom router
 $container['router'] = function ($container) {
-    return new \App\Core\Router($container['translator']);
+    return new \App\Router($container);
 };
 
 // Flash messages
@@ -37,7 +36,7 @@ $container['csrf'] = function ($container) {
 
 // Render
 $container['view'] = function ($container) {
-    $settings = $container->get('settings')['views'];
+    $settings = $container->settings['views'];
 
     $view = new \Slim\Views\Twig($settings['templates'], $settings['config']);
 
@@ -53,12 +52,13 @@ $container['view'] = function ($container) {
     $view->offsetSet('img', new PathPackage($assets.'/img', new EmptyVersionStrategy()));
     $view->offsetSet('uploads', new PathPackage($assets.'/img/uploads', new EmptyVersionStrategy()));
 
+    $view->offsetSet('functions', $container->settings['app']['functions']);
+    $view->offsetSet('superuser', $container->settings['app']['superuser']);
+
     $view->offsetSet('auth', $container['auth']);
     $view->offsetSet('flash', $container['flash']);
     $view->offsetSet('translator', $container['translator']);
     $view->offsetSet('router', $container['router']);
-    $view->offsetSet('functions', $container['settings']['app']['functions']);
-    $view->offsetSet('superuser', $container['settings']['app']['superuser']);
 
     if(!empty($container['debugbar'])){
         $debugbar = $container['debugbar']->getJavascriptRenderer();
@@ -67,17 +67,6 @@ $container['view'] = function ($container) {
     }
 
     return $view;
-};
-
-// Permission handler
-$container['permissions'] = function ($container) {
-    $permissions = [
-        'user' => new \App\Middlewares\Permissions\UserMiddleware($container),
-        'guest' => new \App\Middlewares\Permissions\GuestMiddleware($container),
-        'admin' => new \App\Middlewares\Permissions\AdminMiddleware($container)
-    ];
-
-    return $permissions;
 };
 
 // Sanitizing methods
@@ -121,7 +110,7 @@ $container['notAllowedHandler'] = function ($container) {
     };
 };
 
-if (empty($container['settings']['displayErrorDetails'])) {
+if (empty($container->settings['displayErrorDetails'])) {
     $container['errorHandler'] = function ($container) {
         return function ($request, $response, $exception) use ($container) {
             $url = explode('/', $request->getAttribute('routeInfo')['request'][1]);

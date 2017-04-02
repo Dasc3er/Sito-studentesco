@@ -8,10 +8,10 @@ Per dare una rapida occhiata al risultato, il sito dell'IIS Euganeo è online al
 
 **Funzioni principali**:
 
-- gestione delle proposte per i corsi, effettuate dagli studenti e da approvare dai Rappresentanti d'Istituto;
-- gestione delle iscrizioni ai corsi, completa di assegnazione casuale in caso di mancata iscrizione;
-- gestione delle citazioni, suddivise per professore;
-- gestione delle utenze degli studenti per anni differenti.
+- Gestione delle proposte per i corsi, effettuate dagli studenti e da approvare dai Rappresentanti d'Istituto;
+- Gestione delle iscrizioni ai corsi, completa di assegnazione casuale in caso di mancata iscrizione;
+- Gestione delle citazioni, suddivise per professore;
+- Gestione delle utenze degli studenti per anni differenti.
 
 ## Tabella dei contenuti
 
@@ -44,15 +44,16 @@ Prima di iniziare l'installazione, è necessario procedere al download di una ve
 ### Installazione
 
 Per procedere all'installazione è necessario seguire i seguenti punti:
-1. creare una cartella (qui denominata `test`) nella root del sever web installato ed estrarvi il codice sorgente della sito;
-2. creare un database vuoto (tramite [PHPMyAdmin](http://localhost/phpmyadmin/) o da riga di comando);
-3. accedere a <http://localhost/test> dal vostro browser;
-4. ritoccare i valori interni al file `config.yml` per la connessione al database e le impostazioni basilari.
-5. eseguire da riga di comando la seguente istruzione per completare l'installazione del database.
 
-```bash
-php vendor/robmorgan/phinx/bin/phinx migrate
-```
+1. Creare una cartella (qui denominata `test`) nella root del sever web installato ed estrarvi il codice sorgente della sito;
+2. Creare un database vuoto (tramite [PHPMyAdmin](http://localhost/phpmyadmin/) o da riga di comando);
+3. Accedere a <http://localhost/test> dal vostro browser;
+4. Ritoccare i valori interni al file `config.yml` per la connessione al database e le impostazioni basilari.
+5. Eseguire da riga di comando la seguente istruzione per completare l'installazione del database.
+
+    ```bash
+    php vendor/robmorgan/phinx/bin/phinx migrate
+    ```
 
 #### Versioni
 
@@ -73,6 +74,12 @@ bower update
 gulp
 ```
 
+In alternativa alla sequenza di comandi precedente, è possibile utilizzare il seguente comando (richiede l'installazione di GIT e NPM, oltre che l'inserimento dell'archivio `composer.phar` nella cartella principale del progetto):
+
+```bash
+npm run init-project
+```
+
 Per ulteriori informazioni, visitare le sezioni [Assets](https://github.com/Dasc3er/Sito-studentesco/wiki/Assets/) e [Framework](https://github.com/Dasc3er/Sito-studentesco/wiki/Framework/) della documentazione.
 
 ## Contribuire
@@ -81,4 +88,4 @@ Se avete suggerimenti o avete individuato malfunzionamenti, siete pregati di seg
 
 ## Licenza
 
-Questo progetto è tutelato dalla licenza MIT (vedere [LICENSE.md](https://sourceforge.net/p/openstamanager/code/HEAD/tree/trunk/openstamanager/LICENSE) per ulteriori dettagli).
+Questo progetto è tutelato dalla licenza **MIT** (vedere [LICENSE](https://sourceforge.net/p/openstamanager/code/HEAD/tree/trunk/openstamanager/LICENSE) per ulteriori dettagli).

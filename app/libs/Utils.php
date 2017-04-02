@@ -1,49 +1,10 @@
 <?php
 
+use \App\App;
+use \App\Models;
+
 class Utils
 {
-    /**
-     * Controlla che l'username inserito sia univoco.
-     *
-     * @param medoo  $database Database
-     * @param string $username Username da controllare
-     * @param int    $user_id  Identificativo dell'utente da considerare Identificativo utente
-     *
-     * @return bool Username libero
-     */
-    public static function isUsernameFree($username, $ignore_current = true)
-    {
-        $where = [['username', '=', $username]];
-
-        $auth = \App\Core\AppContainer::container()->auth;
-        if ($auth->check() && !empty($ignore_current)) {
-            array_push($where, ['id', '!=', $auth->user()->id]);
-        }
-
-        return \App\Models\User::where($where)->count() == 0;
-    }
-
-    /**
-     * Controlla che l'indirizzo email inserita sia univoco.
-     *
-     * @param medoo  $database Connessione con il database
-     * @param string $email    Email da controllare
-     * @param int    $user_id  Identificativo dell'utente da considerare Identificativo utente
-     *
-     * @return bool Email libera
-     */
-    public static function isEmailFree($email)
-    {
-        $where = [['email', '=', $email]];
-
-        $auth = \App\Core\AppContainer::container()->auth;
-        if ($auth->check()) {
-            array_push($where, ['id', '!=', $auth->user()->id]);
-        }
-
-        return \App\Models\User::where($where)->count() == 0;
-    }
-
     /**
      * Invia email.
      *
@@ -54,7 +15,7 @@ class Utils
      */
     public static function send($receiver, $title, $body, $name = null)
     {
-        $container = \App\Core\AppContainer::container();
+        $container = \App\Core\App::getContainer();
         $settings = $container['settings']['email'];
 
         $mail = new PHPMailer();
@@ -97,124 +58,5 @@ class Utils
         }
 
         \Utils::send($receiver, \App\Core\Translator::translate('email.'.$email.'.title'), $body);
-    }
-
-    /**
-     * Esegue una ricerca binaria dell'elemento $elemento nel campo $where dell'array.
-     * Necessita un'array ordinato!!!
-     *
-     * @param mixed[] $array
-     * @param mixed   $elemento
-     * @param string  $where    Campo di ricerca
-     *
-     * @return int Posizione dell'elemento
-     */
-    public static function ricercaBinaria($array, $elemento, $where = 'id')
-    {
-        $start = 0;
-        $end = count($array) - 1;
-        $centro = 0;
-        while ($start <= $end) {
-            $centro = intval(($start + $end) / 2);
-            if ($elemento < $array[$centro][$where]) {
-                $end = $centro - 1;
-            } else {
-                if ($elemento > $array[$centro][$where]) {
-                    $start = $centro + 1;
-                } else {
-                    return $centro;
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public static function createKey()
-    {
-        return bin2hex(openssl_random_pseudo_bytes(32));
-    }
-
-    /**
-     * Copy from http://www.php.net/manual/en/function.array-merge-recursive.php#92195.
-     *
-     * array_merge_recursive does indeed merge arrays, but it converts values with duplicate
-     * keys to arrays rather than overwriting the value in the first array with the duplicate
-     * value in the second array, as array_merge does. I.e., with array_merge_recursive,
-     * this happens (documented behavior):
-     *
-     * array_merge_recursive(array('key' => 'org value'), array('key' => 'new value'));
-     *     => array('key' => array('org value', 'new value'));
-     *
-     * array_merge_recursive_distinct does not change the datatypes of the values in the arrays.
-     * Matching keys' values in the second array overwrite those in the first array, as is the
-     * case with array_merge, i.e.:
-     *
-     * array_merge_recursive_distinct(array('key' => 'org value'), array('key' => 'new value'));
-     *     => array('key' => array('new value'));
-     *
-     * Parameters are passed by reference, though only for performance reasons. They're not
-     * altered by this function.
-     *
-     * @param array $array1
-     * @param array $array2
-     *
-     * @return array
-     *
-     * @author Daniel <daniel (at) danielsmedegaardbuus (dot) dk>
-     * @author Gabriel Sobrinho <gabriel (dot) sobrinho (at) gmail (dot) com>
-     */
-    public static function array_merge(array &$array1, array &$array2)
-    {
-        $merged = $array1;
-        foreach ($array2 as $key => &$value) {
-            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-                $merged[$key] = \Utils::array_merge($merged[$key], $value);
-            } else {
-                $merged[$key] = $value;
-            }
-        }
-
-        return $merged;
-    }
-
-    /**
-     * Pluck an array of values from an array. (Only for PHP 5.3+).
-     *
-     * @param  $array - data
-     * @param  $key - value you want to pluck from array
-     *
-     * @return plucked array only with key data
-     */
-    public static function array_pluck($array, $key)
-    {
-        return array_map(function ($v) use ($key) {
-            return is_object($v) ? $v->$key : $v[$key];
-        }, $array);
-    }
-
-    public static function combinations(array $array, $choose)
-    {
-        $result = [];
-        $combination = [];
-
-        $n = count($array);
-
-        self::inner(0, $choose, $array, $n, $result, $combination);
-
-        return $result;
-    }
-
-    protected static function inner($start, $choose, $array, $n, &$result, &$combination)
-    {
-        if ($choose == 0) {
-            array_push($result, $combination);
-        } else {
-            for ($i = $start; $i <= $n - $choose; ++$i) {
-                array_push($combination, $array[$i]);
-                self::inner($i + 1, $choose - 1, $array, $n, $result, $combination);
-                array_pop($combination);
-            }
-        }
     }
 }

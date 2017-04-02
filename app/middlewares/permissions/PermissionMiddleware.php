@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core;
+namespace App\Middlewares\Permissions;
 
-abstract class PermissionMiddleware extends BaseContainer
+abstract class PermissionMiddleware extends \App\App
 {
     public function __invoke($request, $response, $next)
     {

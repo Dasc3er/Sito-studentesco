@@ -4,14 +4,12 @@ namespace App\Controllers;
 
 use App\Models;
 
-class CourseController extends \App\Core\BaseContainer
+class CourseController extends \App\App
 {
     public function all($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function () {
-            $container = \App\Core\AppContainer::container();
-
-            return $container['filter']->page;
+        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
+            return $this->filter->page;;
         });
 
         $event = Models\Event::orderBy('date', 'desc')->first();
@@ -21,6 +19,10 @@ class CourseController extends \App\Core\BaseContainer
             $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
             $args['time'] = $event->date >= \Carbon\Carbon::now();
+        }
+        elseif($this->auth->admin()){
+            $this->flash->addMessage('errors', $this->translator->translate('course.needs-event'));
+            $this->router->redirectTo('new-event');
         }
 
         $response = $this->view->render($response, 'courses/all.twig', $args);
@@ -36,11 +38,11 @@ class CourseController extends \App\Core\BaseContainer
             $args['times'] = Models\Time::with('courses')->whereHas('courses', function ($q) use ($event) {
                 $q->where(['event_id' => $event->id]);
             })->get();
-            $t = \Utils::array_pluck($args['times']->toArray(), 'id');
+            $t = array_pluck($args['times']->toArray(), 'id');
 
             $results = [];
             for ($i = 1; $i <= $args['times']->count(); ++$i) {
-                $results = array_merge($results, \Utils::combinations($t, $i));
+                $results = array_merge($results, self::combinations($t, $i));
             }
 
             foreach ($results as $result_key => $result_value) {
@@ -91,10 +93,40 @@ class CourseController extends \App\Core\BaseContainer
 
             $args['results'] = $results;
         }
+        elseif($this->auth->admin()){
+            $this->flash->addMessage('errors', $this->translator->translate('course.needs-event'));
+            $this->router->redirectTo('new-event');
+        }
 
         $response = $this->view->render($response, 'courses/index.twig', $args);
 
         return $response;
+    }
+
+
+    protected static function combinations(array $array, $choose)
+    {
+        function inner($start, $choose, $array, $n, &$result, &$combination)
+        {
+            if ($choose == 0) {
+                array_push($result, $combination);
+            } else {
+                for ($i = $start; $i <= $n - $choose; ++$i) {
+                    array_push($combination, $array[$i]);
+                    inner($i + 1, $choose - 1, $array, $n, $result, $combination);
+                    array_pop($combination);
+                }
+            }
+        }
+
+        $result = [];
+        $combination = [];
+
+        $n = count($array);
+
+        inner(0, $choose, $array, $n, $result, $combination);
+
+        return $result;
     }
 
     public function category($request, $response, $args)
