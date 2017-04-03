@@ -6,7 +6,7 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-list"></i> {{ result.name }}</h1>
 					<p>{{ result.description }}</p>
-{% if result.user_id == auth.user().id or auth.admin() %}
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
                     <hr>
 {% if delete %}
 					<p>{{ 'base.deleteQuestion'|trans }}</p>

@@ -27,12 +27,12 @@
 							<td>{{ result.username }}</td>
 							<td>{{ result.created_at }}</td>
                             <td>
-{% if result.id != auth.user().id and result.id != superuser %}
+{% if result.id != auth.getUser().id and result.id != superuser %}
 {% if result.trashed() %}
                                 <a class="btn btn-success" href="{{ path_for('enable-user', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-check"></i> {{ 'base.enable'|trans }}</a>
 {% elseif result.id != superuser %}
                                 <a class="btn btn-danger" href="{{ path_for('delete-user', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
-{% if superuser == auth.user().id %}
+{% if superuser == auth.getUser().id %}
 {% if result.role == 0 %}
                                 <a class="btn btn-info" href="{{ path_for('admin', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-arrow-up"></i> {{ 'base.admin-up'|trans }}</a>
 {% else %}

@@ -38,7 +38,7 @@ class User extends Model
 
     public function group()
     {
-        return $this->belongsTo('App\Models\Course');
+        return $this->belongsTo('App\Models\Group');
     }
 
     /**
@@ -107,7 +107,7 @@ class User extends Model
 
     public function isAdmin()
     {
-        return !empty($this->is_admin);
+        return !empty($this->role);
     }
 
     /**
@@ -124,7 +124,7 @@ class User extends Model
 
         $auth = \App\App::getContainer()->auth;
         if ($auth->check() && !empty($ignore_current)) {
-            $where[] = ['id', '!=', $auth->user()->id];
+            $where[] = ['id', '!=', $auth->getUser()->id];
         }
 
         return User::where($where)->count() == 0;
@@ -144,7 +144,7 @@ class User extends Model
 
         $auth = \App\App::getContainer()->auth;
         if ($auth->check() && !empty($ignore_current)) {
-            $where[] = ['id', '!=', $auth->user()->id];
+            $where[] = ['id', '!=', $auth->getUser()->id];
         }
 
         return User::where($where)->count() == 0;

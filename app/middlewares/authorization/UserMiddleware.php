@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Middlewares\Permissions;
+namespace App\Middlewares\Authorization;
 
-class UserMiddleware extends PermissionMiddleware
+class UserMiddleware extends \App\Middlewares\AuthorizationMiddleware
 {
     protected function operation($request, $response)
     {
@@ -12,7 +12,7 @@ class UserMiddleware extends PermissionMiddleware
         return $response;
     }
 
-    protected function hasPermission()
+    protected function hasAuthorization()
     {
         return $this->auth->check();
     }

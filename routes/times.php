@@ -12,4 +12,4 @@ $app->group('/times', function () use ($app) {
     $app->get('/delete/{id:[0-9]}', 'App\Controllers\TimeController:delete')->setName('delete-time');
     $app->post('/delete/{id:[0-9]}', 'App\Controllers\TimeController:deletePost');
 
-})->add('App\Middlewares\Permissions\AdminMiddleware');
+})->add('App\Middlewares\Authorization\AdminMiddleware');

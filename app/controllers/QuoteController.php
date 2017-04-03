@@ -4,15 +4,11 @@ namespace App\Controllers;
 
 use App\Models;
 
-class QuoteController extends \App\App
+class QuoteController extends \App\Controller
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
-            return $this->filter->page;;
-        });
-
-        $args['results'] = Models\Quote::with('user', 'teacher')->orderBy('created_at', 'desc')->paginate(10);
+         $args['results'] = Models\Quote::with('user', 'teacher')->orderBy('created_at', 'desc')->paginate(10);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
         $response = $this->view->render($response, 'quotes/index.twig', $args);
@@ -25,7 +21,7 @@ class QuoteController extends \App\App
         if (!empty($args['id'])) {
             $args['result'] = Models\Quote::findOrFail($args['id']);
 
-            if($args['result']->user_id != $this->auth->user()->id && !$this->auth->admin()){
+            if($args['result']->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin()){
                 throw new \Slim\Exception\NotFoundException();
             }
         }
@@ -43,7 +39,7 @@ class QuoteController extends \App\App
             if (!empty($args['id'])) {
                 $quote = Models\Quote::findOrFail($args['id']);
 
-                if($quote->user_id != $this->auth->user()->id && !$this->auth->admin()){
+                if($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin()){
                     throw new \Slim\Exception\NotFoundException();
                 }
             } else {
@@ -61,7 +57,7 @@ class QuoteController extends \App\App
             }
 
             $quote->teacher()->associate($teacher);
-            $quote->user()->associate($this->auth->user());
+            $quote->user()->associate($this->auth->getUser());
             $quote->content = $this->filter->content;
 
             $quote->save();
@@ -87,7 +83,7 @@ class QuoteController extends \App\App
         if (!empty($args['id'])) {
             $quote = Models\Quote::findOrFail($args['id']);
 
-            if($quote->user_id != $this->auth->user()->id && !$this->auth->admin()){
+            if($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin()){
                 throw new \Slim\Exception\NotFoundException();
             }
 

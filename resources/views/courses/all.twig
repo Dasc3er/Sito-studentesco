@@ -6,7 +6,7 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-list"></i> {{ 'courses.header'|trans }}</h1>
 					<p>{{ 'courses.text'|trans }}</p>
-                    {% if auth.admin() %}
+                    {% if auth.isAdmin() %}
                         <p><a class="btn btn-success" href="{{ path_for('new-course', {'locale': locale}) }}"><i class="fa fa-plus"></i> {{ 'base.new'|trans }}</a></p>
                     {% endif %}
 				</div>
@@ -22,12 +22,12 @@
                         <div class="panel panel-default">
                             <div class="panel-heading"><a href="{{ path_for('course', {'locale': locale, 'id': result.id }) }}">{{ result.name }}</a></div>
                             <div class="panel-body">
-                                <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{%if not loop.last %}, {% endif %}{% endfor %}.</p>
+                                <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
                                 <p><strong>{{ 'base.place'|trans }}</strong>: {{ result.place }}.</p>
                                 <p>{{ 'base.description'|trans }}:</p>
                                 <p>{{ result.description }}</p>
-{% set subscribed = auth.user().isSubscribedTo(result) %}
-{% set freeTime = auth.user().isFreeTime(result) %}
+{% set subscribed = auth.getUser().isSubscribedTo(result) %}
+{% set freeTime = auth.getUser().isFreeTime(result) %}
 {% if subscribed or freeTime %}
 
                                 <hr>
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
 {% endif %}
-{% if auth.admin() %}
+{% if auth.isAdmin() %}
 
                                 <hr>
                                 <div class="row">

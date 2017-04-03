@@ -36,4 +36,4 @@ $app->add(function (Request $request, Response $response, callable $next) {
     return $next($request, $response);
 });
 
-$app->add(new \App\Middlewares\Permissions\FunctionsMiddleware($container));
+$app->add(new \App\Middlewares\Authorization\FunctionsMiddleware($container));

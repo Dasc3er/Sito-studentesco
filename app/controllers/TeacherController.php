@@ -4,14 +4,10 @@ namespace App\Controllers;
 
 use App\Models;
 
-class TeacherController extends \App\App
+class TeacherController extends \App\Controller
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
-            return $this->filter->page;;
-        });
-
         $args['results'] = Models\Teacher::orderBy('created_at', 'desc')->paginate(100);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 

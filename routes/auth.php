@@ -12,10 +12,10 @@ $app->group('/auth', function () use ($app) {
 
     $app->get('/retrieve/{token}', 'App\Controllers\AuthController:retrieveToken')->setName('retrieve');
     $app->post('/retrieve/{token}', 'App\Controllers\AuthController:retrieveTokenPost');
-})->add('App\Middlewares\Permissions\GuestMiddleware');
+})->add('App\Middlewares\Authorization\GuestMiddleware');
 
-$app->get('/auth/logout', 'App\Controllers\AuthController:logout')->setName('logout')->add('App\Middlewares\Permissions\UserMiddleware');
+$app->get('/auth/logout', 'App\Controllers\AuthController:logout')->setName('logout')->add('App\Middlewares\Authorization\UserMiddleware');
 
 $app->get('/verify/{code}', 'App\Controllers\UserController:verifyEmail')->setName('verify-email');
 
-$app->get('/send-verification-code', 'App\Controllers\UserController:sendVerify')->setName('send-verify')->add('App\Middlewares\Permissions\UserMiddleware');
+$app->get('/send-verification-code', 'App\Controllers\UserController:sendVerify')->setName('send-verify')->add('App\Middlewares\Authorization\UserMiddleware');

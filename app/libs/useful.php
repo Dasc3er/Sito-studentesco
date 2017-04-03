@@ -17,30 +17,34 @@ if (!function_exists('array_pluck')) {
     }
 }
 
-/**
- * Check if a string starts with the given string.
- *
- * @param string $string
- * @param string $starts_with
- *
- * @return bool
- */
-function starts_with($string, $starts_with)
-{
-    return strpos($string, $starts_with) === 0;
+if (!function_exists('starts_with')) {
+    /**
+     * Check if a string starts with the given string.
+     *
+     * @param string $string
+     * @param string $starts_with
+     *
+     * @return bool
+     */
+    function starts_with($string, $starts_with)
+    {
+        return strpos($string, $starts_with) === 0;
+    }
 }
 
-/**
- * Check if a string ends with the given string.
- *
- * @param string $string
- * @param string $ends_with
- *
- * @return bool
- */
-function ends_with($string, $ends_with)
-{
-    return substr($string, -strlen($ends_with)) === $ends_with;
+if (!function_exists('ends_with')) {
+    /**
+     * Check if a string ends with the given string.
+     *
+     * @param string $string
+     * @param string $ends_with
+     *
+     * @return bool
+     */
+    function ends_with($string, $ends_with)
+    {
+        return substr($string, -strlen($ends_with)) === $ends_with;
+    }
 }
 
 /**

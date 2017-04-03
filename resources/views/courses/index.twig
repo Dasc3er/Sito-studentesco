@@ -6,7 +6,7 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-list"></i> {{ 'courses.header'|trans }}</h1>
 					<p>{{ 'courses.text'|trans }}</p>
-                    {% if auth.admin() %}
+                    {% if auth.isAdmin() %}
                         <p><a class="btn btn-success" href="{{ path_for('new-course', {'locale': locale}) }}"><i class="fa fa-plus"></i> {{ 'base.new'|trans }}</a></p>
                     {% endif %}
 				</div>

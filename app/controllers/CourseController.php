@@ -4,14 +4,10 @@ namespace App\Controllers;
 
 use App\Models;
 
-class CourseController extends \App\App
+class CourseController extends \App\Controller
 {
     public function all($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
-            return $this->filter->page;;
-        });
-
         $event = Models\Event::orderBy('date', 'desc')->first();
 
         if (!empty($event)) {
@@ -20,7 +16,7 @@ class CourseController extends \App\App
 
             $args['time'] = $event->date >= \Carbon\Carbon::now();
         }
-        elseif($this->auth->admin()){
+        elseif($this->auth->isAdmin()){
             $this->flash->addMessage('errors', $this->translator->translate('course.needs-event'));
             $this->router->redirectTo('new-event');
         }
@@ -93,7 +89,7 @@ class CourseController extends \App\App
 
             $args['results'] = $results;
         }
-        elseif($this->auth->admin()){
+        elseif($this->auth->isAdmin()){
             $this->flash->addMessage('errors', $this->translator->translate('course.needs-event'));
             $this->router->redirectTo('new-event');
         }
@@ -103,30 +99,29 @@ class CourseController extends \App\App
         return $response;
     }
 
-
     protected static function combinations(array $array, $choose)
     {
-        function inner($start, $choose, $array, $n, &$result, &$combination)
-        {
-            if ($choose == 0) {
-                array_push($result, $combination);
-            } else {
-                for ($i = $start; $i <= $n - $choose; ++$i) {
-                    array_push($combination, $array[$i]);
-                    inner($i + 1, $choose - 1, $array, $n, $result, $combination);
-                    array_pop($combination);
-                }
-            }
-        }
-
         $result = [];
         $combination = [];
 
         $n = count($array);
 
-        inner(0, $choose, $array, $n, $result, $combination);
+        self::inner(0, $choose, $array, $n, $result, $combination);
 
         return $result;
+    }
+
+    protected static function inner($start, $choose, $array, $n, &$result, &$combination)
+    {
+        if ($choose == 0) {
+            array_push($result, $combination);
+        } else {
+            for ($i = $start; $i <= $n - $choose; ++$i) {
+                array_push($combination, $array[$i]);
+                self::inner($i + 1, $choose - 1, $array, $n, $result, $combination);
+                array_pop($combination);
+            }
+        }
     }
 
     public function category($request, $response, $args)
@@ -168,9 +163,9 @@ class CourseController extends \App\App
 
     public function datail($request, $response, $args)
     {
-        $args['result'] = Models\Course::findOrFail($args['id']);
+        $args['result'] = Models\Course::with('times', 'users')->findOrFail($args['id']);
 
-        $args['users'] = $args['result']->users()->get();
+        $args['users'] = $args['result']->users()->with('group')->orderBy('name', 'asc')->get();
 
         $response = $this->view->render($response, 'courses/datail.twig', $args);
 
@@ -184,12 +179,12 @@ class CourseController extends \App\App
         $event = \App\Models\Event::orderBy('date', 'desc')->first();
 
         if (!empty($course) && $course->event_id == $event->id) {
-            if ($this->auth->user()->isSubscribedTo($course)) {
-                $course->users()->detach($this->auth->user());
+            if ($this->auth->getUser()->isSubscribedTo($course)) {
+                $course->users()->detach($this->auth->getUser());
                 $this->flash->addMessage('infos', $this->translator->translate('course.removeSubscription'));
             } else {
-                if ($this->auth->user()->isFreeTime($course, $event)) {
-                    $course->users()->attach($this->auth->user());
+                if ($this->auth->getUser()->isFreeTime($course, $event)) {
+                    $course->users()->attach($this->auth->getUser());
                     $this->flash->addMessage('infos', $this->translator->translate('course.addSubscription'));
                 } else {
                     $this->flash->addMessage('errors', $this->translator->translate('course.subscriptionError'));

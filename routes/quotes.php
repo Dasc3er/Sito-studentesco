@@ -14,5 +14,5 @@ $app->group('/quotes', function () use ($app) {
 
         $app->get('/delete/{id:[0-9]}', 'App\Controllers\QuoteController:delete')->setName('delete-quote');
         $app->post('/delete/{id:[0-9]}', 'App\Controllers\QuoteController:deletePost');
-    })->add('App\Middlewares\Permissions\AdminMiddleware');
-})->add('App\Middlewares\Permissions\UserMiddleware');
+    })->add('App\Middlewares\Authorization\AdminMiddleware');
+})->add('App\Middlewares\Authorization\UserMiddleware');

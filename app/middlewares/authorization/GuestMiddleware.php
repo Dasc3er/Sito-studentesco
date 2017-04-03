@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middlewares\Permissions;
+namespace App\Middlewares\Authorization;
 
 class GuestMiddleware extends UserMiddleware
 {
@@ -12,8 +12,8 @@ class GuestMiddleware extends UserMiddleware
         return $response;
     }
 
-    protected function hasPermission()
+    protected function hasAuthorization()
     {
-        return !parent::hasPermission();
+        return !parent::hasAuthorization();
     }
 }

@@ -11,4 +11,4 @@ $app->group('/events', function () use ($app) {
 
     $app->get('/delete/{id:[0-9]}', 'App\Controllers\EventController:delete')->setName('delete-event');
     $app->post('/delete/{id:[0-9]}', 'App\Controllers\EventController:deletePost');
-})->add('App\Middlewares\Permissions\AdminMiddleware');
+})->add('App\Middlewares\Authorization\AdminMiddleware');

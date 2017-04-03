@@ -20,5 +20,5 @@ $app->group('/courses', function () use ($app) {
 
         $app->get('/delete/{id:[0-9]}', 'App\Controllers\CourseController:delete')->setName('delete-course');
         $app->post('/delete/{id:[0-9]}', 'App\Controllers\CourseController:deletePost');
-    })->add('App\Middlewares\Permissions\AdminMiddleware');
-})->add('App\Middlewares\Permissions\UserMiddleware');
+    })->add('App\Middlewares\Authorization\AdminMiddleware');
+})->add('App\Middlewares\Authorization\UserMiddleware');

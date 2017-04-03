@@ -33,7 +33,7 @@ class Auth extends \App\App
 
     public function attempt($email, $password)
     {
-        $result = Models\User::where(['email' => \App\App::encode($email)])->orWhere(['username' => \App\App::encode($email)])->whereNull('deleted_at')->first();
+        $result = Models\User::where(['email' => App::encode($email)])->orWhere(['username' => App::encode($email)])->whereNull('deleted_at')->first();
 
         if (!empty($result) && password_verify($password, $result['password'])) {
             $login = new Models\Login();
@@ -59,7 +59,7 @@ class Auth extends \App\App
     public function logout()
     {
         if ($this->check()) {
-            Models\Login::where('user_id', $this->user()->id)->update(['session_code' => null]);
+            Models\Login::where('user_id', $this->getUser()->id)->update(['session_code' => null]);
 
             unset($this->user);
             unset($this->email_verified);
@@ -95,7 +95,7 @@ class Auth extends \App\App
                 $_SESSION['identifier'] = $identifier;
             }
 
-            if ($this->check() && !$this->emailVerificata()) {
+            if ($this->check() && !$this->isEmailVerified()) {
                 $this->flash->addMessage('warnings', '<i class="fa fa-bell"></i> '.$this->translator->translate('email.not-confirmed').' <a href="'.$this->router->pathFor('send-verify').'"> '.$this->translator->translate('email.send-again').'</a>');
             }
         } else {
@@ -103,22 +103,22 @@ class Auth extends \App\App
         }
     }
 
-    public function user()
-    {
-        return $this->user;
-    }
-
     public function check()
     {
         return !empty($this->user);
     }
 
-    public function admin()
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    public function isAdmin()
     {
         return $this->check() && $this->user->isAdmin();
     }
 
-    public function emailVerificata()
+    public function isEmailVerified()
     {
         return !empty($this->email_verified);
     }

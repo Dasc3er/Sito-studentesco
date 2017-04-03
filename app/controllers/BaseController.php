@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models;
 
-class BaseController extends \App\App
+class BaseController extends \App\Controller
 {
     public function index($request, $response, $args)
     {

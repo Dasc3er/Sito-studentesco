@@ -4,14 +4,10 @@ namespace App\Controllers;
 
 use App\Models;
 
-class UserController extends \App\App
+class UserController extends \App\Controller
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
-            return $this->filter->page;;
-        });
-
         $args['results'] = Models\User::orderBy('name', 'asc')->withTrashed()->paginate(30);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
@@ -25,7 +21,7 @@ class UserController extends \App\App
         if (!empty($args['id'])) {
             $args['result'] = Models\User::findOrFail($args['id']);
         } elseif ($this->auth->check()) {
-            $args['result'] = $this->auth->user();
+            $args['result'] = $this->auth->getUser();
         }
 
         $response = $this->view->render($response, 'users/detail.twig', $args);
@@ -45,7 +41,7 @@ class UserController extends \App\App
         if (!empty($args['id'])) {
             $user = Models\User::findOrFail($args['id']);
 
-            if ($user->id != $this->auth->user()->id && $user->id != $this->settings['app']['superuser']) {
+            if ($user->id != $this->auth->getUser()->id && $user->id != $this->settings['app']['superuser']) {
                 $user->cascadeDelete();
             }
         }
@@ -60,7 +56,7 @@ class UserController extends \App\App
         if (!empty($args['id'])) {
             $user = Models\User::withTrashed()->findOrFail($args['id']);
 
-            if ($user->id != $this->auth->user()->id) {
+            if ($user->id != $this->auth->getUser()->id) {
                 $user->restore();
             }
         }
@@ -91,7 +87,7 @@ class UserController extends \App\App
 
     public function credentials($request, $response, $args)
     {
-        $args['result'] = $this->auth->user()->toArray();
+        $args['result'] = $this->auth->getUser()->toArray();
 
         $response = $this->view->render($response, 'users/credentials.twig', $args);
 
@@ -111,7 +107,7 @@ class UserController extends \App\App
             $emailFree = Models\User::isEmailFree($email);
 
             if ($userFree && $emailFree && $password == $rep_password) {
-                $user = $this->auth->user();
+                $user = $this->auth->getUser();
 
                 $user->name = $name;
                 $user->username = $username;
@@ -157,7 +153,7 @@ class UserController extends \App\App
 
     public function sendVerify($request, $response, $args)
     {
-        $user = $this->auth->user();
+        $user = $this->auth->getUser();
 
         $user->email_token = secure_random_string();
         $user->save();

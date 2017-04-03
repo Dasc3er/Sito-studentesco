@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Middlewares\Permissions;
+namespace App\Middlewares\Authorization;
 
-class FunctionsMiddleware extends PermissionMiddleware
+class FunctionsMiddleware extends \App\Middlewares\AuthorizationMiddleware
 {
     protected $routeName;
 
@@ -22,7 +22,7 @@ class FunctionsMiddleware extends PermissionMiddleware
         throw new \Slim\Exception\NotFoundException($request, $response);
     }
 
-    protected function hasPermission()
+    protected function hasAuthorization()
     {
         return !(isset($this->settings['app']['functions'][$this->routeName]) && empty($this->settings['app']['functions'][$this->routeName]));
     }

@@ -12,6 +12,10 @@ return [
     'errorPassword' => 'Le password devono corrispondere!',
     'password-strength' => 'Complessità della password',
 
+    'class' => 'Classe',
+    'subscripters' => 'Iscritti',
+    'needs-event' => 'E\' necessatio create una nuova autogestione!',
+
     'save' => 'Salva',
     'new' => 'Nuovo',
     'edit' => 'Modifica',

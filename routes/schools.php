@@ -12,4 +12,4 @@ $app->group('/schools', function () use ($app) {
     $app->get('/delete/{id:[0-9]}', 'App\Controllers\SchoolController:delete')->setName('delete-school');
     $app->post('/delete/{id:[0-9]}', 'App\Controllers\SchoolController:deletePost');
 
-})->add('App\Middlewares\Permissions\AdminMiddleware');
+})->add('App\Middlewares\Authorization\AdminMiddleware');

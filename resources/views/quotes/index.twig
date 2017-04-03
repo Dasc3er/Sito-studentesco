@@ -13,7 +13,7 @@
 			</div>
             <hr>
             <div class="container">
-{% if (result.user_id == auth.user().id or auth.admin()) and delete %}
+{% if (result.user_id == auth.getUser().id or auth.isAdmin()) and delete %}
 
                 <p>{{ 'base.deleteQuestion'|trans }}</p>
                 <div class="row">
@@ -37,10 +37,10 @@
                         <blockquote>
 						    <p>{{ result.content }}</p>
                             <footer>
-                                <cite title="{{ result.teacher.name }}">{{ result.teacher.name }}</cite>{% if auth.admin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
+                                <cite title="{{ result.teacher.name }}">{{ result.teacher.name }}</cite>{% if auth.isAdmin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
                             </footer>
                         </blockquote>
-{% if result.user_id == auth.user().id or auth.admin() %}
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
                         <a class="btn btn-info" href="{{ path_for('edit-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
                         <a class="btn btn-danger" href="{{ path_for('delete-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
 {% endif %}

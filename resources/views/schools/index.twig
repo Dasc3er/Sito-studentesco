@@ -11,7 +11,7 @@
 			</div>
             <hr>
 			<div class="container">
-{% if (result.user_id == auth.user().id or auth.admin()) and delete %}
+{% if (result.user_id == auth.getUser().id or auth.isAdmin()) and delete %}
             <hr>
             <p>{{ 'base.deleteQuestion'|trans }}</p>
             <div class="row">

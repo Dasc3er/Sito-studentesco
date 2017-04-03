@@ -4,14 +4,10 @@ namespace App\Controllers;
 
 use App\Models;
 
-class TimeController extends \App\App
+class TimeController extends \App\Controller
 {
     public function index($request, $response, $args)
     {
-        \Illuminate\Pagination\Paginator::currentPageResolver(function ($this) {
-            return $this->filter->page;;
-        });
-
         $args['results'] = Models\Time::orderBy('created_at', 'desc')->paginate(10);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 

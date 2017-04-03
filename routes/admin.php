@@ -19,4 +19,4 @@ $app->group('/admin', function () use ($app) {
         $app->post('', 'App\Controllers\AdminController:uploadPost')->setName('upload-post');
     });
 
-})->add('App\Middlewares\Permissions\AdminMiddleware');
+})->add('App\Middlewares\Authorization\AdminMiddleware');

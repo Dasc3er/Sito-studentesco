@@ -2,7 +2,7 @@
 
 namespace App\Middlewares;
 
-class FilterMiddleware extends \App\App
+class FilterMiddleware extends \App\Middleware
 {
     protected $prefix;
     protected $purifier;

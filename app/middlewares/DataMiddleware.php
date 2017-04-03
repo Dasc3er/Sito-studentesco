@@ -2,7 +2,7 @@
 
 namespace App\Middlewares;
 
-class DataMiddleware extends \App\App
+class DataMiddleware extends \App\Middleware
 {
     protected $routeName;
 
@@ -14,7 +14,7 @@ class DataMiddleware extends \App\App
 
         $settings = $this->settings['app']['menu'];
 
-        if ($this->auth->admin()) {
+        if ($this->auth->isAdmin()) {
             $menus = $settings['admin'];
         } elseif ($this->auth->check()) {
             $menus = $settings['user'];
@@ -82,8 +82,8 @@ class DataMiddleware extends \App\App
             }
 
             $replace = [];
-            if ($this->auth->user()) {
-                $replace[':username'] = $this->auth->user()->username;
+            if ($this->auth->check()) {
+                $replace[':username'] = $this->auth->getUser()->username;
             }
 
             $result['title'] = $this->translator->translate($title, $replace);

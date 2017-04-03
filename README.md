@@ -35,7 +35,7 @@ Prima di iniziare l'installazione, è necessario procedere al download di una ve
 ### Prerequisiti
 
 - PHP >= 5.6
-- uno dei seguenti DBMS (preferibilmente aggiornato alle versioni più recenti)
+- Uno dei seguenti DBMS (preferibilmente aggiornato alle versioni più recenti)
   - MySQL
   - Postgres
   - SQLite

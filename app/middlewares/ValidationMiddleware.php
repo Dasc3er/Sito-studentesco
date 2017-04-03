@@ -8,7 +8,7 @@ use Respect\Validation\Exceptions\NestedValidationException;
  * Validation for Slim.
  * Based on DavidePastore\Slim\Validation.
  */
-class ValidationMiddleware extends \App\App
+class ValidationMiddleware extends \App\Middleware
 {
     /**
      * Validators.

@@ -6,7 +6,7 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-user"></i> {{ 'profile.header'|trans({':name': result.name}) }}</h1>
 					<p>{{ 'profile.text'|trans }}</p>
-{% if result.id != auth.user().id and auth.admin() %}
+{% if result.id != auth.getUser().id and auth.isAdmin() %}
                     <hr>
 {% if delete %}
 					<p>{{ 'base.deleteQuestion'|trans }}</p>

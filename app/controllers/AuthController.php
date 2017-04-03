@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models;
 
-class AuthController extends \App\App
+class AuthController extends \App\Controller
 {
     public function login($request, $response, $args)
     {

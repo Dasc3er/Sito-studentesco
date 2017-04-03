@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Middlewares\Permissions;
+namespace App\Middlewares;
 
-abstract class PermissionMiddleware extends \App\App
+abstract class AuthorizationMiddleware extends \App\Middleware
 {
     public function __invoke($request, $response, $next)
     {
-        if (!$this->hasPermission()) {
+        if (!$this->hasAuthorization()) {
             $response = $this->operation($request, $response);
         } else {
             $response = $next($request, $response);
@@ -17,5 +17,5 @@ abstract class PermissionMiddleware extends \App\App
 
     abstract protected function operation($request, $response);
 
-    abstract protected function hasPermission();
+    abstract protected function hasAuthorization();
 }

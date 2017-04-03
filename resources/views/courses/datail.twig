@@ -6,7 +6,7 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-list"></i> {{ result.name }}</h1>
 					<p>{{ result.description }}</p>
-{% if auth.admin() %}
+{% if auth.isAdmin() %}
                     <hr>
 {% if delete %}
 					<p>{{ 'base.deleteQuestion'|trans }}</p>
@@ -22,8 +22,8 @@
                         </div>
                     </div>
 {% else %}
-{% set subscribed = auth.user().isSubscribedTo(result) %}
-{% set freeTime = auth.user().isFreeTime(result) %}
+{% set subscribed = auth.getUser().isSubscribedTo(result) %}
+{% set freeTime = auth.getUser().isFreeTime(result) %}
 {% if subscribed or freeTime %}
 
                     <div class="row">
@@ -47,13 +47,13 @@
 			</div>
 			<hr>
 			<div class="container">
-                <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{%if not loop.last %}, {% endif %}{% endfor %}.</p>
+                <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
                 <p><strong>{{ 'base.place'|trans }}</strong>: {{ result.place }}.</p>
                 <p>{{ 'base.description'|trans }}:</p>
                 <p>{{ result.description }}</p>
 
                 <hr>
-                <p>{{ 'base.subscripters' }}</p>
+                <p><strong>{{ 'base.subscripters'|trans }}</strong></p>
 				<table class="table table-hover table-striped">
 					<thead>
 						<tr>
@@ -65,7 +65,7 @@
 {% for user in users %}
 						<tr>
 							<td>{{ user.name }}</td>
-							<td>{{ user.group }}</td>
+							<td>{% if user.group %}{{ user.group.name }}{% endif %}</td>
 						</tr>
 
 {% else %}
