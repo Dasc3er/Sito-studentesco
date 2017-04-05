@@ -246,6 +246,7 @@ function safe_truncate($string, $length, $append = '...')
 
     return $ret;
 }
+
 /**
  * Transmit headers that force a browser to display the download file
  * dialog. Cross browser compatible. Only fires if headers have not

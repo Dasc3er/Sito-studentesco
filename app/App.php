@@ -25,30 +25,31 @@ class App
 
     public static function getSettings()
     {
-        if (empty(self::getContainer())) {
-            $settings = \Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__.'/../config.yml'));
+        $default_file = __DIR__.'/../config.default.yml';
+        $custom_file = __DIR__.'/../config.yml';
 
-            $default = self::settingsCleanup(\Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__.'/../config.default.yml')), $settings);
+        $settings = [];
+        if (!empty(self::getContainer())) {
+            $settings = self::getContainer()->settings;
+        } elseif (file_exists($custom_file) && file_exists($default_file)) {
+            $custom = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($custom_file));
+            $default = \Symfony\Component\Yaml\Yaml::parse(file_get_contents($default_file));
 
-            $settings = array_merge_recursive($default, $settings);
+            $settings = self::settingsMerge($default, $custom);
 
-            if ($settings['debug']['enable']) {
-                $settings['displayErrorDetails'] = true;
-            }
-
-            return $settings;
+            $settings['displayErrorDetails'] = empty($settings['debug']['enable']) ? false : true;
         }
 
-        return self::getContainer()->settings;
+        return $settings;
     }
 
-    protected static function settingsCleanup($default, $settings)
+    protected static function settingsMerge($default, $custom)
     {
-        foreach ($settings as $key => $value) {
+        foreach ($custom as $key => $value) {
             if (self::isAssocArray($value) && self::isAssocArray($default[$key])) {
-                $default[$key] = self::settingsCleanup($default[$key], $value);
+                $default[$key] = self::settingsMerge($default[$key], $value);
             } else {
-                unset($default[$key]);
+                $default[$key] = $value;
             }
         }
 

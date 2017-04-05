@@ -6,8 +6,11 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+
 		<title>{% block title %}{% endblock %} - {{ 'base.site'|trans }}</title>
-		<link href="{{ img.getUrl('favicon.jpg') }}" rel="shortcut icon">
+        <meta name="description" content="{{ 'index.text'|trans }}">
+		<link href="{{ img.getUrl('favicon.png') }}" rel="shortcut icon">
+
 		<link href="{{ css.getUrl('bootstrap.min.css') }}" rel="stylesheet" type="text/css">
 		<link href="{{ css.getUrl('font-awesome.min.css') }}" rel="stylesheet" type="text/css">
 {% block styles %}{% endblock %}

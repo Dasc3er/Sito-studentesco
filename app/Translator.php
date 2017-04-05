@@ -19,10 +19,12 @@ class Translator
     protected static $options = [];
     /** @var array Informazioni per la conversione di date e numeri nella formattazione originale */
     protected static $english = [
-        'decimals' => '.',
-        'thousands' => '',
-        'date' => '-',
-        'time' => ':',
+        'separators' => [
+            'decimals' => '.',
+            'thousands' => '',
+            'date' => '-',
+            'time' => ':',
+        ],
         'dateOrder' => [
                 'year',
                 'month',
@@ -95,7 +97,7 @@ class Translator
     public function addLocale($language)
     {
         if (!$this->isLocaleAvailable($language)) {
-            array_push($this->locales, $language);
+            $this->locales[] = $language;
         }
     }
 
@@ -129,17 +131,6 @@ class Translator
     public static function translate($string, $parameters = [], $domain = null, $locale = null)
     {
         return self::$translator->trans($string, $parameters, $domain, $locale);
-    }
-
-    /**
-     * Restituisce la informazioni impostate riguardanti la formattazione della lingua selezionata.
-     *
-     *
-     * @return array
-     */
-    public static function getInfos()
-    {
-        return self::$infos;
     }
 
     /**
@@ -346,14 +337,16 @@ class TranslationLoader extends \Symfony\Component\Translation\Loader\FileLoader
 
     protected function loadResource($resource)
     {
-        $loader = pathinfo($resource, PATHINFO_EXTENSION);
-        if (!empty($loader)) {
-            $result = $this->getLoader($loader)->loadResource($resource);
+        $result = [];
+
+        $extension = strtolower(pathinfo($resource, PATHINFO_EXTENSION));
+        if (!empty($extension) && !empty($this->getLoader($extension))) {
+            $result = $this->getLoader($extension)->loadResource($resource);
 
             if (!empty($this->include_filename)) {
                 $result = array_combine(
-                    array_map(function ($k) use ($resource, $loader) {
-                        return basename($resource, '.'.$loader).'.'.$k;
+                    array_map(function ($k) use ($resource, $extension) {
+                        return basename($resource, '.'.$extension).'.'.$k;
                     }, array_keys($result)),
                     $result
                 );
@@ -366,7 +359,7 @@ class TranslationLoader extends \Symfony\Component\Translation\Loader\FileLoader
     protected function getLoader($name)
     {
         if (empty(self::$loaders[$name])) {
-            $class = '\Symfony\Component\Translation\Loader\\'.$name.'FileLoader';
+            $class = '\Symfony\Component\Translation\Loader\\'.ucfirst($name).'FileLoader';
             if (class_exists($class)) {
                 self::$loaders[$name] = new $class();
             }

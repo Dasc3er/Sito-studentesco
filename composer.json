@@ -8,6 +8,7 @@
         "ezyang/htmlpurifier": "^4.8",
         "filp/whoops": "^2.1",
         "illuminate/database": "5.2.*",
+        "illuminate/events": "5.2.*",
         "illuminate/pagination": "5.2.*",
         "maximebf/debugbar": "^1.13",
         "monolog/monolog": "^1.21",

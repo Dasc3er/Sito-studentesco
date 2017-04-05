@@ -21,7 +21,7 @@ class User extends Model
         return $this->hasMany('App\Models\Quote');
     }
 
-    public function quotesLikes()
+    public function likes()
     {
         return $this->belongsToMany('App\Models\Quote');
     }
@@ -39,6 +39,11 @@ class User extends Model
     public function group()
     {
         return $this->belongsTo('App\Models\Group');
+    }
+
+    public function teachers()
+    {
+        return $this->hasMany('App\Models\Teacher');
     }
 
     /**

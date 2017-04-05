@@ -24,7 +24,7 @@ require_once __DIR__.'/vendor/autoload.php';
 // Slim application
 $settings = \App\App::getSettings();
 
-if (!empty($settings['app']['redirectHTTPS']) && !isHTTPS()) {
+if (!empty($settings['app']['redirectHTTPS']) && !isHTTPS(true)) {
     header('HTTP/1.1 301 Moved Permanently');
     header('Location: https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
     exit();
@@ -39,6 +39,7 @@ $capsule = new \Illuminate\Database\Capsule\Manager();
 foreach ($settings['connections'] as $key => $connection) {
     $capsule->addConnection($connection, $key);
 }
+$capsule->setEventDispatcher(new \Illuminate\Events\Dispatcher(new \Illuminate\Container\Container));
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
@@ -74,12 +75,16 @@ if (!empty($settings['displayErrorDetails'])) {
     $container['debugbar'] = $debugbar;
 
     // Whoops
-    if (!empty($settings['debug']['enableWhoops'])) {
+    if (!empty($settings['debug']['whoops'])) {
         $prettyPageHandler = new PrettyPageHandler();
         $prettyPageHandler->addDataTable('Whoops Default', [
             'Script Name' => $_SERVER['SCRIPT_NAME'],
             'Request URI' => $_SERVER['REQUEST_URI'] ?: '-',
         ]);
+
+        if (!empty($settings['debug']['editor'])) {
+            $prettyPageHandler->setEditor($settings['debug']['editor']);
+        }
 
         // Set Whoops to default exception handler
         $whoops = new \Whoops\Run();

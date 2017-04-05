@@ -1,7 +1,6 @@
 ## Application config
 app:
     superuser: 1
-    maintenance: false
     functions:
         visits: false
         registration: false
@@ -31,10 +30,9 @@ lang:
     default_locale: it
 
 mail:
-    default_email:
+    default_email: email@email.com
 
 ## Debug
 debug:
     enable: true
-    enableWhoops: true
-    whoopsEditor:
+    whoops: true

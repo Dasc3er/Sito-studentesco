@@ -50,7 +50,12 @@ $container['view'] = function ($container) {
     $view->offsetSet('css', new PathPackage($assets.'/css', new EmptyVersionStrategy()));
     $view->offsetSet('js', new PathPackage($assets.'/js', new EmptyVersionStrategy()));
     $view->offsetSet('img', new PathPackage($assets.'/img', new EmptyVersionStrategy()));
-    $view->offsetSet('uploads', new PathPackage($assets.'/img/uploads', new EmptyVersionStrategy()));
+
+    if(!empty($container['debugbar'])){
+        $debugbar = $container['debugbar']->getJavascriptRenderer();
+        $debugbar->setBaseUrl($assets.'/php-debugbar');
+        $view->offsetSet('debugbar', $debugbar);
+    }
 
     $view->offsetSet('functions', $container->settings['app']['functions']);
     $view->offsetSet('superuser', $container->settings['app']['superuser']);
@@ -59,12 +64,6 @@ $container['view'] = function ($container) {
     $view->offsetSet('flash', $container['flash']);
     $view->offsetSet('translator', $container['translator']);
     $view->offsetSet('router', $container['router']);
-
-    if(!empty($container['debugbar'])){
-        $debugbar = $container['debugbar']->getJavascriptRenderer();
-        $debugbar->setBaseUrl($assets.'/php-debugbar');
-        $view->offsetSet('debugbar', $debugbar);
-    }
 
     return $view;
 };

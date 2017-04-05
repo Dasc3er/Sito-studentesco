@@ -36,37 +36,30 @@
 			</div>
 			<hr>
 			<div class="container">
-                <p>{{ result.time }}</p>
-				<table class="table table-hover table-striped">
-					<thead>
-						<tr>
-							<th>{{ 'row-name'|trans }}</th>
-							<th>{{ 'row-value'|trans }}</th>
-						</tr>
-					</thead>
-					<tbody>
-{% for row in rows %}
-						<tr>
-							<td>{{ row.name }}</td>
-							<td>{{ row.value }}</td>
-						</tr>
-
-{% else %}
-        				<p>{{ 'teachers.no-rows'|trans }}</p>
-{% endfor %}
-					</tbody>
-				</table>
-
-{% for row in sections %}
+{% for result in result.quotes %}
+{% if loop.index is odd %}
 				<div class="row">
-					<div class="col-xs-12 col-md-{% if loop.index is odd %}3{% else %}9{% endif %}">
-						{{ sections.description }}
-					</div>
-					<div class="col-xs-12 col-md-{% if loop.index is odd %}9{% else %}3{% endif %}">
-						{{ images[loop.index].name }}
-					</div>
+{% endif %}
+					<div class="col-xs-12 col-md-6">
+                        <blockquote>
+						    <p>{{ result.content|raw }}</p>
+                            <footer>
+                                <cite title="{{ result.teacher.name }}">{{ result.teacher.name }}</cite>{% if auth.isAdmin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
+                            </footer>
+                        </blockquote>
+{% if result.user_id == auth.getUser().id or auth.isAdmin() %}
+                        <a class="btn btn-info" href="{{ path_for('edit-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                        <a class="btn btn-danger" href="{{ path_for('delete-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
+{% endif %}
+                    </div>
+{% if loop.index is even %}
 				</div>
+{% endif %}
+{% else %}
+        		<p>{{ 'base.no-result'|trans }}</p>
 {% endfor %}
-
+{% if results|length is odd %}
+				</div>
+{% endif %}
 			</div>
 {% endblock %}

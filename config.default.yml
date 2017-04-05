@@ -7,7 +7,6 @@ addContentLengthHeader: false
 app:
     superuser: 1
     aliveTimeout: 600
-    maintenance: false
     redirectHTTPS: false
     functions:
         visits: true
@@ -43,8 +42,8 @@ app:
 ## Debug
 debug:
     enable: false
-    enableWhoops: false
-    whoopsEditor:
+    whoops: false
+    editor:
 
 ## Database settings
 database:

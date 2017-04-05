@@ -8,7 +8,7 @@ class DataMiddleware extends \App\Middleware
 
     public function __invoke($request, $response, $next)
     {
-        if (!empty($this->settings['app']['maintenance'])) {
+        if (!empty($this->settings['app']['debug'])) {
             $this->flash->addMessage('warnings', $this->translator->translate('base.maintenance'));
         }
 

@@ -18,7 +18,12 @@ class TeacherController extends \App\Controller
 
     public function datail($request, $response, $args)
     {
-        $args['result'] = Models\Teacher::with('quotes')->findOrFail($args['id']);
+        $teacher = Models\Teacher::with('quotes')->find($args['id']);
+        if (empty($teacher)) {
+            throw new \Slim\Exception\NotFoundException($request, $response);
+        }
+
+        $args['result'] = $teacher;
 
         $response = $this->view->render($response, 'teachers/datail.twig', $args);
 
@@ -28,7 +33,13 @@ class TeacherController extends \App\Controller
     public function form($request, $response, $args)
     {
         if (!empty($args['id'])) {
-            $args['result'] = Models\Teacher::findOrFail($args['id']);
+            $teacher = Models\Teacher::find($args['id']);
+
+            if (empty($teacher) || ($teacher->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin())) {
+                throw new \Slim\Exception\NotFoundException($request, $response);
+            }
+
+            $args['result'] = $teacher;
         }
 
         $response = $this->view->render($response, 'teachers/form.twig', $args);
@@ -40,12 +51,17 @@ class TeacherController extends \App\Controller
     {
         if (!$this->validator->hasErrors()) {
             if (!empty($args['id'])) {
-                $teacher = Models\Teacher::findOrFail($args['id']);
+                $teacher = Models\Teacher::find($args['id']);
+
+                if (empty($teacher) || ($teacher->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin())) {
+                    throw new \Slim\Exception\NotFoundException($request, $response);
+                }
             } else {
                 $teacher = new Models\Teacher();
             }
 
             $teacher->name = $this->filter->name;
+            $teacher->user()->associate($this->auth->getUser());
 
             $teacher->save();
 
@@ -66,7 +82,13 @@ class TeacherController extends \App\Controller
     public function deletePost($request, $response, $args)
     {
         if (!empty($args['id'])) {
-            Models\Teacher::findOrFail($args['id'])->delete();
+            $teacher = Models\Teacher::find($args['id']);
+
+            if (empty($teacher) || ($teacher->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin())) {
+                throw new \Slim\Exception\NotFoundException($request, $response);
+            }
+
+            $teacher->delete();
         }
 
         $this->router->redirectTo('teachers');

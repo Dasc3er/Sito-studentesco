@@ -15,7 +15,7 @@ class Utils
      */
     public static function send($receiver, $title, $body, $name = null)
     {
-        $container = \App\Core\App::getContainer();
+        $container = \App\App::getContainer();
         $settings = $container['settings']['email'];
 
         $mail = new PHPMailer();
@@ -30,10 +30,10 @@ class Utils
             $mail->Port = $settings['port'];
         }
 
-        $mail->Subject = $title.' - '.\App\Core\Translator::translate('base.site');
+        $mail->Subject = $title.' - '.\App\Translator::translate('base.site');
         $mail->isHTML(true); // Set email format to HTML
 
-        $mail->setFrom($settings['default_email'], \App\Core\Translator::translate('base.site'));
+        $mail->setFrom($settings['default_email'], \App\Translator::translate('base.site'));
         $mail->addAddress($receiver);
 
         $mail->Body = $container['view']->fetch('email.twig', ['title' => $title, 'body' => $body, 'name' => $name]);
@@ -41,9 +41,9 @@ class Utils
 
         if (empty($settings['debug']['enable'])) {
             if (!$mail->send()) {
-                $container['flash']->addMessage('errors', \App\Core\Translator::translate('email.email-error').'<br>'.$mail->ErrorInfo);
+                $container['flash']->addMessage('errors', \App\Translator::translate('email.email-error').'<br>'.$mail->ErrorInfo);
             } else {
-                $container['flash']->addMessage('infos', \App\Core\Translator::translate('email.email-sent'));
+                $container['flash']->addMessage('infos', \App\Translator::translate('email.email-sent'));
             }
         }
     }
@@ -53,10 +53,10 @@ class Utils
         $p = 'email.'.$email.'.p';
 
         $body = [];
-        for ($i = 1; \App\Core\Translator::translate($p.$i, $array) != $p.$i; ++$i) {
-            array_push($body, \App\Core\Translator::translate($p.$i, $array));
+        for ($i = 1; \App\Translator::translate($p.$i, $array) != $p.$i; ++$i) {
+            array_push($body, \App\Translator::translate($p.$i, $array));
         }
 
-        \Utils::send($receiver, \App\Core\Translator::translate('email.'.$email.'.title'), $body);
+        \Utils::send($receiver, \App\Translator::translate('email.'.$email.'.title'), $body);
     }
 }

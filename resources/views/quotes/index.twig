@@ -13,31 +13,15 @@
 			</div>
             <hr>
             <div class="container">
-{% if (result.user_id == auth.getUser().id or auth.isAdmin()) and delete %}
-
-                <p>{{ 'base.deleteQuestion'|trans }}</p>
-                <div class="row">
-                    <div class="col-xs-12 col-md-6 text-left">
-                        <a class="btn btn-success" href="{{ path_for('quotes', {'locale': locale}) }}"><i class="fa fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
-                    </div>
-                    <div class="col-xs-12 col-md-6 text-right">
-                        <form action="{{ path_for('delete-quote', {'locale': locale, 'id': id}) }}" method="post" role="form">
-                            {{ form.csrf_field(csrf) }}
-                            <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-{% else %}
 {% for result in results %}
 {% if loop.index is odd %}
 				<div class="row">
 {% endif %}
 					<div class="col-xs-12 col-md-6">
                         <blockquote>
-						    <p>{{ result.content }}</p>
+						    <p>{{ result.content|raw }}</p>
                             <footer>
-                                <cite title="{{ result.teacher.name }}">{{ result.teacher.name }}</cite>{% if auth.isAdmin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
+                                <cite title="{{ result.teacher.name }}"><a class="btn btn-success" href="{{ path_for('teacher', {'locale': locale, 'id':  result.teacher.id }) }}">{{ result.teacher.name }}</a></cite>{% if auth.isAdmin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
                             </footer>
                         </blockquote>
 {% if result.user_id == auth.getUser().id or auth.isAdmin() %}
@@ -55,7 +39,5 @@
 				</div>
 {% endif %}
                 {{ results.links()|raw }}
-
-{% endif %}
 			</div>
 {% endblock %}

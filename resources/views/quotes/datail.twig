@@ -1,0 +1,46 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ result.name }}{% endblock %}
+{% block content %}
+			<div class="jumbotron">
+				<div class="container text-center">
+					<h1><i class="fa fa-list"></i> {{ 'quotes.header'|trans }}</h1>
+                    {% if auth.isAdmin() %}{{ 'base.inserted_by'|trans({':name': result.user.name}) }}{% endif %}
+{% if (result.user_id == auth.getUser().id or auth.isAdmin()) %}
+                    <hr>
+{% if delete %}
+					<p>{{ 'base.deleteQuestion'|trans }}</p>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-success" href="{{ path_for('quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-arrow-left"></i> {{ 'base.cancel'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <form action="{{ path_for('delete-quote', {'locale': locale, 'id': result.id}) }}" method="post" role="form">
+                                {{ form.csrf_field(csrf) }}
+                                <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</button>
+                            </form>
+                        </div>
+                    </div>
+{% else %}
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 text-left">
+                            <a class="btn btn-info" href="{{ path_for('edit-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6 text-right">
+                            <a class="btn btn-danger" href="{{ path_for('delete-quote', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
+                        </div>
+                    </div>
+{% endif %}
+{% endif %}
+				</div>
+			</div>
+			<hr>
+			<div class="container">
+                <blockquote>
+                    <p>{{ result.content|raw }}</p>
+                    <footer>
+                        <cite title="{{ result.teacher.name }}"><a class="btn btn-success" href="{{ path_for('teacher', {'locale': locale, 'id':  result.teacher.id }) }}">{{ result.teacher.name }}</a></cite>
+                    </footer>
+                </blockquote>
+			</div>
+{% endblock %}

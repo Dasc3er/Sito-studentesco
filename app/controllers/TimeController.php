@@ -46,22 +46,4 @@ class TimeController extends \App\Controller
 
         return $response;
     }
-
-    public function delete($request, $response, $args)
-    {
-        $args['delete'] = true;
-
-        return $this->index($request, $response, $args);
-    }
-
-    public function deletePost($request, $response, $args)
-    {
-        if (!empty($args['id'])) {
-            Models\Time::findOrFail($args['id'])->delete();
-        }
-
-        $this->router->redirectTo('times');
-
-        return $response;
-    }
 }

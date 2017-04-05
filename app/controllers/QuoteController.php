@@ -8,7 +8,7 @@ class QuoteController extends \App\Controller
 {
     public function index($request, $response, $args)
     {
-         $args['results'] = Models\Quote::with('user', 'teacher')->orderBy('created_at', 'desc')->paginate(10);
+        $args['results'] = Models\Quote::with('user', 'teacher')->orderBy('created_at', 'desc')->paginate(10);
         $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
         $response = $this->view->render($response, 'quotes/index.twig', $args);
@@ -16,17 +16,32 @@ class QuoteController extends \App\Controller
         return $response;
     }
 
+    public function datail($request, $response, $args)
+    {
+        $quote = Models\Quote::with('teacher')->find($args['id']);
+        if (empty($quote)) {
+            throw new \Slim\Exception\NotFoundException($request, $response);
+        }
+
+        $args['result'] = $quote;
+
+        $response = $this->view->render($response, 'quotes/datail.twig', $args);
+
+        return $response;
+    }
+
     public function form($request, $response, $args)
     {
         if (!empty($args['id'])) {
-            $args['result'] = Models\Quote::findOrFail($args['id']);
+            $quote = Models\Quote::find($args['id']);
 
-            if($args['result']->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin()){
-                throw new \Slim\Exception\NotFoundException();
+            if (empty($quote) || ($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin())) {
+                throw new \Slim\Exception\NotFoundException($request, $response);
             }
-        }
 
-        $args['teachers'] = Models\Teacher::all();
+            $args['result'] = $quote;
+        }
+        $args['teachers'] = Models\Teacher::orderBy('name', 'asc')->get();
 
         $response = $this->view->render($response, 'quotes/form.twig', $args);
 
@@ -37,21 +52,24 @@ class QuoteController extends \App\Controller
     {
         if (!$this->validator->hasErrors()) {
             if (!empty($args['id'])) {
-                $quote = Models\Quote::findOrFail($args['id']);
+                $quote = Models\Quote::find($args['id']);
 
-                if($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin()){
-                    throw new \Slim\Exception\NotFoundException();
+                if (empty($quote) || ($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin())) {
+                    throw new \Slim\Exception\NotFoundException($request, $response);
                 }
             } else {
                 $quote = new Models\Quote();
             }
 
             $teacher = Models\Teacher::find($this->filter->teacher);
-            if(empty($teacher)){
+            if (empty($teacher)) {
                 $teacher = Models\Teacher::where(['name' => $this->filter->new_teacher])->first();
-                if(empty($teacher)){
+                if (empty($teacher)) {
                     $teacher = new Models\Teacher();
+
                     $teacher->name = $this->filter->new_teacher;
+                    $teacher->user()->associate($this->auth->getUser());
+
                     $teacher->save();
                 }
             }
@@ -73,18 +91,16 @@ class QuoteController extends \App\Controller
     {
         $args['delete'] = true;
 
-        $response = $this->view->render($response, 'quotes/index.twig', $args);
-
-        return $response;
+        return $this->datail($request, $response, $args);
     }
 
     public function deletePost($request, $response, $args)
     {
         if (!empty($args['id'])) {
-            $quote = Models\Quote::findOrFail($args['id']);
+            $quote = Models\Quote::find($args['id']);
 
-            if($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin()){
-                throw new \Slim\Exception\NotFoundException();
+            if (empty($quote) || ($quote->user_id != $this->auth->getUser()->id && !$this->auth->isAdmin())) {
+                throw new \Slim\Exception\NotFoundException($request, $response);
             }
 
             $quote->delete();

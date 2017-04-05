@@ -48,22 +48,4 @@ class EventController extends \App\Controller
 
         return $response;
     }
-
-    public function delete($request, $response, $args)
-    {
-        $args['delete'] = true;
-
-        return $this->datail($request, $response, $args);
-    }
-
-    public function deletePost($request, $response, $args)
-    {
-        if (!empty($args['id'])) {
-            Models\Event::findOrFail($args['id'])->delete();
-        }
-
-        $this->router->redirectTo('events');
-
-        return $response;
-    }
 }
