@@ -29,7 +29,6 @@
 							<td>{{ result.subscription_end }}</td>
 							<td>
                                 <a class="btn btn-info" href="{{ path_for('edit-event', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-pencil"></i> {{ 'base.edit'|trans }}</a>
-                                <a class="btn btn-danger" href="{{ path_for('delete-event', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-trash"></i> {{ 'base.delete'|trans }}</a>
                             </td>
 						</tr>
 {% endfor %}

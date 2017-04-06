@@ -6,7 +6,7 @@
 				<div class="container text-center">
 					<h1><i class="fa fa-list"></i> {{ 'courses.header'|trans }}</h1>
 					<p>{{ 'courses.text'|trans }}</p>
-                    {% if auth.isAdmin() %}
+                    {% if auth.isAdmin() and time %}
                         <p><a class="btn btn-success" href="{{ path_for('new-course', {'locale': locale}) }}"><i class="fa fa-plus"></i> {{ 'base.new'|trans }}</a></p>
                     {% endif %}
 				</div>
@@ -25,7 +25,12 @@
                                 <p><strong>{{ 'base.time'|trans }}</strong>: {% for row in result.times %}{{ row.name }}{% if not loop.last %}, {% endif %}{% endfor %}.</p>
                                 <p><strong>{{ 'base.place'|trans }}</strong>: {{ result.place }}.</p>
                                 <p>{{ 'base.description'|trans }}:</p>
-                                <p>{{ result.description }}</p>
+                                <p>{{ result.description|raw }}</p>
+
+                                <p>{{ 'base.subscripters'|trans }}: {{ result.users.count }}/{{ result.capacity }}</p>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="{{ result.users.count / result.capacity * 100 }}" aria-valuemin="0" aria-valuemax="100" style="width:{{ result.users.count / result.capacity * 100 }}%"></div>
+                                </div>
 {% set subscribed = auth.getUser().isSubscribedTo(result) %}
 {% set freeTime = auth.getUser().isFreeTime(result) %}
 {% if subscribed or freeTime %}
@@ -33,11 +38,11 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-xs-12">
-                                        <a class="btn btn-block btn-{% if subscribed %}warning{% else %}success{% endif %}" href="{{ path_for('course-action', {'locale': locale, 'id': result.id }) }}"><i class="fa fa-refresh"></i> {% if subscribed %}{{ 'base.unsubscribe'|trans }}{% elseif freeTime %}{{ 'base.subscribe'|trans }}{% endif %}</a>
+                                        <a class="btn btn-block btn-{% if subscribed %}warning{% else %}success{% endif %}"{% if time %} href="{{ path_for('course-action', {'locale': locale, 'id': result.id }) }}"{% endif %}><i class="fa fa-refresh"></i> {% if subscribed %}{{ 'base.unsubscribe'|trans }}{% elseif freeTime %}{{ 'base.subscribe'|trans }}{% endif %}</a>
                                     </div>
                                 </div>
 {% endif %}
-{% if auth.isAdmin() %}
+{% if auth.isAdmin() and time %}
 
                                 <hr>
                                 <div class="row">

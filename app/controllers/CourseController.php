@@ -14,7 +14,7 @@ class CourseController extends \App\Controller
             $args['results'] = $event->courses()->paginate(10);
             $args['results']->setPath($this->router->pathFor($request->getAttribute('route')->getName()));
 
-            $args['time'] = $event->date >= \Carbon\Carbon::now();
+            $args['time'] = $event->subscription_end >= \Carbon\Carbon::now();
         }
         elseif($this->auth->isAdmin()){
             $this->flash->addMessage('errors', $this->translator->translate('course.needs-event'));
@@ -29,6 +29,7 @@ class CourseController extends \App\Controller
     public function index($request, $response, $args)
     {
         $event = Models\Event::orderBy('date', 'desc')->first();
+        $args['time'] = $event->subscription_end >= \Carbon\Carbon::now();
 
         if (!empty($event)) {
             $args['times'] = Models\Time::with('courses')->whereHas('courses', function ($q) use ($event) {
@@ -54,6 +55,7 @@ class CourseController extends \App\Controller
                         $remove = true;
                     }
 
+					$ts = $ts->get();
                     foreach ($ts as $t) {
                         if (!in_array($t->id, $result_value)) {
                             $remove = true;
@@ -114,10 +116,10 @@ class CourseController extends \App\Controller
     protected static function inner($start, $choose, $array, $n, &$result, &$combination)
     {
         if ($choose == 0) {
-            array_push($result, $combination);
+            $result[] = $combination;
         } else {
             for ($i = $start; $i <= $n - $choose; ++$i) {
-                array_push($combination, $array[$i]);
+                $combination[] = $array[$i];
                 self::inner($i + 1, $choose - 1, $array, $n, $result, $combination);
                 array_pop($combination);
             }
@@ -154,6 +156,7 @@ class CourseController extends \App\Controller
             }
 
             $args['results'] = $courses;
+            $args['time'] = $event->subscription_end >= \Carbon\Carbon::now();
         }
 
         $response = $this->view->render($response, 'courses/category.twig', $args);
@@ -163,7 +166,17 @@ class CourseController extends \App\Controller
 
     public function datail($request, $response, $args)
     {
-        $args['result'] = Models\Course::with('times', 'users')->findOrFail($args['id']);
+        $event = Models\Event::orderBy('date', 'desc')->first();
+        if(empty($event)){
+            throw new \Slim\Exception\NotFoundException($request, $response);
+        }
+
+        $args['time'] = $event->subscription_end >= \Carbon\Carbon::now();
+
+        $args['result'] = Models\Course::with('times', 'users')->find($args['id']);
+        if(empty($args['result'])){
+            throw new \Slim\Exception\NotFoundException($request, $response);
+        }
 
         $args['users'] = $args['result']->users()->with('group')->orderBy('name', 'asc')->get();
 
@@ -174,11 +187,11 @@ class CourseController extends \App\Controller
 
     public function action($request, $response, $args)
     {
-        $course = Models\Course::with('users', 'times')->findOrFail($args['id']);
-
         $event = \App\Models\Event::orderBy('date', 'desc')->first();
 
-        if (!empty($course) && $course->event_id == $event->id) {
+        $course = Models\Course::with('users', 'times')->find($args['id']);
+
+        if (!empty($event) && !empty($course) && ($course->event_id == $event->id) && ($event->subscription_end >= \Carbon\Carbon::now())) {
             if ($this->auth->getUser()->isSubscribedTo($course)) {
                 $course->users()->detach($this->auth->getUser());
                 $this->flash->addMessage('infos', $this->translator->translate('course.removeSubscription'));
@@ -192,17 +205,25 @@ class CourseController extends \App\Controller
             }
         }
 
-        $this->router->redirectTo('courses');
+        $this->router->redirectTo('course', ['id' => $args['id']]);
     }
 
     public function form($request, $response, $args)
     {
-        if (!Models\Event::where('date', '>=', \Carbon\Carbon::now())->count()) {
+        $event = Models\Event::orderBy('date', 'desc')->first();
+
+        if (empty($event) || $event->subscription_end < \Carbon\Carbon::now()) {
             throw new \Slim\Exception\NotFoundException($request, $response);
         }
 
         if (!empty($args['id'])) {
-            $args['result'] = Models\Course::findOrFail($args['id']);
+            $args['result'] = Models\Course::where(['id' => $args['id']])->whereHas('event', function($query) use ($event) {
+                $query->where(['id' => $event->id]);
+            })->first();
+
+            if (empty($args['result'])) {
+                throw new \Slim\Exception\NotFoundException($request, $response);
+            }
         }
 
         $args['schools'] = Models\School::all();
@@ -215,13 +236,21 @@ class CourseController extends \App\Controller
 
     public function formPost($request, $response, $args)
     {
-        if (!$this->validator->hasErrors() && Models\Event::where('date', '>=', \Carbon\Carbon::now())->count()) {
+        $event = Models\Event::orderBy('date', 'desc')->first();
+
+        if (empty($event) || $event->subscription_end < \Carbon\Carbon::now()) {
+            throw new \Slim\Exception\NotFoundException($request, $response);
+        }
+
+        if (!$this->validator->hasErrors()) {
             if (!empty($args['id'])) {
-                $course = Models\Course::findOrFail($args['id']);
+                $course = Models\Course::find($args['id']);
+
+                if (empty($course) || $course->event_id != $event->id) {
+                    throw new \Slim\Exception\NotFoundException($request, $response);
+                }
             } else {
                 $course = new Models\Course();
-
-                $event = Models\Event::where('date', '>=', \Carbon\Carbon::now())->first();
                 $course->event()->associate($event);
             }
 
@@ -259,7 +288,13 @@ class CourseController extends \App\Controller
     public function deletePost($request, $response, $args)
     {
         if (!empty($args['id'])) {
-            Models\Course::findOrFail($args['id'])->delete();
+            $course = Models\Course::find($args['id']);
+
+            if (empty($course)) {
+                throw new \Slim\Exception\NotFoundException($request, $response);
+            }
+
+            $course->delete();
         }
 
         $this->router->redirectTo('courses');

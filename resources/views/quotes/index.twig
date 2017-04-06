@@ -21,7 +21,7 @@
                         <blockquote>
 						    <p>{{ result.content|raw }}</p>
                             <footer>
-                                <cite title="{{ result.teacher.name }}"><a class="btn btn-success" href="{{ path_for('teacher', {'locale': locale, 'id':  result.teacher.id }) }}">{{ result.teacher.name }}</a></cite>{% if auth.isAdmin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
+                                <cite title="{{ result.teacher.name }}"><a href="{{ path_for('teacher', {'locale': locale, 'id':  result.teacher.id }) }}">{{ result.teacher.name }}</a></cite>{% if auth.isAdmin() %} ({{ 'base.inserted_by'|trans({':name': result.user.name}) }}){% endif %}
                             </footer>
                         </blockquote>
 {% if result.user_id == auth.getUser().id or auth.isAdmin() %}

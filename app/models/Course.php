@@ -8,6 +8,13 @@ class Course extends Model
 {
     use \Illuminate\Database\Eloquent\SoftDeletes;
 
+        protected static function boot() {
+            parent::boot();
+
+            static::deleting(function($course) {
+                $course->users()->sync([]);
+            });
+        }
     public function event()
     {
         return $this->belongsTo('App\Models\Event');
